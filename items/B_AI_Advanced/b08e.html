@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCP vs Skill 완벽 비교 가이드</title>
+<meta name="description" content="MCP와 Skill의 정의, 비교표, 실제 조합 시나리오, 선택 가이드, 구현 예시까지 정리한 Claude Code 완벽 가이드">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+
+  :root{
+    --ink:#150F2E;
+    --ink-2:#1E1745;
+    --ink-deep:#0B0820;
+    --paper:#FFFFFF;
+    --paper-tint:#F6F3FF;
+    --line:#E7E1FA;
+    --text-dark:#1B1730;
+    --text-muted:#655F82;
+    --acc-a:#0EA5C4;
+    --acc-a-ink:#0B5C6E;
+    --acc-b:#3E5CFF;
+    --acc-b-ink:#1B2E8A;
+    --acc-c:#8880B0;
+    --acc-c-ink:#3A3560;
+    --danger:#D6455B;
+    --radius:18px;
+    --shadow:0 16px 40px rgba(21,15,46,0.12);
+    --maxw:1140px;
+    --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',Consolas,monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Noto Sans KR','Apple SD Gothic Neo',sans-serif;
+    color:var(--text-dark);
+    background:var(--paper);
+    line-height:1.68;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Noto Serif KR','Noto Sans KR',serif;margin:0;}
+  a{color:inherit;text-decoration:none;}
+  img,svg{display:block;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px;}
+  code{font-family:var(--mono);}
+
+  #progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--acc-a),var(--acc-b),var(--acc-c));z-index:9999;width:0%;transition:width .1s linear;}
+
+  header.nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:18px 0;transition:background .3s ease, padding .3s ease, box-shadow .3s ease;}
+  header.nav .wrap{display:flex;align-items:center;justify-content:space-between;}
+  header.nav.scrolled{background:rgba(21,15,46,0.92);backdrop-filter:blur(10px);padding:12px 0;box-shadow:0 4px 20px rgba(0,0,0,0.18);}
+  .brand{font-weight:900;font-size:15.5px;color:var(--paper);letter-spacing:.3px;display:flex;align-items:center;gap:9px;}
+  .brand .dot2{display:inline-flex;gap:3px;}
+  .brand .dot2 span{width:7px;height:7px;border-radius:50%;display:block;}
+  .brand .dot2 span:nth-child(1){background:var(--acc-a);}
+  .brand .dot2 span:nth-child(2){background:var(--acc-b);}
+  nav.links{display:flex;gap:20px;flex-wrap:wrap;}
+  nav.links a{font-size:13px;font-weight:500;color:#CFC8F2;opacity:.85;transition:opacity .2s,color .2s;}
+  nav.links a:hover{opacity:1;color:var(--acc-b);}
+  .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:6px;}
+  .hamburger span{width:22px;height:2px;background:var(--paper);display:block;}
+  .mobile-menu{display:none;position:fixed;top:0;right:0;bottom:0;width:74%;max-width:300px;background:var(--ink-2);z-index:1100;padding:90px 32px;flex-direction:column;gap:22px;box-shadow:-10px 0 30px rgba(0,0,0,.3);}
+  .mobile-menu.open{display:flex;}
+  .mobile-menu a{color:#DCD6F7;font-size:15px;font-weight:500;}
+  .mobile-close{position:fixed;top:22px;right:6%;z-index:1200;display:none;color:var(--paper);font-size:26px;background:none;border:none;cursor:pointer;}
+
+  section{position:relative;padding:100px 0;scroll-margin-top:84px;}
+  .kicker{font-size:12px;font-weight:700;letter-spacing:3px;color:var(--acc-a);text-transform:uppercase;margin-bottom:14px;}
+  .kicker.on-dark{color:var(--acc-b);}
+  h2.title{font-size:clamp(24px,3.1vw,34px);font-weight:700;color:var(--text-dark);line-height:1.32;}
+  h2.title.on-dark{color:var(--paper);}
+  .lede{font-size:15px;color:var(--text-muted);max-width:740px;margin-top:14px;}
+  .lede.on-dark{color:#CFC8F2;}
+
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in-view{opacity:1;transform:translateY(0);}
+
+  .tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.5px;padding:4px 11px;border-radius:20px;color:#fff;text-transform:uppercase;}
+  .tag.a{background:var(--acc-a);}
+  .tag.b{background:var(--acc-b);color:#fff;}
+  .tag.c{background:var(--acc-c);}
+  .tag.outline-a{background:rgba(0,0,0,0.03);color:var(--acc-a-ink);border:1.4px solid var(--acc-a);}
+  .tag.outline-b{background:rgba(0,0,0,0.03);color:var(--acc-b-ink);border:1.4px solid var(--acc-b);}
+
+  .badge{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:var(--ink);color:var(--paper);font-family:'Noto Serif KR',serif;font-weight:700;font-size:16px;flex-shrink:0;}
+
+  .card{background:var(--paper-tint);border-radius:var(--radius);padding:26px;box-shadow:var(--shadow);}
+  .card.dark{background:var(--ink);color:var(--paper);}
+  .card h3,.card h4{font-size:15px;font-weight:700;margin-bottom:8px;}
+  .card p{font-size:13.2px;color:var(--text-muted);margin:0;}
+  .card.dark p{color:#CFC8F2;}
+  .note-box{background:#FFF6DC;color:#6B4E00;border-radius:var(--radius);padding:18px 24px;font-size:13.8px;margin-top:26px;}
+  .note-box b{color:#8A6300;}
+
+  /* HERO — split VS panels (the signature element) */
+  .hero{color:var(--paper);min-height:100vh;display:flex;flex-direction:column;overflow:hidden;padding-top:84px;}
+  .hero-split{flex:1;display:flex;position:relative;}
+  .hero-panel{flex:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:40px 24px;}
+  .hero-panel.pa{background:linear-gradient(150deg,var(--acc-a) 0%,var(--ink-deep) 78%);}
+  .hero-panel.pb{background:linear-gradient(210deg,var(--acc-b) 0%,var(--ink-deep) 78%);}
+  .hero-panel.pc{background:linear-gradient(180deg,var(--acc-c) 0%,var(--ink-deep) 78%);}
+  .hero-panel .plabel{font-family:'Noto Serif KR',serif;font-weight:700;font-size:clamp(26px,4vw,42px);text-align:center;position:relative;z-index:2;}
+  .hero-panel .psub{font-size:12px;letter-spacing:2px;text-transform:uppercase;opacity:.8;margin-top:10px;text-align:center;position:relative;z-index:2;}
+  .hero-vs-mark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:5;width:64px;height:64px;border-radius:50%;background:var(--ink);border:3px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;font-family:'Noto Serif KR',serif;font-weight:700;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,0.4);}
+  .hero-copy{background:var(--ink-deep);padding:56px 0 60px;}
+  .hero-copy .eyebrow{font-size:12.5px;letter-spacing:4px;font-weight:700;color:var(--acc-b);text-transform:uppercase;margin-bottom:16px;}
+  .hero-copy h1{font-size:clamp(26px,4vw,40px);font-weight:900;line-height:1.32;margin-bottom:16px;}
+  .hero-copy p.sub{font-size:clamp(13.5px,1.5vw,16px);color:#CFC8F2;max-width:760px;margin-bottom:0;}
+  .chip-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px;}
+  .chip{padding:10px 18px;border-radius:30px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);font-size:12.5px;font-weight:500;color:#DCD6F7;transition:background .2s, border-color .2s, transform .2s;}
+  .chip:hover{background:rgba(255,255,255,0.1);transform:translateY(-2px);color:var(--paper);}
+  .scroll-cue{text-align:center;color:#8880B0;opacity:.7;font-size:11.5px;padding-bottom:6px;animation:bob 2s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(6px);}}
+
+  /* compare 2/3 col cards */
+  .compare-2{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:40px;}
+  .compare-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:40px;}
+  .cc-card{border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);border-top:4px solid var(--acc-a);}
+  .cc-card.b{border-top-color:var(--acc-b);}
+  .cc-card.c{border-top-color:var(--acc-c);}
+  .cc-card h4{font-size:14px;font-weight:700;margin:0 0 10px;text-transform:uppercase;letter-spacing:.6px;color:var(--text-muted);}
+  .cc-card .flow{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;margin-bottom:8px;color:var(--ink);}
+  .cc-card p.small{font-size:12.6px;color:var(--text-muted);margin:0;}
+
+  /* comparison table */
+  .cmp-table-wrap{margin-top:36px;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+  .cmp-table{width:100%;border-collapse:collapse;background:var(--paper);}
+  .cmp-table th{padding:15px 18px;font-size:11.5px;font-weight:700;text-align:left;letter-spacing:.5px;text-transform:uppercase;}
+  .cmp-table th:first-child{background:var(--ink);color:var(--paper);width:150px;}
+  .cmp-table th.col-a{background:var(--acc-a);color:#fff;}
+  .cmp-table th.col-b{background:var(--acc-b);color:#fff;}
+  .cmp-table th.col-c{background:var(--acc-c);color:#fff;}
+  .cmp-table td{padding:14px 18px;font-size:12.8px;border-bottom:1px solid var(--line);vertical-align:top;}
+  .cmp-table tr:last-child td{border-bottom:none;}
+  .cmp-table td:first-child{font-weight:700;color:var(--ink);background:var(--paper-tint);}
+
+  /* detail feature list */
+  .feat-list{margin-top:26px;display:flex;flex-direction:column;gap:14px;}
+  .feat-item{display:flex;gap:14px;align-items:flex-start;}
+  .feat-item .fi{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12.5px;color:#fff;flex-shrink:0;margin-top:1px;}
+  .feat-item b{display:block;font-size:14px;margin-bottom:2px;}
+  .feat-item span{font-size:12.8px;color:var(--text-muted);}
+
+  .trig-box{margin-top:28px;background:var(--paper-tint);border-radius:var(--radius);padding:22px 24px;}
+  .trig-box h5{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin:0 0 12px;}
+  .trig-box ol{margin:0;padding-left:20px;}
+  .trig-box li{font-size:13px;margin-bottom:10px;color:var(--text-dark);}
+  .trig-box li:last-child{margin-bottom:0;}
+  .trig-box li b{color:var(--ink);}
+
+  .usewhen{margin-top:22px;display:flex;flex-wrap:wrap;gap:9px;}
+  .usewhen span{font-size:12px;padding:7px 13px;border-radius:20px;background:var(--paper-tint);color:var(--text-dark);}
+  .usewhen span::before{content:'✓ ';font-weight:700;}
+
+  /* scenario cards */
+  .scen-grid{display:flex;flex-direction:column;gap:18px;margin-top:40px;}
+  .scen-card{border-radius:var(--radius);padding:26px 28px;box-shadow:var(--shadow);background:var(--paper);border:1.5px solid var(--line);}
+  .scen-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px;}
+  .scen-num{font-family:'Noto Serif KR',serif;font-size:13px;color:var(--text-muted);font-weight:700;}
+  .scen-title{font-size:15.5px;font-weight:700;color:var(--ink);}
+  .scen-pick{font-size:11.5px;font-weight:700;padding:6px 14px;border-radius:20px;color:#fff;letter-spacing:.3px;}
+  .scen-pick.a{background:var(--acc-a);}
+  .scen-pick.b{background:var(--acc-b);}
+  .scen-pick.c{background:var(--acc-c);}
+  .scen-situ{font-size:13px;color:var(--text-muted);margin-bottom:14px;}
+  .scen-why{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+  .scen-why span{font-size:11.8px;background:var(--paper-tint);color:var(--text-dark);padding:6px 12px;border-radius:16px;}
+  .scen-code{background:var(--ink-deep);border-radius:12px;padding:16px 18px;font-family:var(--mono);font-size:12px;color:#CFC8F2;line-height:1.7;white-space:pre-wrap;}
+
+  /* decision tree */
+  .tree-box{margin-top:40px;background:var(--ink);color:var(--paper);border-radius:var(--radius);padding:32px 34px;box-shadow:var(--shadow);}
+  .tree-box .tq{font-size:14.5px;font-weight:700;margin-bottom:18px;color:var(--paper);}
+  .tree-row{display:flex;gap:16px;align-items:flex-start;margin-bottom:14px;padding-left:8px;}
+  .tree-row:last-child{margin-bottom:0;}
+  .tree-row .tlabel{font-size:11.5px;font-weight:700;padding:5px 12px;border-radius:14px;flex-shrink:0;margin-top:1px;}
+  .tree-row .tlabel.yes{background:rgba(14,163,131,0.2);color:#5EE0BC;}
+  .tree-row .tlabel.no{background:rgba(214,69,91,0.2);color:#F09AA6;}
+  .tree-row .ttext{font-size:13.3px;color:#CFC8F2;}
+  .tree-row .ttext b{color:var(--paper);}
+  .tree-indent{margin-left:44px;}
+
+  .check-2{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:32px;}
+  .check-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:32px;}
+  .check-card{border-radius:var(--radius);padding:24px;background:var(--paper-tint);}
+  .check-card h5{font-size:13.5px;font-weight:700;margin:0 0 14px;display:flex;align-items:center;gap:8px;}
+  .check-card ul{list-style:none;margin:0;padding:0;}
+  .check-card li{font-size:12.8px;color:var(--text-dark);padding:7px 0 7px 26px;position:relative;border-bottom:1px solid var(--line);}
+  .check-card li:last-child{border-bottom:none;}
+  .check-card li::before{content:'☐';position:absolute;left:0;top:6px;color:var(--text-muted);}
+  .check-card .verdict{margin-top:14px;font-size:12px;font-weight:700;color:var(--ink);}
+
+  /* code blocks */
+  .code-block{background:var(--ink-deep);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);margin-top:20px;}
+  .code-head{display:flex;align-items:center;justify-content:space-between;padding:11px 20px;background:var(--ink-2);}
+  .code-head .dots{display:flex;gap:6px;}
+  .code-head .dots span{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,0.2);}
+  .code-head .fname{font-family:var(--mono);font-size:11px;color:#CFC8F2;}
+  pre{margin:0;padding:20px 22px;overflow-x:auto;}
+  pre code{font-family:var(--mono);font-size:12.3px;line-height:1.75;color:#E4DEFF;white-space:pre;}
+  .cm{color:#8880B0;}
+  .kw{color:var(--acc-a);}
+  .st{color:var(--acc-b);}
+  .fn{color:#F2B705;}
+  .example-block{margin-top:36px;}
+  .example-block h4{font-size:14.5px;font-weight:700;display:flex;align-items:center;gap:10px;}
+
+  /* best practices */
+  .bp-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:40px;}
+  .bp-grid.cols-3{grid-template-columns:repeat(3,1fr);}
+  .bp-card{border-radius:var(--radius);padding:26px;box-shadow:var(--shadow);}
+  .bp-card.a{background:rgba(0,0,0,0.02);border-top:4px solid var(--acc-a);}
+  .bp-card.b{background:rgba(0,0,0,0.02);border-top:4px solid var(--acc-b);}
+  .bp-card.c{background:rgba(0,0,0,0.02);border-top:4px solid var(--acc-c);}
+  .bp-card h4{font-size:14.5px;font-weight:700;margin-bottom:16px;}
+  .bp-item{display:flex;gap:12px;margin-bottom:14px;}
+  .bp-item:last-child{margin-bottom:0;}
+  .bp-item .n{font-family:'Noto Serif KR',serif;font-weight:700;font-size:13px;color:var(--text-muted);flex-shrink:0;}
+  .bp-item b{display:block;font-size:13.3px;margin-bottom:2px;}
+  .bp-item span{font-size:12.4px;color:var(--text-muted);}
+
+  /* summary */
+  .summary{background:linear-gradient(180deg,var(--ink-2) 0%, var(--ink-deep) 100%);color:var(--paper);}
+  .recap-list{margin-top:34px;display:flex;flex-direction:column;gap:0;}
+  .recap-item{display:flex;align-items:flex-start;gap:18px;padding:18px 0;border-bottom:1px solid rgba(255,255,255,0.1);}
+  .recap-item:last-child{border-bottom:none;}
+  .recap-item .num{font-family:'Noto Serif KR',serif;font-size:14px;color:var(--acc-b);font-weight:700;width:28px;flex-shrink:0;}
+  .recap-item .rt{font-size:14px;line-height:1.65;color:#E4DEFF;}
+  .final-line{margin-top:30px;padding:20px 24px;border-radius:var(--radius);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);font-size:13.5px;color:#CFC8F2;}
+  .final-line b{color:var(--paper);}
+
+  footer{background:var(--ink-deep);color:#8880B0;padding:34px 0;font-size:12px;}
+  footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+  .totop{border:1px solid rgba(255,255,255,0.2);padding:8px 16px;border-radius:20px;font-size:11.5px;transition:border-color .2s, color .2s;}
+  .totop:hover{border-color:var(--acc-b);color:var(--acc-b);}
+
+  @media(max-width:900px){
+    nav.links{display:none;}
+    .hamburger{display:flex;}
+    .compare-2,.compare-3{grid-template-columns:1fr;}
+    .check-2,.check-3{grid-template-columns:1fr;}
+    .bp-grid{grid-template-columns:1fr;}
+    .hero-split{flex-direction:column;}
+    .hero-vs-mark{position:relative;top:auto;left:auto;transform:none;margin:-32px auto;}
+    section{padding:72px 0;}
+  }
+  @media(max-width:560px){
+    .cmp-table{font-size:11.5px;}
+    .cmp-table th,.cmp-table td{padding:11px 12px;}
+  }
+
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<header class="nav" id="siteNav">
+  <div class="wrap">
+    <div class="brand"><span class="dot2"><span></span><span></span></span> MCP vs Skill · Claude Code Complete Guide</div>
+    <nav class="links">
+      <a href="#overview">개요</a>
+      <a href="#table">비교표</a>
+      <a href="#mcp">MCP</a>
+      <a href="#skill">Skill</a>
+      <a href="#scenarios">조합사례</a>
+      <a href="#decision">선택가이드</a>
+      <a href="#example">구현예시</a>
+    </nav>
+    <button class="hamburger" id="hamBtn" aria-label="메뉴 열기"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#overview">개요</a>
+  <a href="#table">비교 분석표</a>
+  <a href="#mcp">MCP 상세</a>
+  <a href="#skill">Skill 상세</a>
+  <a href="#scenarios">실제 조합 사례</a>
+  <a href="#decision">선택 가이드</a>
+  <a href="#example">구현 예시</a>
+</div>
+<button class="mobile-close" id="mobileClose">×</button>
+
+<main>
+
+<section class="hero" id="top">
+  <div class="hero-split">
+    <div class="hero-panel pa">
+      <div>
+        <div class="plabel">MCP</div>
+        <div class="psub">Connects to Services</div>
+      </div>
+    </div>
+    <div class="hero-panel pb">
+      <div>
+        <div class="plabel">Skill</div>
+        <div class="psub">Extends Knowledge</div>
+      </div>
+    </div>
+    <div class="hero-vs-mark">VS</div>
+  </div>
+  <div class="hero-copy">
+    <div class="wrap">
+      <div class="eyebrow">Claude Code · Complete Guide</div>
+      <h1>MCP vs Skill 완벽 비교 가이드</h1>
+      <p class="sub">MCP는 Claude를 외부 서비스에 연결한다. Skill은 Claude가 알아야 할 내용을 확장하며, 이 서비스들을 효과적으로 사용하는 방법도 포함한다. 경쟁 관계가 아니라 대개 함께 쓰인다.</p>
+      <div class="chip-row">
+        <a class="chip" href="#table">비교 분석표</a>
+        <a class="chip" href="#scenarios">MCP+Skill 조합</a>
+        <a class="chip" href="#decision">선택 가이드</a>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-cue">SCROLL ↓</div>
+</section>
+
+
+<section id="overview">
+  <div class="wrap reveal">
+    <div class="kicker">Overview</div>
+    <h2 class="title">핵심 정의</h2>
+    <p class="lede">MCP는 Claude를 외부 서비스에 연결한다. Skill은 Claude가 알아야 할 내용을 확장하며, 이러한 서비스를 효과적으로 사용하는 방법도 포함한다.</p>
+
+    <div class="compare-2">
+      <div class="cc-card">
+        <h4>MCP</h4>
+        <div class="flow">Claude ↔ 외부 서비스</div>
+        <p class="small">데이터베이스, 도구, API 등 외부 서비스에 Claude를 연결하는 프로토콜. 도구와 데이터에 대한 실시간 접근을 제공한다.</p>
+      </div>
+      <div class="cc-card b">
+        <h4>Skill</h4>
+        <div class="flow">Claude + 지식 = 강화된 Claude</div>
+        <p class="small">Claude에게 필요한 지식, 워크플로우, 배포 체크리스트 등을 제공한다. MCP로 연결된 서비스를 어떻게 쓸지도 Skill이 정의할 수 있다.</p>
+      </div>
+    </div>
+
+    <div class="note-box"><b>관계</b> — 둘은 경쟁하지 않는다. MCP가 "무엇에 접근할 수 있는가"를 결정하고, Skill이 "그것을 어떻게 쓸 것인가"를 정의한다.</div>
+  </div>
+</section>
+
+<section id="table" style="background:var(--paper-tint);">
+  <div class="wrap reveal">
+    <div class="kicker">At a Glance</div>
+    <h2 class="title">비교 분석표</h2>
+
+    <div class="cmp-table-wrap">
+      <table class="cmp-table">
+        <tr><th>축면</th><th class="col-a">MCP</th><th class="col-b">Skill</th></tr>
+        <tr><td>정의</td><td>외부 서비스 연결 프로토콜</td><td>지식, 워크플로우 및 참조 자료</td></tr>
+        <tr><td>제공</td><td>도구 및 데이터 접근</td><td>지식, 워크플로우, 참조 자료</td></tr>
+        <tr><td>예시</td><td>Slack 통합, 데이터베이스 쿼리, 브라우저 제어</td><td>코드 검토 체크리스트, 배포 워크플로우, API 스타일 가이드</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="mcp">
+  <div class="wrap reveal">
+    <div class="kicker">Deep Dive</div>
+    <h2 class="title"><span class="tag a" style="margin-right:8px;">MCP</span>외부 서비스 연결</h2>
+    <p class="lede">Claude를 외부 서비스에 연결하는 프로토콜이다.</p>
+
+    <div class="trig-box">
+      <h5>Claude ↔ MCP ↔ 외부 서비스</h5>
+      <ol>
+        <li><b>Slack</b> — 메시지 읽기 · 쓰기</li>
+        <li><b>Database</b> — 실시간 데이터 쿼리</li>
+        <li><b>Browser</b> — 웹 작업 자동화</li>
+        <li><b>Tools / APIs</b> — 실제 작업 실행</li>
+      </ol>
+    </div>
+
+    <div class="feat-list">
+      <div class="feat-item"><div class="fi" style="background:var(--acc-a);">1</div><div><b>실시간 연결</b><span>데이터 및 도구에 대한 실시간 접근을 제공한다.</span></div></div>
+      <div class="feat-item"><div class="fi" style="background:var(--acc-a);">2</div><div><b>실제 작업 수행</b><span>메시지 전송, 쿼리 실행, 브라우저 제어처럼 실제 행동을 실행한다.</span></div></div>
+    </div>
+
+    <div class="usewhen">
+      <span>Claude가 외부 시스템 접근 필요</span>
+      <span>실시간 데이터 쿼리 필요</span>
+      <span>도구 실행 필요</span>
+      <span>외부 API 호출 필요</span>
+    </div>
+  </div>
+</section>
+
+<section id="skill" style="background:var(--paper-tint);">
+  <div class="wrap reveal">
+    <div class="kicker">Deep Dive</div>
+    <h2 class="title"><span class="tag b" style="margin-right:8px;">Skill</span>지식과 워크플로우</h2>
+    <p class="lede">Claude에게 필요한 지식, 워크플로우, 배포 체크리스트 등을 제공한다.</p>
+
+    <div class="trig-box">
+      <h5>Claude + Skill = 강화된 Claude</h5>
+      <ol>
+        <li><b>코드 검토 체크리스트</b> — 무엇을 볼지 정의</li>
+        <li><b>배포 워크플로우</b> — 어떤 순서로 진행할지 정의</li>
+        <li><b>API 스타일 가이드</b> — 어떤 형식으로 응답할지 정의</li>
+        <li><b>디버깅 플레이북</b> — 문제를 어떻게 해결할지 정의</li>
+      </ol>
+    </div>
+
+    <div class="feat-list">
+      <div class="feat-item"><div class="fi" style="background:var(--acc-b);">1</div><div><b>지식 확장</b><span>Claude가 원래 모르던 팀 · 프로젝트 특화 지식을 제공한다.</span></div></div>
+      <div class="feat-item"><div class="fi" style="background:var(--acc-b);">2</div><div><b>워크플로우 정의</b><span><code>/release</code>, <code>/post-to-slack</code>처럼 절차와 형식을 명시한다.</span></div></div>
+    </div>
+
+    <div class="usewhen">
+      <span>Claude가 알아야 할 특수 지식 필요</span>
+      <span>워크플로우 자동화 필요</span>
+      <span>체크리스트 제공 필요</span>
+      <span>API · 스타일 가이드 필요</span>
+    </div>
+  </div>
+</section>
+
+<section id="scenarios">
+  <div class="wrap reveal">
+    <div class="kicker">Real Combinations</div>
+    <h2 class="title">실제 시나리오별 조합</h2>
+    <p class="lede">MCP와 Skill은 대부분 함께 쓰인다 — MCP가 접근을, Skill이 방법을 담당한다.</p>
+
+    <div class="scen-grid">
+      <div class="scen-card">
+        <div class="scen-head"><div><span class="scen-num">시나리오 01</span> <span class="scen-title">Slack 기반 배포 자동화</span></div><span class="scen-pick a">MCP + Skill</span></div>
+        <p class="scen-situ">필요한 것: Claude가 Slack에 메시지를 쓰고, 배포 절차를 알아야 한다.</p>
+        <div class="scen-why"><span>MCP: Slack 연결(메시지 쓰기)</span><span>Skill: /release 배포 체크리스트</span></div>
+        <div class="scen-code">사용자: "배포해줘"
+
+Claude:
+1) Skill에서 /release 로드
+2) 배포 체크리스트 실행
+3) MCP로 Slack에 진행상황 보고
+4) 각 단계별 상태 업데이트</div>
+      </div>
+
+      <div class="scen-card">
+        <div class="scen-head"><div><span class="scen-num">시나리오 02</span> <span class="scen-title">데이터베이스 쿼리 + 결과 형식화</span></div><span class="scen-pick a">MCP + Skill</span></div>
+        <p class="scen-situ">필요한 것: Claude가 데이터베이스를 쿼리하고, 결과를 특정 형식으로 변환해야 한다.</p>
+        <div class="scen-why"><span>MCP: 데이터베이스 접근(쿼리 실행)</span><span>Skill: output-format 형식 가이드</span></div>
+        <div class="scen-code">사용자: "고객 데이터 조회"
+
+Claude:
+1) MCP로 데이터베이스 쿼리
+2) Skill에서 형식 가이드 로드
+3) 결과를 지정된 형식으로 변환
+4) 사용자에게 반환</div>
+      </div>
+
+      <div class="scen-card">
+        <div class="scen-head"><div><span class="scen-num">시나리오 03</span> <span class="scen-title">코드 검토</span></div><span class="scen-pick a">MCP + Skill</span></div>
+        <p class="scen-situ">필요한 것: Claude가 코드를 읽고(파일 접근), 검토 체크리스트를 알아야 한다.</p>
+        <div class="scen-why"><span>MCP: 파일 시스템 접근</span><span>Skill: code-review 체크리스트</span></div>
+        <div class="scen-code">사용자: "코드 검토해줘"
+
+Claude:
+1) MCP로 파일 시스템에서 코드 읽기
+2) Skill에서 code-review 체크리스트 로드
+3) 체크리스트에 따라 검토
+4) 피드백 제공</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="decision" style="background:var(--paper-tint);">
+  <div class="wrap reveal">
+    <div class="kicker">Decision Guide</div>
+    <h2 class="title">선택 가이드</h2>
+
+    <div class="tree-box">
+      <div class="tq">Q. 외부 시스템 접근이 필요한가? (Slack, DB, 브라우저 등)</div>
+      <div class="tree-row"><span class="tlabel yes">YES</span><span class="ttext"><b>MCP 사용 + Skill 병행</b><br>예: MCP로 Slack 연결 + Skill로 메시지 형식 정의</span></div>
+      <div class="tree-row"><span class="tlabel no">NO</span><span class="ttext">내부 지식만 필요하다면 → <b>Skill 사용</b><br>예: 배포 체크리스트, API 가이드</span></div>
+    </div>
+
+    <div class="check-2">
+      <div class="check-card">
+        <h5><span class="tag a">MCP</span> 필요한가?</h5>
+        <ul>
+          <li>외부 시스템에 접근해야 하는가?</li>
+          <li>실시간 데이터나 도구가 필요한가?</li>
+          <li>실제 작업을 수행해야 하는가?</li>
+        </ul>
+        <div class="verdict">하나 이상 YES → MCP 사용</div>
+      </div>
+      <div class="check-card">
+        <h5><span class="tag b">Skill</span> 필요한가?</h5>
+        <ul>
+          <li>Claude에게 특수 지식이 필요한가?</li>
+          <li>워크플로우를 정의해야 하는가?</li>
+          <li>형식 · 규칙 · 가이드가 필요한가?</li>
+        </ul>
+        <div class="verdict">하나 이상 YES → Skill 사용</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="example">
+  <div class="wrap reveal">
+    <div class="kicker">Implementation</div>
+    <h2 class="title">실제 구현 예시 — 팀 협업 도구</h2>
+
+    <div class="example-block">
+      <h4><span class="tag outline-a">MCP</span> 설정</h4>
+      <div class="code-block">
+        <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">mcp-config.md</div></div>
+        <pre><code><span class="cm"># MCP 서버 구성</span>
+- Slack MCP     <span class="cm"># 메시지 보내기/읽기</span>
+- GitHub MCP    <span class="cm"># PR 생성/검토</span>
+- Database MCP  <span class="cm"># 프로젝트 데이터 조회</span></code></pre>
+      </div>
+    </div>
+
+    <div class="example-block">
+      <h4><span class="tag outline-b">Skill</span> 설정</h4>
+      <div class="code-block">
+        <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">skills.md</div></div>
+        <pre><code><span class="cm"># Skill 구성</span>
+- /team-message   <span class="cm"># Slack 메시지 형식 규칙</span>
+- /pr-template    <span class="cm"># PR 작성 가이드</span>
+- /status-report  <span class="cm"># 주간 보고서 형식</span></code></pre>
+      </div>
+    </div>
+
+    <div class="note-box" style="margin-top:32px;"><b>사용 흐름</b> — ① MCP로 현재 상태 조회(GitHub, DB) → ② Skill에서 보고서 형식 로드 → ③ 보고서 작성 → ④ MCP로 Slack에 발송(Skill의 형식 그대로 적용).</div>
+  </div>
+</section>
+
+<section class="summary" id="summary">
+  <div class="wrap reveal">
+    <div class="kicker on-dark">Summary</div>
+    <h2 class="title on-dark">한 문장으로 정리하는 MCP vs Skill</h2>
+    <p class="lede on-dark">MCP는 문을 열고, Skill은 그 문 너머에서 무엇을 할지 알려준다.</p>
+
+    <div class="recap-list">
+      <div class="recap-item"><span class="num">01</span><span class="rt"><b>MCP</b>는 Claude를 외부 서비스(Slack, DB, 브라우저)에 연결하는 프로토콜이다.</span></div>
+      <div class="recap-item"><span class="num">02</span><span class="rt"><b>Skill</b>은 Claude에게 지식, 워크플로우, 체크리스트를 제공해 그 연결을 효과적으로 쓰게 한다.</span></div>
+      <div class="recap-item"><span class="num">03</span><span class="rt">최적 조합은 대개 <b>MCP + Skill</b> — MCP로 접근하고, Skill로 형식·규칙을 지킨다.</span></div>
+    </div>
+
+    <div class="final-line"><b>기억할 것 한 줄</b> — "접근"이 필요하면 MCP, "지식"이 필요하면 Skill, 대부분은 둘 다 필요하다.</div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>MCP vs Skill · Claude Code Complete Guide</span>
+    <a class="totop" href="#top">맨 위로 ↑</a>
+  </div>
+</footer>
+
+<script>
+
+  var progress = document.getElementById('progress');
+  var nav = document.getElementById('siteNav');
+  window.addEventListener('scroll', function(){
+    var h = document.documentElement;
+    var scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    progress.style.width = scrolled + '%';
+    if(h.scrollTop > 40){ nav.classList.add('scrolled'); } else { nav.classList.remove('scrolled'); }
+  });
+
+  var hamBtn = document.getElementById('hamBtn');
+  var mobileMenu = document.getElementById('mobileMenu');
+  var mobileClose = document.getElementById('mobileClose');
+  function openMenu(){ mobileMenu.classList.add('open'); mobileClose.style.display='block'; }
+  function closeMenu(){ mobileMenu.classList.remove('open'); mobileClose.style.display='none'; }
+  hamBtn.addEventListener('click', openMenu);
+  mobileClose.addEventListener('click', closeMenu);
+  mobileMenu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeMenu); });
+
+  var revealObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){ entry.target.classList.add('in-view'); }
+    });
+  }, {threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(function(el){ revealObserver.observe(el); });
+
+</script>
+
+</body>
+</html>
