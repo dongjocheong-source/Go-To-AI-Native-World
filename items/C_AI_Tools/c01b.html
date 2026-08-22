@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>ChatGPT Gemini Claude Comparison</title>
+<style>
+:root{
+ --bg:#121212;
+ --surface:#181818;
+ --surface2:#1f1f1f;
+ --card:#252525;
+ --text:#ffffff;
+ --muted:#b3b3b3;
+ --green:#1ed760;
+ --border:#4d4d4d;
+}
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:var(--bg);
+ color:var(--text);
+ font-family:"Noto Sans KR",Arial,sans-serif;
+ line-height:1.7;
+}
+.container{
+ max-width:1250px;
+ margin:auto;
+ padding:45px;
+}
+h1{font-size:34px;margin-bottom:30px}
+h2{
+ margin-top:45px;
+ border-left:5px solid var(--green);
+ padding-left:15px;
+}
+h3{color:var(--green)}
+.card{
+ background:var(--surface);
+ border-radius:10px;
+ padding:28px;
+ margin:25px 0;
+ box-shadow:rgba(0,0,0,.45) 0 8px 24px;
+}
+table{
+ width:100%;
+ border-collapse:collapse;
+ overflow:hidden;
+ background:var(--surface);
+ border-radius:8px;
+}
+th{
+ background:var(--surface2);
+ color:var(--green);
+ padding:14px;
+ text-align:left;
+}
+td{
+ padding:13px;
+ border-bottom:1px solid var(--border);
+ color:var(--muted);
+}
+td:first-child{
+ color:#fff;
+ font-weight:700;
+}
+ul{color:var(--muted)}
+.quote{
+ border-left:4px solid var(--green);
+ padding-left:18px;
+ font-style:italic;
+}
+.badge{
+ display:inline-block;
+ background:var(--surface2);
+ padding:7px 16px;
+ margin:5px;
+ border-radius:9999px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>ChatGPT, Gemini, Claude 비교 분석</h1>
+
+<div class="card">
+<h2>전체 비교표</h2>
+<table>
+<tr><th>항목</th><th>ChatGPT (OpenAI)</th><th>Gemini (Google)</th><th>Claude (Anthropic)</th></tr>
+<tr><td>핵심 강점</td><td>범용성, 도구 활용, 업무 자동화</td><td>Google 서비스 연계, 검색, 멀티모달</td><td>긴 문서 이해, 글쓰기 품질</td></tr>
+<tr><td>답변 스타일</td><td>균형 잡힌 실무형</td><td>정보 검색·분석형</td><td>자연스럽고 논리적인 글쓰기형</td></tr>
+<tr><td>코딩</td><td>★★★★★</td><td>★★★★☆</td><td>★★★★★</td></tr>
+<tr><td>글쓰기</td><td>★★★★☆</td><td>★★★★☆</td><td>★★★★★</td></tr>
+<tr><td>긴 문서 분석</td><td>★★★★☆</td><td>★★★★☆</td><td>★★★★★</td></tr>
+<tr><td>최신 정보 검색</td><td>강함</td><td>★★★★★</td><td>제한적</td></tr>
+<tr><td>업무 자동화</td><td>★★★★★</td><td>★★★★★</td><td>★★★★☆</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h2>1. ChatGPT (OpenAI)</h2>
+<h3>가장 균형 잡힌 AI 업무 비서</h3>
+<ul>
+<li>질문 답변</li>
+<li>문서 작성</li>
+<li>데이터 분석</li>
+<li>코딩</li>
+<li>이미지 분석</li>
+<li>업무 자동화</li>
+</ul>
+<div class="quote">"가장 균형 잡힌 AI 업무 비서"</div>
+</div>
+
+<div class="card">
+<h2>2. Gemini (Google)</h2>
+<h3>Google 환경에서 강력한 AI 비서</h3>
+<ul>
+<li>Gmail / Google Docs / Drive 연동</li>
+<li>Google Search 활용</li>
+<li>이미지·영상·음성·문서 멀티모달</li>
+</ul>
+<div class="quote">"Google 환경에서 가장 강력한 AI 비서"</div>
+</div>
+
+<div class="card">
+<h2>3. Claude (Anthropic)</h2>
+<h3>문서와 사고 작업에 강한 AI 전문가</h3>
+<ul>
+<li>계약서·논문·기술 문서 분석</li>
+<li>자연스러운 글쓰기</li>
+<li>논리적 구조 작성</li>
+<li>코드 리뷰</li>
+</ul>
+<div class="quote">"문서와 사고 작업에 강한 AI 전문가"</div>
+</div>
+
+<div class="card">
+<h2>분야별 추천</h2>
+<span class="badge">업무 비서 : ChatGPT</span>
+<span class="badge">코딩 : ChatGPT / Claude</span>
+<span class="badge">긴 문서 분석 : Claude</span>
+<span class="badge">최신 정보 검색 : Gemini</span>
+<span class="badge">Google Workspace : Gemini</span>
+<span class="badge">데이터 분석 : ChatGPT</span>
+</div>
+
+<div class="card">
+<h2>직업별 추천</h2>
+<h3>개발자</h3>
+<p>1순위: ChatGPT / 보조: Claude</p>
+<h3>기획자·PM</h3>
+<p>1순위: ChatGPT / 보조: Claude</p>
+<h3>연구자·분석가</h3>
+<p>1순위: Claude / 보조: ChatGPT</p>
+<h3>Google Workspace 사용자</h3>
+<p>1순위: Gemini</p>
+</div>
+
+<div class="card">
+<h2>최종 요약</h2>
+<table>
+<tr><th>AI</th><th>한 줄 정의</th></tr>
+<tr><td>ChatGPT</td><td>가장 균형 잡힌 만능 AI 비서</td></tr>
+<tr><td>Gemini</td><td>Google 생태계와 최신 정보 활용 전문가</td></tr>
+<tr><td>Claude</td><td>글쓰기와 긴 문서 분석 전문가</td></tr>
+</table>
+<br>
+<p>
+추천 조합:
+<br>
+ChatGPT (실행 및 업무 처리) + Gemini (검색 및 Google 업무) + Claude (검토 및 문서 작성)
+</p>
+</div>
+
+</div>
+</body>
+</html>
