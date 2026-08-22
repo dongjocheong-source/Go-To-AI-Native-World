@@ -52,7 +52,8 @@ Go to AI native라는 모토로 AI World로 들어가기 위해 공부하는 각
   - B08c - CLAUDE.md vs .claude/rules/ vs Skill
   - B08d - Subagent vs Agent team
   - B08e - MCP vs Skill
-  - B08f - Hook vs Skill    
+  - B08f - Hook vs Skill
+  - B08g - Prompt_vs_skill_vs_agent
 - B09_영상관련기술
 - B10_온톨로지(Ontology)
   - B10a_온톨로지(Ontology)란 무엇인가
@@ -91,6 +92,11 @@ Go to AI native라는 모토로 AI World로 들어가기 위해 공부하는 각
 - E02_Karpathy LLM
 - E03_AI로보틱스
 - E04_소형언어모델
+- E05_Langfuse 설치 및 사용 가이드
+- E06_LLM Fallback 메커니즘 완벽 가이드
+- E07_LLM 속도 파헤쳐보기
+- E08_NVIDIA GPU 모니터링 완벽 가이드
+- E09_AI서버관리꿀팁 
 ---
 
 ## [F] AI 활용
@@ -101,7 +107,6 @@ Go to AI native라는 모토로 AI World로 들어가기 위해 공부하는 각
 - F05_바이브코딩
 - F06_2nd_Brain
 - F07_Gemini + Playwright
-- F10_Services
 ---
 
 ## [G] 프로젝트
