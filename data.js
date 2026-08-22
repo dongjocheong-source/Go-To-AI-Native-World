@@ -344,8 +344,8 @@ const CATEGORIES = [
         body: "LLM-Wiki + NotebookLM에 대한 내용 입니다." },
       { id: "f06", title: "바이브코딩", meta: "F06", hue: 160,
         body: "바이브코딩에 대한 내용을 준비 중입니다." },
-      { id: "f7", title: "Services", meta: "F10", hue: 160,
-        body: "Services에 대한 내용 입니다." },
+      { id: "f7", title: "Gemini+Playwright", meta: "F10", hue: 160,
+        body: "Gemini + Playwright에 대한 내용 입니다." },
     ],
   },
   
