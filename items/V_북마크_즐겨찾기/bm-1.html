@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reference Sites — 참고 사이트 아카이브</title>
+<style>
+  :root{
+    --bg:#07070a;--bg-soft:#0e0e14;--card:#13131b;--card-hover:#191922;
+    --border:#232330;--txt:#f4f4f6;--txt-dim:#9a9aad;--txt-faint:#5f5f72;
+    --accent:#c8ff3d;--accent-2:#7c5cff;--pink:#ff5c8a;--cyan:#3dd4ff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--txt);
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+    line-height:1.45;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+  body::before{content:"";position:fixed;top:-30%;left:50%;transform:translateX(-50%);
+    width:900px;height:600px;background:radial-gradient(circle,rgba(124,92,255,.15),transparent 60%);
+    filter:blur(40px);z-index:0;pointer-events:none}
+
+  nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);
+      background:rgba(7,7,10,.8);border-bottom:1px solid var(--border)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.02em;font-size:17px}
+  .brand .dot{width:11px;height:11px;border-radius:50%;background:var(--accent);box-shadow:0 0 14px var(--accent)}
+  .nav-right{display:flex;align-items:center;gap:16px}
+  .nav-stat{font-size:12px;color:var(--txt-dim)}
+  .nav-stat b{color:var(--txt);font-weight:700}
+
+  header{position:relative;z-index:1;padding:40px 0 22px}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--accent);
+    border:1px solid rgba(200,255,61,.3);padding:5px 12px;border-radius:999px;margin-bottom:14px}
+  h1{font-size:clamp(26px,4.5vw,42px);line-height:1.05;font-weight:800;letter-spacing:-.03em}
+  h1 .grad{background:linear-gradient(100deg,var(--accent),var(--accent-2) 60%,var(--pink));
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{margin-top:12px;font-size:14.5px;color:var(--txt-dim);max-width:680px}
+
+  .toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+    margin:22px 0 8px;position:sticky;top:56px;z-index:40;
+    background:rgba(7,7,10,.85);backdrop-filter:blur(10px);padding:12px 0}
+  .filters{display:flex;gap:8px;flex-wrap:wrap}
+  .fpill{font-size:12.5px;font-weight:600;padding:7px 15px;border-radius:999px;cursor:pointer;
+    background:var(--card);border:1px solid var(--border);color:var(--txt-dim);transition:.15s;user-select:none}
+  .fpill:hover{border-color:#34344a;color:var(--txt)}
+  .fpill.active{background:var(--accent);border-color:var(--accent);color:#0a0a0a}
+  .search{margin-left:auto;position:relative}
+  .search input{background:var(--card);border:1px solid var(--border);border-radius:999px;
+    color:var(--txt);font-size:13px;padding:8px 16px 8px 34px;width:200px;outline:none;transition:.15s}
+  .search input:focus{border-color:var(--accent-2);width:230px}
+  .search::before{content:"🔍";position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:12px;opacity:.6}
+
+  .cat{margin-top:26px;position:relative;z-index:1}
+  .cat-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;padding-bottom:8px;
+    border-bottom:1px solid var(--border)}
+  .cat-icon{font-size:16px}
+  .cat-head h2{font-size:15px;font-weight:800;letter-spacing:-.01em;text-transform:uppercase}
+  .cat-head .count{margin-left:6px;font-size:11px;color:var(--txt-faint);border:1px solid var(--border);
+    padding:2px 9px;border-radius:999px}
+
+  .rows{display:flex;flex-direction:column}
+  .row{display:grid;grid-template-columns:180px 92px 1fr auto auto;align-items:center;gap:16px;
+    padding:11px 16px;border-bottom:1px solid rgba(35,35,48,.6);transition:.12s;
+    text-decoration:none;color:inherit;position:relative}
+  .row:hover{background:var(--card-hover)}
+  .row:hover .go{color:var(--accent);border-color:var(--accent);background:rgba(200,255,61,.08)}
+  .r-name{font-size:14.5px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .r-badge{font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+    padding:4px 9px;border-radius:999px;text-align:center;white-space:nowrap}
+  .b-design{color:var(--accent);border:1px solid rgba(200,255,61,.3);background:rgba(200,255,61,.06)}
+  .b-video{color:var(--pink);border:1px solid rgba(255,92,138,.3);background:rgba(255,92,138,.06)}
+  .b-site{color:var(--accent-2);border:1px solid rgba(124,92,255,.35);background:rgba(124,92,255,.08)}
+  .b-dev{color:var(--cyan);border:1px solid rgba(61,212,255,.3);background:rgba(61,212,255,.06)}
+  .r-desc{font-size:13px;color:var(--txt-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .r-tags{display:flex;gap:5px;flex-wrap:nowrap;overflow:hidden}
+  .tag{font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:999px;white-space:nowrap;
+    background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--txt-faint)}
+  .go{flex:none;font-size:12px;font-weight:700;padding:6px 13px;border-radius:999px;
+    background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--txt);transition:.15s;white-space:nowrap}
+  .empty{padding:30px 16px;color:var(--txt-faint);font-size:13px;text-align:center;display:none}
+
+  .add-hint{margin:40px 0 60px;padding:22px;border:1px dashed var(--border);border-radius:16px;
+    color:var(--txt-dim);font-size:13px;position:relative;z-index:1}
+  .add-hint h3{color:var(--txt);font-size:14px;margin-bottom:10px;font-weight:700}
+  .add-hint code{background:var(--bg-soft);border:1px solid var(--border);border-radius:6px;
+    padding:2px 7px;font-family:monospace;font-size:12px;color:var(--accent)}
+  .add-hint ol{margin:8px 0 0 18px}.add-hint li{margin-bottom:5px}
+
+  footer{border-top:1px solid var(--border);padding:28px 0;color:var(--txt-faint);font-size:12.5px;position:relative;z-index:1}
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+
+  @media(max-width:900px){
+    .row{grid-template-columns:1fr auto auto;row-gap:6px}
+    .r-desc{grid-column:1 / -1;white-space:normal}
+    .r-tags{display:none}
+  }
+  @media(max-width:560px){
+    .search{width:100%;margin-left:0}.search input{width:100%}
+    .row{grid-template-columns:1fr auto}.r-badge{display:none}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span>Reference&nbsp;Sites</div>
+    <div class="nav-right">
+      <span class="nav-stat"><b id="nav-total">4</b> 자료</span>
+      <span class="nav-stat"><b id="nav-cat">4</b> 카테고리</span>
+    </div>
+  </div>
+</nav>
+
+<header>
+  <div class="wrap">
+    <span class="eyebrow">◆ Reference Site Library</span>
+    <h1>참고 사이트 <span class="grad">아카이브</span></h1>
+    <p class="sub">4개 카테고리에 참고 사이트를 한 줄씩 가로로 정리합니다. 카테고리 필터·검색으로 빠르게 찾고, 행을 복제해 계속 추가하세요.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="toolbar">
+    <div class="filters" id="filters">
+      <span class="fpill active" data-filter="all" onclick="filter(this)">전체</span>
+      <span class="fpill" data-filter="design" onclick="filter(this)">DESIGN Sites</span>
+      <span class="fpill" data-filter="video" onclick="filter(this)">영상·미디어</span>
+      <span class="fpill" data-filter="dev" onclick="filter(this)">개발·도구</span>
+      <span class="fpill" data-filter="site" onclick="filter(this)">참고 사이트</span>
+    </div>
+    <div class="search"><input type="text" id="search" placeholder="검색…" oninput="doSearch()"></div>
+  </div>
+
+  <!-- ===== 카테고리 1: Design Sites ===== -->
+  <section class="cat" data-cat="design">
+    <div class="cat-head"><span class="cat-icon">📐</span><h2>디자인 시스템</h2><span class="count">1</span></div>
+    <div class="rows">
+      <a class="row" data-type="design" href="https://github.com/voltagent/awesome-design-md" target="_blank" rel="noopener">
+        <span class="r-name">awesome-design-md</span>
+        <span class="r-badge b-design">DESIGN.md</span>
+        <span class="r-desc">브랜드 디자인 시스템을 마크다운으로 정리 — AI 에이전트가 읽고 일관된 UI 생성</span>
+        <span class="r-tags"><span class="tag">design system</span><span class="tag">AI agent</span><span class="tag">tokens</span></span>
+        <span class="go">↗ 열기</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== 카테고리 2: 영상·미디어 ===== -->
+  <section class="cat" data-cat="video">
+    <div class="cat-head"><span class="cat-icon">🎬</span><h2>영상 · 미디어 제작</h2><span class="count">1</span></div>
+    <div class="rows">
+      <a class="row" data-type="video" href="https://higgsfield.ai/" target="_blank" rel="noopener">
+        <span class="r-name">Higgsfield</span>
+        <span class="r-badge b-video">동영상</span>
+        <span class="r-desc">AI 영상·이미지 생성 — 시네마틱 프롬프트로 아나모픽/무드 톤 제작</span>
+        <span class="r-tags"><span class="tag">AI video</span><span class="tag">cinematic</span><span class="tag">generation</span></span>
+        <span class="go">↗ 열기</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== 카테고리 3: 개발·도구 사이트 ===== -->
+  <section class="cat" data-cat="dev">
+    <div class="cat-head"><span class="cat-icon">🛠️</span><h2>개발 · 도구</h2><span class="count">1</span></div>
+    <div class="rows">
+      <a class="row" data-type="dev" href="https://jaylenhan.tistory.com/entry/AILLM-%EC%95%88%EB%93%9C%EB%A0%88-%EC%B9%B4%ED%8C%8C%EC%8B%9C%EC%9D%98-LLM-Wiki-%EC%99%84%EB%B2%BD-%EC%A0%95%EB%B3%B5-Obsidian-Claude-Code%EB%A1%9C-%EB%82%98%EB%A7%8C%EC%9D%98-LLM-Wiki-%EB%A7%8C%EB%93%A4%EA%B8%B0" target="_blank" rel="noopener">
+        <span class="r-name">LLM Wiki </span>
+        <span class="r-badge b-dev">Reference</span>
+        <span class="r-desc">다크 배경 + 대형 볼드 타이포 + 그라디언트 액센트의 모던 AI 랜딩</span>
+        <span class="r-tags"><span class="tag">dark theme</span><span class="tag">landing</span><span class="tag">bold type</span></span>
+        <span class="go">↗ 열기</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== 카테고리 4: Claude 관련 사이트 ===== -->
+  <section class="cat" data-cat="site">
+    <div class="cat-head"><span class="cat-icon">✨</span><h2>Claude 관련 사이트</h2><span class="count">1</span></div>
+    <div class="rows">
+      <a class="row" data-type="site" href="https://www.youtube.com/watch?v=If_U_zmXWYo" target="_blank" rel="noopener">
+        <span class="r-name">Cluade 강의 동영상</span>
+        <span class="r-badge b-site">참고 사이트</span>
+        <span class="r-desc">다크 배경 + 대형 볼드 타이포 + 그라디언트 액센트의 모던 AI 랜딩</span>
+        <span class="r-tags"><span class="tag">dark theme</span><span class="tag">landing</span><span class="tag">bold type</span></span>
+        <span class="go">↗ 열기</span>
+      </a>
+      <a class="row" data-type="site" href="https://youtu.be/k9JdpFhaIdU?si=y2UffNjzdNtpZ1Oa" target="_blank" rel="noopener">
+        <span class="r-name">Cluade 영상 자동화</span>
+        <span class="r-badge b-site">참고 사이트</span>
+        <span class="r-desc">다크 배경 + 대형 볼드 타이포 + 그라디언트 액센트의 모던 AI 랜딩</span>
+        <span class="r-tags"><span class="tag">dark theme</span><span class="tag">landing</span><span class="tag">bold type</span></span>
+        <span class="go">↗ 열기</span>
+      </a>
+      <a class="row" data-type="site" href="https://youtu.be/k9JdpFhaIdU?si=y2UffNjzdNtpZ1Oa" target="_blank" rel="noopener">
+        <span class="r-name">Cluade + 힉스필드MCP</span>
+        <span class="r-badge b-site">참고 사이트</span>
+        <span class="r-desc">다크 배경 + 대형 볼드 타이포 + 그라디언트 액센트의 모던 AI 랜딩</span>
+        <span class="r-tags"><span class="tag">dark theme</span><span class="tag">landing</span><span class="tag">bold type</span></span>
+        <span class="go">↗ 열기</span>
+      </a>
+      <a class="row" data-type="site" href="https://youtu.be/BtQNbjagam8?si=zwQv1aEdiJ1ok341" target="_blank" rel="noopener">
+        <span class="r-name">Cluade 디자인 가이드</span>
+        <span class="r-badge b-site">참고 사이트</span>
+        <span class="r-desc">다크 배경 + 대형 볼드 타이포 + 그라디언트 액센트의 모던 AI 랜딩</span>
+        <span class="r-tags"><span class="tag">dark theme</span><span class="tag">landing</span><span class="tag">bold type</span></span>
+        <span class="go">↗ 열기</span>
+      </a>
+      
+    </div>
+  </section>
+  
+  <!-- ===== 카테고리 5: 참고 사이트 ===== -->
+  <section class="cat" data-cat="site">
+    <div class="cat-head"><span class="cat-icon">✨</span><h2>잘 만든 참고 사이트</h2><span class="count">1</span></div>
+    <div class="rows">
+      <a class="row" data-type="site" href="https://autokliq.com/" target="_blank" rel="noopener">
+        <span class="r-name">AutoKliq</span>
+        <span class="r-badge b-site">참고 사이트</span>
+        <span class="r-desc">다크 배경 + 대형 볼드 타이포 + 그라디언트 액센트의 모던 AI 랜딩</span>
+        <span class="r-tags"><span class="tag">dark theme</span><span class="tag">landing</span><span class="tag">bold type</span></span>
+        <span class="go">↗ 열기</span>
+      </a>
+    </div>
+  </section>
+
+  <div class="empty" id="empty">검색 결과가 없습니다.</div>
+
+  <div class="add-hint">
+    <h3>새 사이트 추가 방법</h3>
+    <ol>
+      <li>해당 카테고리 <code>.rows</code> 안에 아래 행 템플릿을 붙여넣습니다.</li>
+      <li>이름·설명·태그·<code>href</code>를 바꾸고, <code>data-type</code>과 배지를 카테고리에 맞춰 지정합니다.</li>
+      <li>매핑 — <code>design</code>→<code>b-design</code> · <code>video</code>→<code>b-video</code> · <code>site</code>→<code>b-site</code> · <code>dev</code>→<code>b-dev</code></li>
+      <li>새 카테고리가 필요하면 <code>&lt;section class="cat"&gt;</code> 블록을 복사하고 상단 필터 pill을 하나 추가하세요.</li>
+    </ol>
+    <p style="margin-top:10px">상단 카운트와 카테고리 배지는 자동 갱신됩니다.</p>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Reference Sites</span>
+    <span>Dark · 4 Categories · Dense rows · Filter + Search · autokliq-style</span>
+  </div>
+</footer>
+
+<!-- ===== 복사용 ROW TEMPLATE =====
+<a class="row" data-type="design" href="URL" target="_blank" rel="noopener">
+  <span class="r-name">이름</span>
+  <span class="r-badge b-design">배지</span>
+  <span class="r-desc">한 줄 설명</span>
+  <span class="r-tags"><span class="tag">태그</span><span class="tag">태그</span></span>
+  <span class="go">↗ 열기</span>
+</a>
+data-type / 배지 매핑:
+  design → b-design (DESIGN.md)
+  video  → b-video  (동영상)
+  site   → b-site   (참고 사이트)
+  dev    → b-dev    (개발·도구)
+================================ -->
+
+<script>
+  let curFilter='all';
+  function filter(el){
+    document.querySelectorAll('.fpill').forEach(p=>p.classList.remove('active'));
+    el.classList.add('active');curFilter=el.dataset.filter;apply();
+  }
+  function doSearch(){apply();}
+  function apply(){
+    const q=document.getElementById('search').value.trim().toLowerCase();
+    let visible=0;
+    document.querySelectorAll('.cat').forEach(sec=>{
+      let shown=0;
+      sec.querySelectorAll('.row').forEach(r=>{
+        const okType=curFilter==='all'||r.dataset.type===curFilter;
+        const okText=!q||r.textContent.toLowerCase().includes(q);
+        const show=okType&&okText;
+        r.style.display=show?'':'none';
+        if(show){shown++;visible++;}
+      });
+      sec.style.display=shown?'':'none';
+    });
+    document.getElementById('empty').style.display=visible?'none':'block';
+  }
+  function recount(){
+    document.getElementById('nav-total').textContent=document.querySelectorAll('.row').length;
+    const cats=document.querySelectorAll('.cat');
+    document.getElementById('nav-cat').textContent=cats.length;
+    cats.forEach(c=>c.querySelector('.count').textContent=c.querySelectorAll('.row').length);
+  }
+  recount();
+</script>
+
+</body>
+</html>
