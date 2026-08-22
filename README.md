@@ -18,7 +18,6 @@ Go to AI native라는 모토로 AI World로 들어가기 위해 공부하는 각
   - A08c - RAG를 위한 Embedding Model 선정, Vector DB 구축
   - A08d - RAG 고급 검색 기술 총정리 — RRF, KG-RAG, ColBERT 등
   - A08e - RAG_에이전틱 RAG (Agentic RAG) 완벽 가이드 — 정의, 구성요소, 특징 및 장단점, 활용분야, 실습
-  - A08a_RAG(Retrieval-Augmented Generation)란 — 개념, Fine-tuning 차이, 검색 기법
 - A09_MCP_연동레시피
 - A10_AI에이전트 
   - A10a - Agentic AI summary
