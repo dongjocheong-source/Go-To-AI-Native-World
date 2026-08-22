@@ -250,7 +250,7 @@ const CATEGORIES = [
       { id: "e01", title: "AI시대 생존전략", meta: "E01", hue: 5,
         body: "AI시대를 주도하는 실리콘밸리 엔지니어의 생존공식" },
       { id: "e02", title: "Karpathy LLM", meta: "E04", hue: 5,
-        body: "Andrej Karpathy가 제안한 "LLM을 활용한 개인 지식 베이스 구축 패턴"입니다." },
+        body: "Andrej Karpathy가 제안한 \"LLM을 활용한 개인 지식 베이스 구축 패턴\" 입니다." },
       { id: "e03", title: "AI로보틱스", meta: "E03", hue: 5,
         body: "AI로보틱스에 대한 내용을 준비 중입니다." },
       { id: "e04", title: "소형언어모델", meta: "E04", hue: 5,
