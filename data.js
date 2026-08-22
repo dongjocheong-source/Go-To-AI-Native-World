@@ -393,8 +393,20 @@ const CATEGORIES = [
     id: "h00",
     folder: "H_데이터베이스",
     label: "데이터베이스",
-    icon: "database",
-    description: "접속 링크 : https://drive.google.com/drive/u/0/folders/1qtim-BXkK_R6MPnpdo_20HYl2BmAKomt",
+    icon: "folder",
+    description: "데이터베이스 대한 정보를 제공합니다.",
+    items: [
+      { id: "h01a", title: "DB-Types-Guide", meta: "H01a", hue: 265,
+        body: "개발자의 기본기, 데이터베이스(DB)란 무엇인가 (RDB, NoSQL, Redis, Vector DB)." },
+      { id: "h01b", title: "Elastic-Search-Guide", meta: "H01b", hue: 265,
+        body: "Elastic Search (엘라스틱 서치)란 무엇인가 (정의, 구성요소, 장단점, 활용 분야, 실습)." },
+      { id: "h01c", title: "Metadata-Guide", meta: "H01c", hue: 265,
+        body: "Metadata(메타데이터)에 대해 자세히 알아보자! (정의, 구성요소, 장단점, 실습)." },
+      { id: "h01d", title: "Qdrant-Guide", meta: "H01d", hue: 265,
+        body: " Qdrant란 무엇인가 (정의 및 장단점, Docker기반 세팅, Python 실습)" },
+      { id: "h02", title: "Supabase-Guide", meta: "H02", hue: 265,
+        body: "초보_개발자용_데이터베이스_시작_가이드- Supabase" },
+    ],
   },
 
   // ── I00 ────────────────────────────────────────────────────────────
