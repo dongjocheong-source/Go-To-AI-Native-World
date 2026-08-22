@@ -78,12 +78,22 @@ Go to AI native라는 모토로 AI World로 들어가기 위해 공부하는 각
 - C08_문서_생산성(Notion AI, Obsidian) 
 ---
 
-## [D] 학습 자료
-- D01_On-Premise_LLM
-- D02_OnDeviceAI
-- D04_Inference_Reasoning
-- D05_자연어이해
-- D06_NLP 
+## [D] AI 활용
+- D01_LLM-WiKi
+    - D01a - LLM-Wiki-Architecture
+    - D01b - LLM-Wiki-Approach
+    - D01c - LLM-Wiki-Introduction
+    - D01d - LLM-Wiki-with-Obsidian
+- D02_Graphify-Intro  
+- D03_LLM Wiki + Graphify
+    - D03a - Graphify-blueprint
+    - D03b - LLM-Wiki -with-Graphify
+- D04_2nd_Brain
+- D05_LLM-Wiki + NotebookLM
+- D06_바이브코딩
+    - D06a_Vibecoding-PRD-Guide
+    - D06b_Vibecoding-Trend-2026
+- D07_Gemini + Playwright
 ---
 
 ## [E] 뉴스_타임라인
@@ -98,22 +108,17 @@ Go to AI native라는 모토로 AI World로 들어가기 위해 공부하는 각
 - E09_AI서버관리꿀팁 
 ---
 
-## [F] AI 활용
-- F01_LLM-WiKi
-    - F01a - LLM-Wiki-Architecture
-    - F01b - LLM-Wiki-Approach
-    - F01c - LLM-Wiki-Introduction
-    - F01d - LLM-Wiki-with-Obsidian
-- F02_Graphify-Intro  
-- F03_LLM Wiki + Graphify
-    - F03a - Graphify-blueprint
-    - F03b - LLM-Wiki -with-Graphify
-- F04_2nd_Brain
-- F04_LLM-Wiki + NotebookLM
-- F06_바이브코딩
-    - F06a_Vibecoding-PRD-Guide
-    - F06b_Vibecoding-Trend-2026
-- F07_Gemini + Playwright
+## [F] 노트
+- F01_프롬프팅
+- F02_Skill References
+- F03_Skill활용
+- F04_MCP활용
+- F05_컨넥터활용
+- F06_디자인노트
+- F07_영상_미디어
+- F08_Claude활용
+- F10_아이디어 스케치
+- F11_기타 참고 사이트 
 ---
 
 ## [G] 프로젝트
@@ -137,18 +142,7 @@ Go to AI native라는 모토로 AI World로 들어가기 위해 공부하는 각
 - I02_KLM기술
 ---
 
-## [S] 노트
-- S01_프롬프팅
-- S02_Skill References
-- S03_Skill활용
-- S04_MCP활용
-- S05_컨넥터활용
-- S06_디자인노트
-- S07_영상_미디어
-- S08_Claude활용
-- S10_아이디어 스케치
-- S11_기타 참고 사이트 
----
+
 
 ## [T] IT기술
 - T01_IT
@@ -157,6 +151,14 @@ Go to AI native라는 모토로 AI World로 들어가기 위해 공부하는 각
 - T04_Linux
 - T05_Git_GitHub
 - T06_NodeJS
+---
+
+## [U] 학습 자료
+- U01_On-Premise_LLM
+- U02_OnDeviceAI
+- U04_Inference_Reasoning
+- U05_자연어이해
+- U06_NLP 
 ---
 
 ## [V] 북마크/즐겨찾기
