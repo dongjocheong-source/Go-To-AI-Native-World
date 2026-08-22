@@ -104,11 +104,13 @@ Go to AI native라는 모토로 AI World로 들어가기 위해 공부하는 각
     - F01b - LLM-Wiki-Approach
     - F01c - LLM-Wiki-Introduction
     - F01d - LLM-Wiki-with-Obsidian
-- F02_Graphify  
+- F02_Graphify-Intro  
 - F03_LLM Wiki + Graphify
+- F04_2nd_Brain
 - F04_LLM-Wiki + NotebookLM
-- F05_바이브코딩
-- F06_2nd_Brain
+- F06_바이브코딩
+    - 바이브코딩1
+    - 바이브코딩2
 - F07_Gemini + Playwright
 ---
 
