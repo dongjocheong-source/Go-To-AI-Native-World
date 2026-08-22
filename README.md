@@ -109,8 +109,8 @@ Go to AI native라는 모토로 AI World로 들어가기 위해 공부하는 각
 - F04_2nd_Brain
 - F04_LLM-Wiki + NotebookLM
 - F06_바이브코딩
-    - 바이브코딩1
-    - 바이브코딩2
+    - F06a_Vibecoding-PRD-Guide
+    - F06b_Vibecoding-Trend-2026
 - F07_Gemini + Playwright
 ---
 
