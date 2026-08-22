@@ -100,6 +100,10 @@ Go to AI native라는 모토로 AI World로 들어가기 위해 공부하는 각
 
 ## [F] AI 활용
 - F01_LLM-WiKi
+    - F01a - LLM-Wiki-Architecture
+    - F01b - LLM-Wiki-Approach
+    - F01c - LLM-Wiki-Introduction
+    - F01d - LLM-Wiki-with-Obsidian
 - F02_Graphify  
 - F03_LLM Wiki + Graphify
 - F04_LLM-Wiki + NotebookLM
