@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>피지컬 AI(Physical AI)란 무엇인가 — 정의, 구성요소, 특징 및 장단점, 주요 활용 분야, 실습</title>
+<meta name="description" content="피지컬 AI의 정의(RPA와의 차이, Embodied Cognition), VLA·월드모델 탄생배경, 인식·인지판단·행동제어 3대 구성요소와 폐쇄 루프, 장단점(Sim-to-Real Gap 등), 휴머노이드·자율주행·스마트팩토리·의료 활용 분야, YOLOv8 인식+강화학습 보행 실습 코드, 소프트웨어 AI와의 비교까지 정리한 완벽 가이드">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+
+  :root{
+    --ink:#150F2E;
+    --ink-2:#1E1745;
+    --ink-deep:#0B0820;
+    --paper:#FFFFFF;
+    --paper-tint:#F6F3FF;
+    --line:#E7E1FA;
+    --text-dark:#1B1730;
+    --text-muted:#655F82;
+    --acc-a:#2C4A6B;
+    --acc-a-ink:#16293D;
+    --acc-b:#D64545;
+    --acc-b-ink:#7A2020;
+    --acc-c:#8880B0;
+    --acc-c-ink:#3A3560;
+    --danger:#D6455B;
+    --radius:18px;
+    --shadow:0 16px 40px rgba(21,15,46,0.12);
+    --maxw:1140px;
+    --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',Consolas,monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Noto Sans KR','Apple SD Gothic Neo',sans-serif;
+    color:var(--text-dark);
+    background:var(--paper);
+    line-height:1.68;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Noto Serif KR','Noto Sans KR',serif;margin:0;}
+  a{color:inherit;text-decoration:none;}
+  img,svg{display:block;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px;}
+  code{font-family:var(--mono);}
+
+  #progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--acc-a),var(--acc-b),var(--acc-c));z-index:9999;width:0%;transition:width .1s linear;}
+
+  header.nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:18px 0;transition:background .3s ease, padding .3s ease, box-shadow .3s ease;}
+  header.nav .wrap{display:flex;align-items:center;justify-content:space-between;}
+  header.nav.scrolled{background:rgba(21,15,46,0.92);backdrop-filter:blur(10px);padding:12px 0;box-shadow:0 4px 20px rgba(0,0,0,0.18);}
+  .brand{font-weight:900;font-size:15.5px;color:var(--paper);letter-spacing:.3px;display:flex;align-items:center;gap:9px;}
+  .brand .dot2{display:inline-flex;gap:3px;}
+  .brand .dot2 span{width:7px;height:7px;border-radius:50%;display:block;}
+  .brand .dot2 span:nth-child(1){background:var(--acc-a);}
+  .brand .dot2 span:nth-child(2){background:var(--acc-b);}
+  nav.links{display:flex;gap:20px;flex-wrap:wrap;}
+  nav.links a{font-size:13px;font-weight:500;color:#CFC8F2;opacity:.85;transition:opacity .2s,color .2s;}
+  nav.links a:hover{opacity:1;color:var(--acc-b);}
+  .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:6px;}
+  .hamburger span{width:22px;height:2px;background:var(--paper);display:block;}
+  .mobile-menu{display:none;position:fixed;top:0;right:0;bottom:0;width:74%;max-width:300px;background:var(--ink-2);z-index:1100;padding:90px 32px;flex-direction:column;gap:22px;box-shadow:-10px 0 30px rgba(0,0,0,.3);}
+  .mobile-menu.open{display:flex;}
+  .mobile-menu a{color:#DCD6F7;font-size:15px;font-weight:500;}
+  .mobile-close{position:fixed;top:22px;right:6%;z-index:1200;display:none;color:var(--paper);font-size:26px;background:none;border:none;cursor:pointer;}
+
+  section{position:relative;padding:100px 0;scroll-margin-top:84px;}
+  .kicker{font-size:12px;font-weight:700;letter-spacing:3px;color:var(--acc-a);text-transform:uppercase;margin-bottom:14px;}
+  .kicker.on-dark{color:var(--acc-b);}
+  h2.title{font-size:clamp(24px,3.1vw,34px);font-weight:700;color:var(--text-dark);line-height:1.32;}
+  h2.title.on-dark{color:var(--paper);}
+  .lede{font-size:15px;color:var(--text-muted);max-width:740px;margin-top:14px;}
+  .lede.on-dark{color:#CFC8F2;}
+
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in-view{opacity:1;transform:translateY(0);}
+
+  .tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.5px;padding:4px 11px;border-radius:20px;color:#fff;text-transform:uppercase;}
+  .tag.a{background:var(--acc-a);}
+  .tag.b{background:var(--acc-b);color:#fff;}
+  .tag.c{background:var(--acc-c);}
+  .tag.outline-a{background:rgba(0,0,0,0.03);color:var(--acc-a-ink);border:1.4px solid var(--acc-a);}
+  .tag.outline-b{background:rgba(0,0,0,0.03);color:var(--acc-b-ink);border:1.4px solid var(--acc-b);}
+
+  .badge{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:var(--ink);color:var(--paper);font-family:'Noto Serif KR',serif;font-weight:700;font-size:16px;flex-shrink:0;}
+
+  .card{background:var(--paper-tint);border-radius:var(--radius);padding:26px;box-shadow:var(--shadow);}
+  .card.dark{background:var(--ink);color:var(--paper);}
+  .card h3,.card h4{font-size:15px;font-weight:700;margin-bottom:8px;}
+  .card p{font-size:13.2px;color:var(--text-muted);margin:0;}
+  .card.dark p{color:#CFC8F2;}
+  .note-box{background:#FFF6DC;color:#6B4E00;border-radius:var(--radius);padding:18px 24px;font-size:13.8px;margin-top:26px;}
+  .note-box b{color:#8A6300;}
+
+  /* HERO — split VS panels (the signature element) */
+  .hero{color:var(--paper);min-height:100vh;display:flex;flex-direction:column;overflow:hidden;padding-top:84px;}
+  .hero-split{flex:1;display:flex;position:relative;}
+  .hero-panel{flex:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:40px 24px;}
+  .hero-panel.pa{background:linear-gradient(150deg,var(--acc-a) 0%,var(--ink-deep) 78%);}
+  .hero-panel.pb{background:linear-gradient(210deg,var(--acc-b) 0%,var(--ink-deep) 78%);}
+  .hero-panel.pc{background:linear-gradient(180deg,var(--acc-c) 0%,var(--ink-deep) 78%);}
+  .hero-panel .plabel{font-family:'Noto Serif KR',serif;font-weight:700;font-size:clamp(26px,4vw,42px);text-align:center;position:relative;z-index:2;}
+  .hero-panel .psub{font-size:12px;letter-spacing:2px;text-transform:uppercase;opacity:.8;margin-top:10px;text-align:center;position:relative;z-index:2;}
+  .hero-vs-mark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:5;width:64px;height:64px;border-radius:50%;background:var(--ink);border:3px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;font-family:'Noto Serif KR',serif;font-weight:700;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,0.4);}
+  .hero-copy{background:var(--ink-deep);padding:56px 0 60px;}
+  .hero-copy .eyebrow{font-size:12.5px;letter-spacing:4px;font-weight:700;color:var(--acc-b);text-transform:uppercase;margin-bottom:16px;}
+  .hero-copy h1{font-size:clamp(26px,4vw,40px);font-weight:900;line-height:1.32;margin-bottom:16px;}
+  .hero-copy p.sub{font-size:clamp(13.5px,1.5vw,16px);color:#CFC8F2;max-width:760px;margin-bottom:0;}
+  .chip-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px;}
+  .chip{padding:10px 18px;border-radius:30px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);font-size:12.5px;font-weight:500;color:#DCD6F7;transition:background .2s, border-color .2s, transform .2s;}
+  .chip:hover{background:rgba(255,255,255,0.1);transform:translateY(-2px);color:var(--paper);}
+  .scroll-cue{text-align:center;color:#8880B0;opacity:.7;font-size:11.5px;padding-bottom:6px;animation:bob 2s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(6px);}}
+
+  /* compare 2/3 col cards */
+  .compare-2{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:40px;}
+  .compare-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:40px;}
+  .cc-card{border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);border-top:4px solid var(--acc-a);}
+  .cc-card.b{border-top-color:var(--acc-b);}
+  .cc-card.c{border-top-color:var(--acc-c);}
+  .cc-card h4{font-size:14px;font-weight:700;margin:0 0 10px;text-transform:uppercase;letter-spacing:.6px;color:var(--text-muted);}
+  .cc-card .flow{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;margin-bottom:8px;color:var(--ink);}
+  .cc-card p.small{font-size:12.6px;color:var(--text-muted);margin:0;}
+
+  /* comparison table */
+  .cmp-table-wrap{margin-top:36px;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+  .cmp-table{width:100%;border-collapse:collapse;background:var(--paper);}
+  .cmp-table th{padding:15px 18px;font-size:11.5px;font-weight:700;text-align:left;letter-spacing:.5px;text-transform:uppercase;}
+  .cmp-table th:first-child{background:var(--ink);color:var(--paper);width:150px;}
+  .cmp-table th.col-a{background:var(--acc-a);color:#fff;}
+  .cmp-table th.col-b{background:var(--acc-b);color:#fff;}
+  .cmp-table th.col-c{background:var(--acc-c);color:#fff;}
+  .cmp-table td{padding:14px 18px;font-size:12.8px;border-bottom:1px solid var(--line);vertical-align:top;}
+  .cmp-table tr:last-child td{border-bottom:none;}
+  .cmp-table td:first-child{font-weight:700;color:var(--ink);background:var(--paper-tint);}
+
+  /* detail feature list */
+  .feat-list{margin-top:26px;display:flex;flex-direction:column;gap:14px;}
+  .feat-item{display:flex;gap:14px;align-items:flex-start;}
+  .feat-item .fi{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12.5px;color:#fff;flex-shrink:0;margin-top:1px;}
+  .feat-item b{display:block;font-size:14px;margin-bottom:2px;}
+  .feat-item span{font-size:12.8px;color:var(--text-muted);}
+
+  .trig-box{margin-top:28px;background:var(--paper-tint);border-radius:var(--radius);padding:22px 24px;}
+  .trig-box h5{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin:0 0 12px;}
+  .trig-box ol{margin:0;padding-left:20px;}
+  .trig-box li{font-size:13px;margin-bottom:10px;color:var(--text-dark);}
+  .trig-box li:last-child{margin-bottom:0;}
+  .trig-box li b{color:var(--ink);}
+
+  .usewhen{margin-top:22px;display:flex;flex-wrap:wrap;gap:9px;}
+  .usewhen span{font-size:12px;padding:7px 13px;border-radius:20px;background:var(--paper-tint);color:var(--text-dark);}
+  .usewhen span::before{content:'✓ ';font-weight:700;}
+
+  /* scenario cards */
+  .scen-grid{display:flex;flex-direction:column;gap:18px;margin-top:40px;}
+  .scen-card{border-radius:var(--radius);padding:26px 28px;box-shadow:var(--shadow);background:var(--paper);border:1.5px solid var(--line);}
+  .scen-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px;}
+  .scen-num{font-family:'Noto Serif KR',serif;font-size:13px;color:var(--text-muted);font-weight:700;}
+  .scen-title{font-size:15.5px;font-weight:700;color:var(--ink);}
+  .scen-pick{font-size:11.5px;font-weight:700;padding:6px 14px;border-radius:20px;color:#fff;letter-spacing:.3px;}
+  .scen-pick.a{background:var(--acc-a);}
+  .scen-pick.b{background:var(--acc-b);}
+  .scen-pick.c{background:var(--acc-c);}
+  .scen-situ{font-size:13px;color:var(--text-muted);margin-bottom:14px;}
+  .scen-why{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+  .scen-why span{font-size:11.8px;background:var(--paper-tint);color:var(--text-dark);padding:6px 12px;border-radius:16px;}
+  .scen-code{background:var(--ink-deep);border-radius:12px;padding:16px 18px;font-family:var(--mono);font-size:12px;color:#CFC8F2;line-height:1.7;white-space:pre-wrap;}
+
+  /* decision tree */
+  .tree-box{margin-top:40px;background:var(--ink);color:var(--paper);border-radius:var(--radius);padding:32px 34px;box-shadow:var(--shadow);}
+  .tree-box .tq{font-size:14.5px;font-weight:700;margin-bottom:18px;color:var(--paper);}
+  .tree-row{display:flex;gap:16px;align-items:flex-start;margin-bottom:14px;padding-left:8px;}
+  .tree-row:last-child{margin-bottom:0;}
+  .tree-row .tlabel{font-size:11.5px;font-weight:700;padding:5px 12px;border-radius:14px;flex-shrink:0;margin-top:1px;}
+  .tree-row .tlabel.yes{background:rgba(14,163,131,0.2);color:#5EE0BC;}
+  .tree-row .tlabel.no{background:rgba(214,69,91,0.2);color:#F09AA6;}
+  .tree-row .ttext{font-size:13.3px;color:#CFC8F2;}
+  .tree-row .ttext b{color:var(--paper);}
+  .tree-indent{margin-left:44px;}
+
+  .check-2{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:32px;}
+  .check-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:32px;}
+  .check-card{border-radius:var(--radius);padding:24px;background:var(--paper-tint);}
+  .check-card h5{font-size:13.5px;font-weight:700;margin:0 0 14px;display:flex;align-items:center;gap:8px;}
+  .check-card ul{list-style:none;margin:0;padding:0;}
+  .check-card li{font-size:12.8px;color:var(--text-dark);padding:7px 0 7px 26px;position:relative;border-bottom:1px solid var(--line);}
+  .check-card li:last-child{border-bottom:none;}
+  .check-card li::before{content:'☐';position:absolute;left:0;top:6px;color:var(--text-muted);}
+  .check-card .verdict{margin-top:14px;font-size:12px;font-weight:700;color:var(--ink);}
+
+  /* code blocks */
+  .code-block{background:var(--ink-deep);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);margin-top:20px;}
+  .code-head{display:flex;align-items:center;justify-content:space-between;padding:11px 20px;background:var(--ink-2);}
+  .code-head .dots{display:flex;gap:6px;}
+  .code-head .dots span{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,0.2);}
+  .code-head .fname{font-family:var(--mono);font-size:11px;color:#CFC8F2;}
+  pre{margin:0;padding:20px 22px;overflow-x:auto;}
+  pre code{font-family:var(--mono);font-size:12.3px;line-height:1.75;color:#E4DEFF;white-space:pre;}
+  .cm{color:#8880B0;}
+  .kw{color:var(--acc-a);}
+  .st{color:var(--acc-b);}
+  .fn{color:#F2B705;}
+  .example-block{margin-top:36px;}
+  .example-block h4{font-size:14.5px;font-weight:700;display:flex;align-items:center;gap:10px;}
+
+  /* best practices */
+  .bp-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:40px;}
+  .bp-grid.cols-3{grid-template-columns:repeat(3,1fr);}
+  .bp-card{border-radius:var(--radius);padding:26px;box-shadow:var(--shadow);}
+  .bp-card.a{background:rgba(0,0,0,0.02);border-top:4px solid var(--acc-a);}
+  .bp-card.b{background:rgba(0,0,0,0.02);border-top:4px solid var(--acc-b);}
+  .bp-card.c{background:rgba(0,0,0,0.02);border-top:4px solid var(--acc-c);}
+  .bp-card h4{font-size:14.5px;font-weight:700;margin-bottom:16px;}
+  .bp-item{display:flex;gap:12px;margin-bottom:14px;}
+  .bp-item:last-child{margin-bottom:0;}
+  .bp-item .n{font-family:'Noto Serif KR',serif;font-weight:700;font-size:13px;color:var(--text-muted);flex-shrink:0;}
+  .bp-item b{display:block;font-size:13.3px;margin-bottom:2px;}
+  .bp-item span{font-size:12.4px;color:var(--text-muted);}
+
+  /* summary */
+  .summary{background:linear-gradient(180deg,var(--ink-2) 0%, var(--ink-deep) 100%);color:var(--paper);}
+  .recap-list{margin-top:34px;display:flex;flex-direction:column;gap:0;}
+  .recap-item{display:flex;align-items:flex-start;gap:18px;padding:18px 0;border-bottom:1px solid rgba(255,255,255,0.1);}
+  .recap-item:last-child{border-bottom:none;}
+  .recap-item .num{font-family:'Noto Serif KR',serif;font-size:14px;color:var(--acc-b);font-weight:700;width:28px;flex-shrink:0;}
+  .recap-item .rt{font-size:14px;line-height:1.65;color:#E4DEFF;}
+  .final-line{margin-top:30px;padding:20px 24px;border-radius:var(--radius);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);font-size:13.5px;color:#CFC8F2;}
+  .final-line b{color:var(--paper);}
+
+  footer{background:var(--ink-deep);color:#8880B0;padding:34px 0;font-size:12px;}
+  footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+  .totop{border:1px solid rgba(255,255,255,0.2);padding:8px 16px;border-radius:20px;font-size:11.5px;transition:border-color .2s, color .2s;}
+  .totop:hover{border-color:var(--acc-b);color:var(--acc-b);}
+
+  @media(max-width:900px){
+    nav.links{display:none;}
+    .hamburger{display:flex;}
+    .compare-2,.compare-3{grid-template-columns:1fr;}
+    .check-2,.check-3{grid-template-columns:1fr;}
+    .bp-grid{grid-template-columns:1fr;}
+    .hero-split{flex-direction:column;}
+    .hero-vs-mark{position:relative;top:auto;left:auto;transform:none;margin:-32px auto;}
+    section{padding:72px 0;}
+  }
+  @media(max-width:560px){
+    .cmp-table{font-size:11.5px;}
+    .cmp-table th,.cmp-table td{padding:11px 12px;}
+  }
+
+  /* ===== series badge (for the 5-part prompt engineering series) ===== */
+  .series-badge{
+    display:inline-flex;align-items:center;gap:8px;margin-top:22px;padding:9px 18px;border-radius:30px;
+    background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.16);font-size:12.5px;color:#DCD6F7;
+  }
+  .series-badge b{color:var(--paper);}
+  .series-dots{display:flex;gap:5px;}
+  .series-dots span{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.25);}
+  .series-dots span.on{background:var(--acc-b);}
+
+  .series-toc{margin-top:32px;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+  .series-toc-row{display:flex;align-items:center;gap:16px;padding:14px 22px;background:var(--paper);border-bottom:1px solid var(--line);}
+  .series-toc-row:last-child{border-bottom:none;}
+  .series-toc-row.current{background:var(--paper-tint);}
+  .series-toc-row .stn{font-family:'Noto Serif KR',serif;font-weight:700;font-size:12px;color:var(--text-muted);width:26px;flex-shrink:0;}
+  .series-toc-row.current .stn{color:var(--acc-b-ink);}
+  .series-toc-row .stt{font-size:13px;color:var(--text-dark);}
+  .series-toc-row.current .stt{font-weight:700;color:var(--ink);}
+  .series-toc-row .stbadge{margin-left:auto;font-size:10px;font-weight:700;padding:3px 10px;border-radius:12px;background:var(--acc-b);color:#fff;flex-shrink:0;}
+
+  /* danger-toned note box (security warnings) */
+  .danger-box{background:#FDECEE;color:#7A1F2C;border-radius:var(--radius);padding:18px 24px;font-size:13.8px;margin-top:26px;border-left:4px solid var(--danger);}
+  .danger-box b{color:#9C2A3C;}
+  .safe-box{background:#E9F9F3;color:#065F49;border-radius:var(--radius);padding:18px 24px;font-size:13.8px;margin-top:26px;border-left:4px solid #0EA383;}
+  .safe-box b{color:#065F49;}
+
+  /* ===== RLHF guide additions ===== */
+
+  .flow-pair{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:36px;}
+  .flow-col h4{font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;}
+  .flow-vert{display:flex;flex-direction:column;align-items:stretch;}
+  .flow-step{background:var(--paper-tint);border-radius:12px;padding:13px 18px;font-size:13px;font-weight:600;color:var(--ink);text-align:center;}
+  .flow-step.on-a{background:var(--acc-a);color:#fff;}
+  .flow-step.on-b{background:var(--acc-b);color:#fff;}
+  .flow-arrow-v{text-align:center;font-size:15px;color:var(--text-muted);padding:5px 0;}
+
+  .org-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:36px;}
+  .org-card{border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);background:var(--paper-tint);}
+  .org-card h4{font-size:14px;font-weight:700;margin-bottom:8px;}
+  .org-card .org-tool{font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px;}
+  .org-card .org-tool.a{color:var(--acc-a-ink);}
+  .org-card .org-tool.b{color:var(--acc-b-ink);}
+  .org-card ul{list-style:none;margin:0;padding:0;}
+  .org-card li{font-size:12.3px;color:var(--text-dark);padding:3px 0 3px 16px;position:relative;}
+  .org-card li::before{content:'·';position:absolute;left:0;font-weight:900;color:var(--text-muted);}
+
+  .pc-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px;align-items:start;}
+  .pc-card{border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);}
+  .pc-card.pro{background:rgba(14,163,131,0.06);border:1.5px solid rgba(14,163,131,0.25);}
+  .pc-card.con{background:rgba(214,69,91,0.05);border:1.5px solid rgba(214,69,91,0.2);}
+  .pc-card h4{font-size:15px;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+  .pc-item{display:flex;gap:12px;margin-bottom:14px;}
+  .pc-item:last-child{margin-bottom:0;}
+  .pc-item .n{font-family:'Noto Serif KR',serif;font-weight:700;font-size:13px;color:var(--text-muted);flex-shrink:0;}
+  .pc-item b{display:block;font-size:13.3px;margin-bottom:2px;}
+  .pc-item span{font-size:12.4px;color:var(--text-muted);}
+
+  .path-chip-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:22px;}
+  .path-chip{font-size:12px;font-weight:600;background:var(--paper);border:1.4px solid var(--line);color:var(--ink);padding:7px 13px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.04);}
+  .path-arrow{color:var(--text-muted);font-size:13px;}
+
+  .ref-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:20px;}
+  .ref-card{display:flex;align-items:center;justify-content:space-between;gap:12px;border-radius:14px;padding:16px 20px;background:var(--paper-tint);transition:background .2s, transform .2s;}
+  .ref-card:hover{background:#EFEAFF;transform:translateX(2px);}
+  .ref-card .rc-text{font-size:13px;color:var(--text-dark);}
+  .ref-card .rc-text b{display:block;font-size:13.5px;color:var(--ink);margin-bottom:2px;}
+  .ref-card .rc-arrow{color:var(--acc-b);font-size:16px;flex-shrink:0;}
+
+  .hero-panel .ptag{
+    display:inline-block;margin-top:14px;padding:5px 14px;border-radius:14px;
+    background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.22);
+    font-size:11px;font-weight:700;letter-spacing:.5px;position:relative;z-index:2;
+  }
+
+  /* ===== Career guide additions: dual-bar, venn-row, pillar tag ===== */
+  .dualbar{margin-bottom:18px;}
+  .dualbar .dl{display:flex;justify-content:space-between;font-size:12.8px;margin-bottom:6px;font-weight:600;color:var(--ink);}
+  .dualbar .dtrack{height:9px;background:var(--paper-tint);border-radius:5px;overflow:hidden;margin-bottom:4px;position:relative;}
+  .dualbar .dfill{height:100%;border-radius:5px;}
+  .dualbar .dfill.hi{background:linear-gradient(90deg,#0EA383,#5EEAD4);}
+  .dualbar .dfill.lo{background:linear-gradient(90deg,var(--danger),#F2A5A5);}
+  .dualbar .dvals{display:flex;justify-content:space-between;font-size:10.5px;color:var(--text-muted);font-family:var(--mono);}
+
+  .venn-row{display:grid;grid-template-columns:1fr 0.8fr 1fr;gap:0;margin-top:28px;align-items:stretch;}
+  .venn-col{padding:22px 18px;text-align:center;border-radius:var(--radius);}
+  .venn-col.va{background:rgba(54,62,140,0.08);border:1.5px solid rgba(54,62,140,0.2);border-radius:var(--radius) 0 0 var(--radius);}
+  .venn-col.vb{background:linear-gradient(135deg,rgba(184,134,11,0.16),rgba(194,65,12,0.14));border:1.5px solid rgba(184,134,11,0.35);margin:0 -14px;z-index:2;}
+  .venn-col.vc{background:rgba(194,65,12,0.07);border:1.5px solid rgba(194,65,12,0.2);border-radius:0 var(--radius) var(--radius) 0;}
+  .venn-col h5{font-size:13px;font-weight:700;margin-bottom:8px;}
+  .venn-col p{font-size:11.5px;color:var(--text-muted);margin:0;line-height:1.5;}
+
+  .pillar-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 13px;border-radius:14px;margin-bottom:14px;}
+
+  @media(max-width:760px){
+    .venn-row{grid-template-columns:1fr;}
+    .venn-col.vb{margin:8px 0;border-radius:var(--radius);}
+    .venn-col.va{border-radius:var(--radius);}
+    .venn-col.vc{border-radius:var(--radius);}
+  }
+
+  /* ===== LLM 동작원리 — token demo, vector space, transformer stack, heatmap, prob bars ===== */
+
+  .tok-demo{background:var(--ink-deep);border-radius:var(--radius);padding:26px 28px;margin-top:28px;}
+  .tok-line{font-family:var(--mono);font-size:13px;color:#B8B0DE;margin-bottom:10px;}
+  .tok-line .hi{color:#E4DEFF;}
+  .tok-row{display:flex;flex-wrap:wrap;gap:9px;margin:16px 0;}
+  .tok-chip{padding:7px 14px;border-radius:8px;font-family:var(--mono);font-weight:600;font-size:13px;border:1px solid;}
+  .tok-chip.c0{background:rgba(13,148,136,0.16);color:#5EEAD4;border-color:rgba(13,148,136,0.4);}
+  .tok-chip.c1{background:rgba(217,119,6,0.16);color:#FCD34D;border-color:rgba(217,119,6,0.4);}
+  .tok-chip.c2{background:rgba(217,119,6,0.16);color:#FCD34D;border-color:rgba(217,119,6,0.4);}
+  .tok-chip.c3{background:rgba(13,148,136,0.16);color:#5EEAD4;border-color:rgba(13,148,136,0.4);}
+  .tok-chip.c4{background:rgba(217,119,6,0.16);color:#FCD34D;border-color:rgba(217,119,6,0.4);}
+  .tok-ids{font-family:var(--mono);font-size:13px;color:#E4DEFF;background:var(--ink-2);border-radius:8px;padding:11px 16px;display:inline-block;}
+
+  .embed-wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:24px;align-items:stretch;margin-top:28px;}
+  .vecspace{background:var(--paper-tint);border:1px solid var(--line);border-radius:var(--radius);position:relative;min-height:320px;overflow:hidden;}
+  .vecspace .axis{position:absolute;background:var(--line);}
+  .word-dot{position:absolute;transform:translate(-50%,-50%);font-family:var(--mono);font-size:12px;padding:6px 12px;border-radius:20px;border:1.4px solid;white-space:nowrap;font-weight:600;}
+  .word-dot.wa{background:rgba(13,148,136,0.1);color:var(--acc-a-ink);border-color:var(--acc-a);}
+  .word-dot.wb{background:rgba(217,119,6,0.1);color:var(--acc-b-ink);border-color:var(--acc-b);}
+  .word-dot.wc{background:rgba(124,58,237,0.1);color:#5B21B6;border-color:#8B5CF6;}
+  .embed-notes{display:flex;flex-direction:column;gap:16px;justify-content:center;}
+  .embed-notes .n{border-left:3px solid var(--acc-a);padding-left:16px;}
+  .embed-notes .n b{display:block;font-size:13.5px;margin-bottom:3px;color:var(--ink);}
+  .embed-notes .n span{font-size:12.6px;color:var(--text-muted);}
+
+  .tf-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:28px;max-width:420px;margin-left:auto;margin-right:auto;}
+  .tf-cap{font-family:var(--mono);font-size:11.5px;color:var(--text-muted);text-align:center;}
+  .tf-block{width:100%;border:1px solid var(--line);border-radius:10px;background:var(--paper-tint);padding:13px;text-align:center;}
+  .tf-block .l1{font-size:13px;font-weight:700;color:var(--acc-a-ink);}
+  .tf-block .l2{font-size:11.5px;color:var(--text-muted);margin-top:3px;}
+  .tf-repeat{font-family:var(--mono);font-size:11.5px;color:var(--acc-b-ink);font-weight:700;text-align:center;padding:2px 0;}
+  .tf-notes{margin-top:32px;display:flex;flex-direction:column;gap:16px;max-width:640px;margin-left:auto;margin-right:auto;}
+  .tf-notes .n b{display:block;color:var(--ink);font-weight:700;font-size:13.5px;margin-bottom:3px;}
+  .tf-notes .n p{margin:0;color:var(--text-muted);font-size:12.6px;}
+
+  .attn-wrap{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:28px;align-items:start;}
+  .qkv .row{display:flex;gap:14px;margin-bottom:14px;align-items:baseline;}
+  .qkv .k{font-family:var(--mono);font-size:12.5px;width:58px;flex-shrink:0;font-weight:700;}
+  .qkv .row:nth-child(1) .k{color:var(--acc-a-ink);}
+  .qkv .row:nth-child(2) .k{color:#8B5CF6;}
+  .qkv .row:nth-child(3) .k{color:var(--acc-b-ink);}
+  .qkv .v{font-size:12.8px;color:var(--text-muted);}
+  table.heat{border-collapse:collapse;width:100%;font-family:var(--mono);}
+  table.heat th{font-size:11px;color:var(--text-muted);font-weight:500;padding:6px;text-align:center;}
+  table.heat td.lab{font-size:11.5px;color:var(--text-muted);text-align:right;padding-right:10px;white-space:nowrap;}
+  table.heat td.cell{width:48px;height:40px;text-align:center;font-size:12px;font-weight:700;border-radius:6px;border:2px solid var(--paper);}
+  .heat-cap{font-family:var(--mono);font-size:11px;color:var(--text-muted);margin-top:12px;}
+
+  .prob-wrap{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:28px;align-items:center;}
+  .prompt-box{font-family:var(--mono);font-size:15px;background:var(--paper-tint);border:1px solid var(--line);border-radius:10px;padding:15px 18px;margin-bottom:22px;}
+  .prompt-box .blank{color:var(--acc-a-ink);border-bottom:2px solid var(--acc-a);padding:0 16px;font-weight:700;}
+  .bar{margin-bottom:12px;}
+  .bar .bl{display:flex;justify-content:space-between;font-size:12.8px;margin-bottom:5px;}
+  .bar .bl .pct{font-family:var(--mono);color:var(--text-muted);}
+  .bar .track{height:11px;background:var(--paper-tint);border-radius:6px;overflow:hidden;}
+  .bar .fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--acc-a-ink),var(--acc-a));}
+  ol.steps{counter-reset:s;list-style:none;padding:0;margin:0;}
+  ol.steps li{counter-increment:s;position:relative;padding:11px 0 11px 46px;border-bottom:1px solid var(--line);font-size:13.3px;color:var(--text-muted);}
+  ol.steps li:last-child{border-bottom:none;}
+  ol.steps li::before{content:counter(s,decimal-leading-zero);position:absolute;left:0;top:11px;font-family:var(--mono);font-size:11px;color:var(--acc-a-ink);border:1px solid var(--acc-a);border-radius:6px;padding:2px 7px;}
+  ol.steps li b{color:var(--ink);font-weight:700;}
+
+  @media(max-width:900px){
+    .embed-wrap,.attn-wrap,.prob-wrap{grid-template-columns:1fr;}
+  }
+
+  /* ===== RLHF guide additions ===== */
+
+
+
+  .hero-simple{
+    background:radial-gradient(circle at 18% 22%, rgba(44,74,107,0.24), transparent 45%),
+               radial-gradient(circle at 84% 18%, rgba(214,69,69,0.18), transparent 45%),
+               linear-gradient(180deg,var(--ink) 0%, var(--ink-deep) 100%);
+    color:var(--paper);min-height:92vh;display:flex;align-items:center;overflow:hidden;padding:120px 0 64px;
+  }
+  .hero-simple .wrap{position:relative;z-index:2;}
+  .hero-simple .eyebrow{font-size:12.5px;letter-spacing:4px;font-weight:700;color:var(--acc-b);text-transform:uppercase;margin-bottom:18px;}
+  .hero-simple h1{font-size:clamp(28px,4.4vw,46px);font-weight:900;line-height:1.24;margin-bottom:18px;}
+  .hero-simple h1 .accent-word{background:linear-gradient(90deg,var(--acc-a),var(--acc-b));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .hero-simple p.sub{font-size:clamp(14px,1.6vw,17px);color:#CFC8F2;max-width:720px;margin-bottom:0;}
+
+  /* quote / key-insight callout (replaces the source's <cite> wrapper) */
+  .quote-box{margin-top:28px;padding:20px 26px;border-left:4px solid var(--acc-b);background:var(--paper-tint);border-radius:0 var(--radius) var(--radius) 0;}
+  .quote-box p{font-size:13.6px;font-style:italic;color:var(--text-dark);margin:0;line-height:1.7;}
+  .quote-box .qsrc{display:block;margin-top:10px;font-size:11.5px;font-style:normal;font-weight:700;color:var(--acc-b-ink);}
+
+  /* formula block */
+  .formula-block{margin-top:24px;background:var(--ink-deep);border-radius:var(--radius);padding:24px 28px;text-align:center;overflow-x:auto;}
+  .formula-block code{font-family:var(--mono);font-size:14px;color:#E4DEFF;white-space:pre;}
+  .formula-legend{margin-top:16px;display:flex;flex-direction:column;gap:6px;}
+  .formula-legend .flrow{font-size:12.6px;color:var(--text-muted);}
+  .formula-legend .flrow b{color:var(--ink);font-family:var(--mono);}
+
+  /* pipeline diagram — the signature element */
+  .pipeline{display:flex;align-items:stretch;gap:0;margin-top:44px;flex-wrap:wrap;}
+  .pl-stage{flex:1;min-width:200px;border-radius:var(--radius);padding:22px 20px;box-shadow:var(--shadow);position:relative;}
+  .pl-stage .plnum{font-family:'Noto Serif KR',serif;font-weight:700;font-size:12px;color:var(--text-muted);margin-bottom:8px;}
+  .pl-stage .plname{font-size:14.5px;font-weight:700;color:var(--ink);margin-bottom:8px;}
+  .pl-stage .pldesc{font-size:11.8px;color:var(--text-muted);line-height:1.6;}
+  .pl-stage.s0{background:var(--paper-tint);}
+  .pl-stage.s1{background:rgba(232,131,74,0.08);border:1.5px solid rgba(232,131,74,0.25);}
+  .pl-stage.s2{background:rgba(76,99,224,0.07);border:1.5px solid rgba(76,99,224,0.22);}
+  .pl-stage.s3{background:var(--ink);color:var(--paper);}
+  .pl-stage.s3 .plname{color:var(--paper);}
+  .pl-stage.s3 .pldesc{color:#CFC8F2;}
+  .pl-stage.s3 .plnum{color:var(--acc-b);}
+  .pl-connector{display:flex;align-items:center;justify-content:center;width:36px;flex-shrink:0;color:#B8B0DE;font-size:18px;}
+
+  /* problem/solution split */
+  .ps-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:32px;}
+  .ps-card{border-radius:var(--radius);padding:24px;}
+  .ps-card.problem{background:rgba(214,69,91,0.05);border:1.5px solid rgba(214,69,91,0.2);}
+  .ps-card.solution{background:rgba(14,163,131,0.06);border:1.5px solid rgba(14,163,131,0.25);}
+  .ps-card h4{font-size:13.5px;font-weight:700;margin-bottom:12px;}
+  .ps-card ul{list-style:none;margin:0;padding:0;}
+  .ps-card li{font-size:12.8px;padding:6px 0 6px 22px;position:relative;color:var(--text-dark);}
+  .ps-card.problem li::before{content:'✕';position:absolute;left:0;color:var(--danger);font-weight:700;}
+  .ps-card.solution li::before{content:'✓';position:absolute;left:0;color:#0EA383;font-weight:700;}
+
+  /* cost receipt */
+  .receipt-row{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:32px;}
+  .receipt{background:var(--paper-tint);border-radius:var(--radius);padding:22px 24px;}
+  .receipt.hi{background:var(--ink);color:var(--paper);}
+  .receipt h5{font-size:13px;font-weight:700;margin-bottom:14px;}
+  .receipt.hi h5{color:var(--acc-b);}
+  .rline{display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px dashed var(--line);color:var(--text-muted);}
+  .receipt.hi .rline{border-bottom-color:rgba(255,255,255,0.15);color:#CFC8F2;}
+  .rline:last-of-type{border-bottom:none;}
+  .rtotal{display:flex;justify-content:space-between;font-size:13.5px;font-weight:700;margin-top:10px;padding-top:10px;border-top:1.5px solid var(--line);color:var(--ink);}
+  .receipt.hi .rtotal{border-top-color:rgba(255,255,255,0.25);color:var(--paper);}
+
+  /* alignment-tax chart (simple css bars) */
+  .tax-chart{display:flex;align-items:flex-end;gap:28px;margin-top:32px;padding:24px 28px;background:var(--paper-tint);border-radius:var(--radius);height:160px;}
+  .tax-bar-group{display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;height:100%;justify-content:flex-end;}
+  .tax-bars{display:flex;gap:6px;align-items:flex-end;height:100%;}
+  .tax-bars .tb{width:26px;border-radius:5px 5px 0 0;}
+  .tax-bars .tb.before{background:var(--acc-a);}
+  .tax-bars .tb.after{background:var(--acc-b);}
+  .tax-bar-group .tblabel{font-size:11px;color:var(--text-muted);text-align:center;}
+
+  /* alt-method deep dive card */
+  .alt-card{border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);margin-top:20px;}
+  .alt-card .alt-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 13px;border-radius:14px;margin-bottom:14px;}
+  .alt-card h3{font-size:18px;font-weight:700;margin-bottom:10px;}
+
+  /* decision flow (implementation) */
+  .impl-tree{margin-top:32px;background:var(--ink);color:var(--paper);border-radius:var(--radius);padding:28px 30px;}
+  .impl-row{display:flex;gap:14px;align-items:baseline;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.08);font-size:13px;}
+  .impl-row:last-child{border-bottom:none;}
+  .impl-row .iq{color:#CFC8F2;flex-shrink:0;min-width:170px;font-weight:600;}
+  .impl-row .ia{color:var(--acc-b);font-weight:700;}
+
+  /* timeline table (reuse cmp-table look but horizontal era markers) */
+  .era-row{display:flex;gap:0;margin-top:32px;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+  .era-col{flex:1;padding:20px 18px;background:var(--paper-tint);border-right:1px solid var(--paper);}
+  .era-col:last-child{border-right:none;background:var(--ink);color:var(--paper);}
+  .era-col .eyear{font-family:'Noto Serif KR',serif;font-weight:700;font-size:13px;color:var(--acc-a-ink);margin-bottom:8px;}
+  .era-col:last-child .eyear{color:var(--acc-b);}
+  .era-col .esitu{font-size:11.5px;color:var(--text-muted);margin-bottom:6px;}
+  .era-col:last-child .esitu{color:#CFC8F2;}
+  .era-col .etech{font-size:12.8px;font-weight:700;color:var(--ink);}
+  .era-col:last-child .etech{color:var(--paper);}
+
+  @media(max-width:900px){
+    .pipeline{flex-direction:column;}
+    .pl-connector{width:100%;height:30px;transform:rotate(90deg);}
+    .ps-grid{grid-template-columns:1fr;}
+    .receipt-row{grid-template-columns:1fr;}
+    .era-row{flex-direction:column;}
+    .era-col{border-right:none;border-bottom:1px solid var(--paper);}
+    .flow-pair{grid-template-columns:1fr;}
+    .org-grid{grid-template-columns:1fr;}
+    .pc-grid{grid-template-columns:1fr;}
+    .ref-grid{grid-template-columns:1fr;}
+    .compare-2{grid-template-columns:1fr;}
+    .bp-grid{grid-template-columns:1fr;}
+  }
+
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<header class="nav" id="siteNav">
+  <div class="wrap">
+    <div class="brand"><span class="dot2"><span></span><span></span></span> 피지컬 AI 완벽 가이드 · G01 · 영상관련기술</div>
+    <nav class="links">
+      <a href="#overview">개요</a>
+      <a href="#components">3대구성요소</a>
+      <a href="#proscons">장단점</a>
+      <a href="#usecases">활용분야</a>
+      <a href="#implementation">실습</a>
+      <a href="#comparison">비교</a>
+    </nav>
+    <button class="hamburger" id="hamBtn" aria-label="메뉴 열기"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#overview">피지컬 AI란</a>
+  <a href="#components">3대 핵심 구성요소</a>
+  <a href="#proscons">특징 및 장단점</a>
+  <a href="#usecases">주요 활용 분야 및 사례</a>
+  <a href="#implementation">[실습] Python으로 경험하는 핵심 기술</a>
+  <a href="#comparison">소프트웨어 AI vs 피지컬 AI</a>
+  <a href="#conclusion">마치며</a>
+</div>
+<button class="mobile-close" id="mobileClose">×</button>
+
+<main>
+
+<section class="hero-simple" id="top">
+  <div class="wrap">
+    <div class="eyebrow">G01 · 영상관련기술 · CES 2026 핵심 키워드</div>
+    <h1>피지컬 AI<br><span class="accent-word">(Physical AI)</span>란 무엇인가</h1>
+    <p class="sub">챗GPT로 시작된 생성형 AI는 결국 '디지털 세계(화면 속)'에 갇혀 있습니다. 아무리 똑똑한 AI라도 당장 내 앞의 커피잔을 집어주거나 방을 청소해줄 수는 없습니다. AI 혁신의 중심이 소프트웨어를 넘어 현실의 물리적 시스템으로 이동하는 지점, 피지컬 AI의 정의부터 로봇 제어 실습까지 정리합니다.</p>
+    <div class="chip-row">
+      <a class="chip" href="#components">인식·인지·행동 폐쇄 루프</a>
+      <a class="chip" href="#implementation">YOLOv8 + 강화학습 실습</a>
+      <a class="chip" href="#comparison">소프트웨어 vs 피지컬 AI</a>
+    </div>
+  </div>
+</section>
+
+
+<section id="overview">
+  <div class="wrap reveal">
+    <div class="kicker">Overview</div>
+    <h2 class="title">피지컬 AI란?</h2>
+    <p class="lede">센서, 로봇, 기계 장치 등 물리적 하드웨어와 결합하여 <b>현실 세계를 인식(Perception)하고, 상황을 판단(Cognition)하며, 실제 물리적 행동(Action)을 자율적으로 수행</b>하는 인공지능 기술입니다.</p>
+
+    <div class="note-box">단순히 정해진 코드를 반복하는 기존의 자동화 로봇(RPA)과 달리, 피지컬 AI는 끊임없이 변화하는 불확실한 현실 환경 속에서 <b>"스스로 물리 법칙을 이해하고 적응하며 행동"</b>한다는 것이 가장 큰 차이점입니다. 체화된 인지(Embodied Cognition)를 바탕으로 움직이는 '지능의 물리적 구현체'입니다.</div>
+
+    <h3 style="font-size:15px;font-weight:700;margin-top:36px;margin-bottom:14px;">탄생 배경 및 트렌드</h3>
+    <div class="compare-2">
+      <div class="cc-card">
+        <h4>하드웨어와 소프트웨어의 융합</h4>
+        <p class="small">카메라, 라이다(LiDAR) 등 센서 기술과 엔비디아(NVIDIA) 젯슨(Jetson) 같은 엣지 AI 반도체가 고도화되었습니다.</p>
+      </div>
+      <div class="cc-card b">
+        <h4>새로운 AI 아키텍처의 등장</h4>
+        <p class="small">단순히 언어만 이해하는 LLM을 넘어, 시각-언어-행동을 통합 처리하는 <b>VLA(Vision-Language-Action) 모델</b>과 현실의 물리 법칙을 시뮬레이션하는 <b>월드 모델(World Model)</b>이 등장하면서 피지컬 AI의 두뇌가 완성되었습니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="components" style="background:var(--paper-tint);">
+  <div class="wrap reveal">
+    <div class="kicker">Architecture</div>
+    <h2 class="title">3대 핵심 구성요소 및 작동 원리</h2>
+    <p class="lede">피지컬 AI는 환경과 상호작용하기 위해 <b>인식 → 판단 → 행동</b>의 폐쇄 루프(Closed-Loop)를 실시간으로 반복합니다.</p>
+
+    <div class="pipeline">
+      <div class="pl-stage s0"><div class="plnum">01 · 눈·귀·피부</div><div class="plname">인식 레이어</div><div class="pldesc">RGB 카메라, 3D LiDAR, 레이다, IMU, 촉각/압력 센서로 데이터 수집. 센서 퓨전(Sensor Fusion)으로 하나의 3D 공간 정보로 통합.</div></div>
+      <div class="pl-connector">→</div>
+      <div class="pl-stage s1"><div class="plnum">02 · 두뇌</div><div class="plname">인지 및 판단 레이어</div><div class="pldesc">컴퓨터 비전으로 객체 탐지, VLA 모델이 자연어 명령+시각 정보를 행동 계획으로 번역, 월드 모델이 물리적 인과관계를 시뮬레이션·예측.</div></div>
+      <div class="pl-connector">→</div>
+      <div class="pl-stage s3"><div class="plnum">03 · 손·발</div><div class="plname">행동 및 제어 레이어</div><div class="pldesc">모터, 액추에이터, 로봇 팔, 바퀴·조향 장치가 실제 힘을 가함. 수십 ms 이내의 매우 낮은 지연 시간으로 정밀 제어.</div></div>
+    </div>
+    <div class="note-box" style="margin-top:24px;">행동의 결과는 다시 센서로 관측되어 다음 인식 단계로 순환됩니다 — 이 실시간 폐쇄 루프가 피지컬 AI의 핵심입니다.</div>
+  </div>
+</section>
+
+<section id="proscons">
+  <div class="wrap reveal">
+    <div class="kicker">Trade-offs</div>
+    <h2 class="title">특징 및 장단점</h2>
+    <div class="pc-grid">
+      <div class="pc-card pro">
+        <h4>✅ 장점</h4>
+        <div class="pc-item"><span class="n">·</span><div><b>완전한 자율성</b><span>프로그래밍된 궤적만 움직이는 산업용 로봇과 달리, 위치가 바뀌거나 돌발 상황(장애물)이 발생해도 실시간으로 경로를 수정해 임무를 완수합니다.</span></div></div>
+        <div class="pc-item"><span class="n">·</span><div><b>24/7 극한 환경 투입</b><span>방사능 노출 지역, 심해, 우주 탐사, 재난 현장 등 인간이 접근하기 위험한 환경에서 작업을 수행할 수 있습니다.</span></div></div>
+        <div class="pc-item"><span class="n">·</span><div><b>자연스러운 인간-로봇 협업(HRI)</b><span>자연어 명령을 이해하므로 코딩을 모르는 일반인도 쉽게 로봇에게 업무를 지시할 수 있습니다.</span></div></div>
+      </div>
+      <div class="pc-card con">
+        <h4>❌ 단점 및 한계</h4>
+        <div class="pc-item"><span class="n">·</span><div><b>Sim-to-Real Gap (현실 간극)</b><span>시뮬레이션에서 완벽하게 학습한 AI라도, 실제 현실의 미세한 변수(조명 변화, 마찰력, 센서 노이즈)를 만나면 실패할 확률이 높습니다.</span></div></div>
+        <div class="pc-item"><span class="n">·</span><div><b>치명적인 안전 및 보안 문제</b><span>소프트웨어 AI의 오류는 '틀린 답변'으로 끝나지만, 피지컬 AI의 오류는 기계 파손·대형 사고·인명 피해로 직결됩니다. 해킹 시 사이버-물리적 테러가 발생할 수 있습니다.</span></div></div>
+        <div class="pc-item"><span class="n">·</span><div><b>막대한 하드웨어 및 인프라 비용</b><span>고성능 로봇 하드웨어, 엣지 AI 칩셋, 막대한 합성 데이터 생성(NVIDIA Omniverse 등)을 위한 초기 투자 비용이 매우 큽니다.</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="usecases" style="background:var(--paper-tint);">
+  <div class="wrap reveal">
+    <div class="kicker">Use Cases</div>
+    <h2 class="title">주요 활용 분야 및 사례</h2>
+    <p class="lede">피지컬 AI는 특정 산업에 국한되지 않고 물리적 노동이 존재하는 모든 곳을 혁신합니다.</p>
+
+    <div class="org-grid">
+      <div class="org-card">
+        <h4>휴머노이드 로봇</h4>
+        <p style="font-size:12.3px;color:var(--text-muted);margin:0;">테슬라 옵티머스, 보스턴 다이내믹스 아틀라스(Atlas), 유니트리 G1. 공장 조립부터 가정 내 가사 노동까지 인간의 환경에 맞춰 설계된 궁극의 피지컬 AI</p>
+      </div>
+      <div class="org-card">
+        <h4>자율주행 및 모빌리티</h4>
+        <p style="font-size:12.3px;color:var(--text-muted);margin:0;">수많은 센서 데이터를 바탕으로 보행자와 차량을 인식하고 차량의 조향/가속을 직접 제어</p>
+      </div>
+      <div class="org-card">
+        <h4>스마트 팩토리 &amp; 물류</h4>
+        <p style="font-size:12.3px;color:var(--text-muted);margin:0;">비전 AI 기반의 랜덤 물류 피킹 로봇(씨메스), 불량품 실시간 검출·분류 시스템, 아마존의 자율 이동 로봇(AMR)</p>
+      </div>
+      <div class="org-card">
+        <h4>의료 및 헬스케어</h4>
+        <p style="font-size:12.3px;color:var(--text-muted);margin:0;">환자의 미세한 호흡과 움직임에 맞춰 수술 경로를 보정하는 지능형 수술 로봇, 재활 보조 웨어러블 로봇</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="implementation">
+  <div class="wrap reveal">
+    <div class="kicker">[실습]</div>
+    <h2 class="title">Python으로 경험하는 피지컬 AI 핵심 기술</h2>
+    <p class="lede">피지컬 AI 구축에는 시뮬레이션 환경(MuJoCo, Isaac Sim 등), 컴퓨터 비전, 강화학습, 로봇 운영체제(ROS) 등 방대한 지식이 필요합니다. 여기서는 <b>① 인식(Vision)</b>과 <b>② 제어/학습(RL)</b>을 이해할 수 있는 두 가지 핵심 코드를 구현해봅니다.</p>
+
+    <h3 style="font-size:15px;font-weight:700;margin-top:32px;margin-bottom:4px;">① [인식] 로봇의 눈 — YOLOv8을 이용한 객체 위치 및 조작점 파악</h3>
+    <p class="lede" style="margin-top:0;">로봇 팔이 물건을 집기 위해(Pick &amp; Place) 카메라를 통해 물체를 인식하고 상대 좌표를 계산하는 코드입니다.</p>
+    <div class="code-block">
+      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">robot_vision.py</div></div>
+      <pre><code><span class="cm"># 필수 라이브러리 설치: pip install ultralytics opencv-python</span>
+<span class="kw">from</span> ultralytics <span class="kw">import</span> YOLO
+<span class="kw">import</span> cv2
+
+<span class="cm"># 1. 초경량 비전 모델 로드 (로봇 엣지 디바이스용)</span>
+model = YOLO(<span class="st">"yolov8n.pt"</span>)
+
+<span class="kw">def</span> robot_vision_perception(video_source=<span class="fn">0</span>):
+    cap = cv2.VideoCapture(video_source)
+
+    <span class="kw">while</span> <span class="kw">True</span>:
+        ret, frame = cap.read()
+        <span class="kw">if</span> <span class="kw">not</span> ret: <span class="kw">break</span>
+
+        <span class="cm"># 2. 피지컬 환경 인식 (추론)</span>
+        results = model(frame, conf=<span class="fn">0.6</span>, verbose=<span class="kw">False</span>)
+
+        <span class="kw">for</span> result <span class="kw">in</span> results:
+            <span class="kw">for</span> box <span class="kw">in</span> result.boxes:
+                <span class="cm"># 3. 바운딩 박스 추출</span>
+                x1, y1, x2, y2 = <span class="fn">map</span>(<span class="fn">int</span>, box.xyxy[<span class="fn">0</span>])
+                cls = <span class="fn">int</span>(box.cls[<span class="fn">0</span>])
+                label = model.names[cls]
+
+                <span class="cm"># 4. 로봇이 물체를 집을 '중심점(Target Point)' 계산</span>
+                cx, cy = (x1 + x2) // <span class="fn">2</span>, (y1 + y2) // <span class="fn">2</span>
+
+                <span class="cm"># 화면 중심 기준 로봇 팔 이동을 위한 상대 좌표(-0.5 ~ 0.5) 계산</span>
+                frame_h, frame_w = frame.shape[:<span class="fn">2</span>]
+                rel_x = (cx - frame_w / <span class="fn">2</span>) / frame_w
+                rel_y = (cy - frame_h / <span class="fn">2</span>) / frame_h
+
+                <span class="cm"># 병(bottle)이나 컵(cup)을 인식하면 로봇에게 그립(Grip) 명령 시뮬레이션</span>
+                <span class="kw">if</span> label <span class="kw">in</span> [<span class="st">"bottle"</span>, <span class="st">"cup"</span>]:
+                    <span class="fn">print</span>(f<span class="st">"🎯 [로봇 명령] {label} 포착! 파지 위치: (X:{rel_x:.2f}, Y:{rel_y:.2f}) -&gt; 모터 제어 신호 전송"</span>)
+
+                <span class="cm"># 시각화 처리</span>
+                cv2.rectangle(frame, (x1, y1), (x2, y2), (<span class="fn">0</span>, <span class="fn">255</span>, <span class="fn">0</span>), <span class="fn">2</span>)
+                cv2.circle(frame, (cx, cy), <span class="fn">5</span>, (<span class="fn">0</span>, <span class="fn">0</span>, <span class="fn">255</span>), -<span class="fn">1</span>)
+                cv2.putText(frame, f<span class="st">"{label}"</span>, (x1, y1 - <span class="fn">10</span>), cv2.FONT_HERSHEY_SIMPLEX, <span class="fn">0.6</span>, (<span class="fn">0</span>,<span class="fn">255</span>,<span class="fn">0</span>), <span class="fn">2</span>)
+
+        cv2.imshow(<span class="st">"Physical AI - Perception Layer"</span>, frame)
+        <span class="kw">if</span> cv2.waitKey(<span class="fn">1</span>) & <span class="fn">0xFF</span> == <span class="fn">ord</span>(<span class="st">'q'</span>):
+            <span class="kw">break</span>
+
+    cap.release()
+    cv2.destroyAllWindows()
+
+<span class="cm"># 웹캠을 이용해 로봇 비전 시뮬레이션 실행 (중단하려면 q 키)</span>
+<span class="cm"># robot_vision_perception()</span></code></pre>
+    </div>
+
+    <h3 style="font-size:15px;font-weight:700;margin-top:36px;margin-bottom:4px;">② [행동] 로봇의 두뇌 학습 — 강화학습(RL)으로 로봇 보행 시뮬레이션</h3>
+    <p class="lede" style="margin-top:0;">피지컬 AI는 시뮬레이션에서 수백만 번의 시행착오(강화학습)를 거쳐 물리 법칙을 깨우칩니다.</p>
+    <div class="code-block">
+      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">train_robot_walker.py</div></div>
+      <pre><code><span class="cm"># 필수 라이브러리 설치: pip install gymnasium[mujoco] stable-baselines3</span>
+<span class="kw">import</span> gymnasium <span class="kw">as</span> gym
+<span class="kw">from</span> stable_baselines3 <span class="kw">import</span> PPO
+<span class="kw">from</span> stable_baselines3.common.evaluation <span class="kw">import</span> evaluate_policy
+
+<span class="kw">def</span> train_robot_walker():
+    <span class="fn">print</span>(<span class="st">"🤖 1. 물리 시뮬레이션 환경 생성 (4족 보행 로봇 Ant)"</span>)
+    env = gym.make(<span class="st">"Ant-v4"</span>)
+
+    <span class="fn">print</span>(<span class="st">"🧠 2. 강화학습 에이전트(PPO) 생성"</span>)
+    <span class="cm"># PPO는 로보틱스에서 가장 안정적이고 널리 쓰이는 강화학습 알고리즘입니다.</span>
+    model = PPO(<span class="st">"MlpPolicy"</span>, env, verbose=<span class="fn">0</span>, learning_rate=<span class="fn">3e-4</span>)
+
+    <span class="fn">print</span>(<span class="st">"⚙️ 3. 로봇 보행 학습 시작 (약 10,000 스텝 - 실제로는 수백만 스텝 필요)"</span>)
+    model.learn(total_timesteps=<span class="fn">10000</span>)
+
+    <span class="fn">print</span>(<span class="st">"💾 4. 학습된 뇌(정책) 저장"</span>)
+    model.save(<span class="st">"ppo_robot_ant"</span>)
+
+    <span class="cm"># 환경 평가</span>
+    mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=<span class="fn">5</span>)
+    <span class="fn">print</span>(f<span class="st">"📊 학습 후 평균 보상(성능): {mean_reward:.2f}"</span>)
+
+    env.close()
+
+<span class="cm"># 시간 관계상 실행은 생략, 피지컬 AI가 어떻게 '행동'을 학습하는지 보여주는 핵심 뼈대입니다.</span>
+<span class="cm"># train_robot_walker()</span></code></pre>
+    </div>
+  </div>
+</section>
+
+<section id="comparison" style="background:var(--paper-tint);">
+  <div class="wrap reveal">
+    <div class="kicker">At a Glance</div>
+    <h2 class="title">한눈에 비교: 소프트웨어 AI vs 피지컬 AI</h2>
+    <p class="lede">가장 직관적인 차이는 <b>"AI의 결정이 현실의 원자(Atoms)를 움직이는가, 아니면 화면 속 픽셀(Pixels)을 바꾸는가"</b>입니다.</p>
+
+    <div class="cmp-table-wrap">
+      <table class="cmp-table">
+        <tr><th>비교 기준</th><th>생성형/소프트웨어 AI</th><th class="col-a">피지컬 AI</th></tr>
+        <tr><td>존재 공간</td><td>디지털 세계 (Digital World)</td><td>물리적 세계 (Physical World)</td></tr>
+        <tr><td>핵심 입력</td><td>텍스트, 이미지, 파일 등 정적 데이터</td><td>카메라, LiDAR, 촉각 등 실시간 다중 센서 데이터</td></tr>
+        <tr><td>핵심 출력</td><td>텍스트 생성, 코드, 이미지</td><td>모터 구동, 조향, 파지 등 물리적 행동(Action)</td></tr>
+        <tr><td>필요한 모델</td><td>LLM, 확산 모델(Diffusion)</td><td>VLA 모델, 월드 모델(World Model), 강화학습</td></tr>
+        <tr><td>실시간성 요구</td><td>수 초 이내 (상대적으로 여유로움)</td><td>매우 엄격함 (수십 밀리초 이내 즉각 반응)</td></tr>
+        <tr><td>오류 발생 리스크</td><td>이상한 답변(할루시네이션), 불편함 유발</td><td>로봇 파손, 충돌, 인명 피해 등 치명적 물리 사고</td></tr>
+        <tr><td>대표 사례</td><td>ChatGPT, Midjourney, GitHub Copilot</td><td>휴머노이드(Atlas), 자율주행차, 수술 로봇, 드론</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="summary" id="conclusion">
+  <div class="wrap reveal">
+    <div class="kicker on-dark">Conclusion</div>
+    <h2 class="title on-dark">마치며</h2>
+    <p class="lede on-dark">1차 물결이 규칙 기반의 전문가 시스템(Expert System), 2차 물결이 딥러닝과 LLM에 기반한 데이터 AI였다면, <b>3차 물결은 현실 세계를 통제하고 스스로 움직이는 '피지컬 AI'</b>가 될 것입니다.</p>
+
+    <div class="recap-list" style="margin-top:32px;">
+      <div class="recap-item"><span class="num">01</span><span class="rt">피지컬 AI는 인간의 노동력 부족 문제를 해결하고, 제조 및 물류 패러다임을 송두리째 바꿀 거대한 잠재력을 가지고 있습니다.</span></div>
+      <div class="recap-item"><span class="num">02</span><span class="rt">하지만 그만큼 심각한 사이버 보안 위협과 안전 문제를 동반합니다. 해킹된 챗봇은 이상한 말을 할 뿐이지만, 해킹된 휴머노이드 로봇이나 자율주행차는 무기가 될 수 있습니다.</span></div>
+      <div class="recap-item"><span class="num">03</span><span class="rt">결국 승자는 고성능 하드웨어를 잘 만드는 것을 넘어, 이종 기기 간의 <b>오케스트레이션(통합 제어), 사이버 보안, 강력한 월드 모델</b>을 구축한 기업이 될 것입니다.</span></div>
+    </div>
+
+    <div class="final-line" style="margin-top:30px;"><b>기억할 것 한 줄</b> — 지금 당장 ROS 2와 시뮬레이터(NVIDIA Isaac Sim 등)를 켜고, 다가올 피지컬 AI 시대의 주인공이 될 준비를 시작해보세요.</div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>피지컬 AI 완벽 가이드 · G01 · 영상관련기술</span>
+    <a class="totop" href="#top">맨 위로 ↑</a>
+  </div>
+</footer>
+
+<script>
+
+  var progress = document.getElementById('progress');
+  var nav = document.getElementById('siteNav');
+  window.addEventListener('scroll', function(){
+    var h = document.documentElement;
+    var scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    progress.style.width = scrolled + '%';
+    if(h.scrollTop > 40){ nav.classList.add('scrolled'); } else { nav.classList.remove('scrolled'); }
+  });
+
+  var hamBtn = document.getElementById('hamBtn');
+  var mobileMenu = document.getElementById('mobileMenu');
+  var mobileClose = document.getElementById('mobileClose');
+  function openMenu(){ mobileMenu.classList.add('open'); mobileClose.style.display='block'; }
+  function closeMenu(){ mobileMenu.classList.remove('open'); mobileClose.style.display='none'; }
+  hamBtn.addEventListener('click', openMenu);
+  mobileClose.addEventListener('click', closeMenu);
+  mobileMenu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeMenu); });
+
+  var revealObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){ entry.target.classList.add('in-view'); }
+    });
+  }, {threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(function(el){ revealObserver.observe(el); });
+
+</script>
+
+</body>
+</html>
