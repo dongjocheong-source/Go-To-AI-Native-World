@@ -1,4 +1,4 @@
-# Go to AI Native World (콘텐츠 목차)
+# (목차) Go to AI Native World
 Go to AI native라는 모토로 AI World로 들어가기 위해 공부하는 각종 자료들을 정리하는 공간입니다. <br>
 아래는 웹페이지를 구성하는 목차 정보입니다.
 
