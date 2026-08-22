@@ -41,7 +41,7 @@ Go to AI native라는 모토로 AI World로 들어가기 위해 공부하는 각
   - B02f - 프롬프트 - Prompt Injection이란 무엇인가?
   - B02g - 프롬프트 마스터: ReAct (추론과 행동) vs CoT (생각의 사슬) 기법 비교
 - B03_컨텍스트엔지지어링 
-- 04_Loop엔지니어링 
+- B04_Loop엔지니어링 
 - B05_Graph엔지니어링 
 - B06_오케스트레이션 
 - B07_LangChain_LangGraph 
