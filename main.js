@@ -18,6 +18,7 @@
   const brandHome = document.getElementById("brand-home");
   const portalView = document.getElementById("portal-view");
   const portalGrid = document.getElementById("portal-grid");
+  const modalityGrid = document.getElementById("modality-grid");
   const categoryView = document.getElementById("category-view");
   const pageEyebrow = document.getElementById("page-eyebrow");
   const pageTitle = document.getElementById("page-title");
@@ -33,6 +34,31 @@
             <img src="assets/portal/${tool.icon}" alt="${tool.label}" />
           </div>
           <p class="portal-tile-label">${tool.label}</p>
+        </div>`
+    ).join("");
+  }
+
+  function renderModalityGrid() {
+    if (!modalityGrid) return;
+    modalityGrid.innerHTML = MODALITY_GROUPS.map(
+      (group, i) => `
+        <div class="modality-card">
+          <p class="modality-eyebrow">MODALITY ${String(i + 1).padStart(2, "0")}</p>
+          <div class="modality-name">
+            ${iconSvg(group.icon)}
+            <span>${group.label}</span>
+          </div>
+          <div class="modality-tools">
+            ${group.tools
+              .map(
+                (tool) => `
+              <div class="modality-tool-icon" style="background: ${tool.bg};">
+                <img src="assets/portal/${tool.icon}" alt="" />
+              </div>`
+              )
+              .join("")}
+          </div>
+          <p class="modality-desc">${group.desc}</p>
         </div>`
     ).join("");
   }
@@ -113,6 +139,7 @@
 
   brandHome.addEventListener("click", goToPortal);
   renderPortalGrid();
+  renderModalityGrid();
 
   const initialId = (location.hash || "").replace("#", "");
   if (initialId && CATEGORIES.some((c) => c.id === initialId)) {
