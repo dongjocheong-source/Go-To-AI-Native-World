@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>멀티모달(Multi-Modal) AI — 텍스트를 넘어, 보고 듣는 지능으로</title>
+<meta name="description" content="멀티모달 AI/LLM의 정의, 모달리티 갭, CLIP과 대조 학습, 인코더-프로젝션-LLM 아키텍처, 장단점, 활용 분야, BLIP/CLIP 실습까지 한 페이지로 정리">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#150F2E;
+    --ink-2:#1E1745;
+    --ink-deep:#0B0820;
+    --paper:#FFFFFF;
+    --paper-tint:#F6F3FF;
+    --line:#E7E1FA;
+    --text-dark:#1B1730;
+    --text-muted:#655F82;
+    /* modality accent system — each color = one sense/data type, reused as a
+       recurring motif everywhere that modality is mentioned */
+    --mod-text:#3E5CFF;
+    --mod-image:#E85D3D;
+    --mod-audio:#0EA383;
+    --mod-fusion:#F2B705;
+    --mod-fusion-ink:#6B4E00;
+    --danger:#D6455B;
+    --radius:18px;
+    --shadow:0 16px 40px rgba(21,15,46,0.12);
+    --maxw:1140px;
+    --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',Consolas,monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Noto Sans KR','Apple SD Gothic Neo',sans-serif;
+    color:var(--text-dark);
+    background:var(--paper);
+    line-height:1.68;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Noto Serif KR','Noto Sans KR',serif;margin:0;}
+  a{color:inherit;text-decoration:none;}
+  img,svg{display:block;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px;}
+
+  #progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--mod-text),var(--mod-image),var(--mod-audio),var(--mod-fusion));z-index:9999;width:0%;transition:width .1s linear;}
+
+  header.nav{
+    position:fixed;top:0;left:0;right:0;z-index:1000;
+    padding:18px 0;
+    transition:background .3s ease, padding .3s ease, box-shadow .3s ease;
+  }
+  header.nav .wrap{display:flex;align-items:center;justify-content:space-between;}
+  header.nav.scrolled{
+    background:rgba(21,15,46,0.92);
+    backdrop-filter:blur(10px);
+    padding:12px 0;
+    box-shadow:0 4px 20px rgba(0,0,0,0.18);
+  }
+  .brand{font-weight:900;font-size:16.5px;color:var(--paper);letter-spacing:.3px;display:flex;align-items:center;gap:9px;}
+  .brand .dot3{display:inline-flex;gap:3px;}
+  .brand .dot3 span{width:7px;height:7px;border-radius:50%;display:block;}
+  .brand .dot3 span:nth-child(1){background:var(--mod-text);}
+  .brand .dot3 span:nth-child(2){background:var(--mod-image);}
+  .brand .dot3 span:nth-child(3){background:var(--mod-audio);}
+  nav.links{display:flex;gap:22px;flex-wrap:wrap;}
+  nav.links a{font-size:13.5px;font-weight:500;color:#CFC8F2;opacity:.85;transition:opacity .2s,color .2s;}
+  nav.links a:hover{opacity:1;color:var(--mod-fusion);}
+  .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:6px;}
+  .hamburger span{width:22px;height:2px;background:var(--paper);display:block;}
+  .mobile-menu{display:none;position:fixed;top:0;right:0;bottom:0;width:74%;max-width:300px;background:var(--ink-2);z-index:1100;padding:90px 32px;flex-direction:column;gap:24px;box-shadow:-10px 0 30px rgba(0,0,0,.3);}
+  .mobile-menu.open{display:flex;}
+  .mobile-menu a{color:#DCD6F7;font-size:15.5px;font-weight:500;}
+  .mobile-close{position:fixed;top:22px;right:6%;z-index:1200;display:none;color:var(--paper);font-size:26px;background:none;border:none;cursor:pointer;}
+
+  section{position:relative;padding:104px 0;scroll-margin-top:84px;}
+  .kicker{font-size:12px;font-weight:700;letter-spacing:3px;color:var(--mod-text);text-transform:uppercase;margin-bottom:14px;}
+  .kicker.on-dark{color:var(--mod-fusion);}
+  h2.title{font-size:clamp(25px,3.2vw,36px);font-weight:700;color:var(--text-dark);line-height:1.32;}
+  h2.title.on-dark{color:var(--paper);}
+  .lede{font-size:15.5px;color:var(--text-muted);max-width:740px;margin-top:14px;}
+  .lede.on-dark{color:#CFC8F2;}
+
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in-view{opacity:1;transform:translateY(0);}
+
+  /* modality tag — the recurring color-coded motif */
+  .mtag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.5px;padding:4px 11px;border-radius:20px;color:#fff;text-transform:uppercase;}
+  .mtag.text{background:var(--mod-text);}
+  .mtag.image{background:var(--mod-image);}
+  .mtag.audio{background:var(--mod-audio);}
+  .mtag.fusion{background:var(--mod-fusion);color:var(--mod-fusion-ink);}
+
+  .badge{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:48px;height:48px;border-radius:50%;
+    background:var(--ink);color:var(--paper);
+    font-family:'Noto Serif KR',serif;font-weight:700;font-size:18px;
+    flex-shrink:0;
+  }
+
+  .card{background:var(--paper-tint);border-radius:var(--radius);padding:26px;box-shadow:var(--shadow);}
+  .card.dark{background:var(--ink);color:var(--paper);}
+  .card h3{font-size:15.5px;font-weight:700;margin-bottom:8px;}
+  .card p{font-size:13.3px;color:var(--text-muted);margin:0;}
+  .card.dark p{color:#CFC8F2;}
+  .note-box{background:#FFF6DC;color:var(--mod-fusion-ink);border-radius:var(--radius);padding:18px 24px;font-size:14px;margin-top:26px;}
+  .note-box b{color:#8A6300;}
+
+  /* HERO */
+  .hero{
+    background:radial-gradient(circle at 15% 20%, rgba(62,92,255,0.22), transparent 42%),
+               radial-gradient(circle at 85% 15%, rgba(232,93,61,0.20), transparent 42%),
+               radial-gradient(circle at 50% 90%, rgba(14,163,131,0.20), transparent 45%),
+               linear-gradient(180deg,var(--ink) 0%, var(--ink-deep) 100%);
+    color:var(--paper);
+    min-height:100vh;
+    display:flex;align-items:center;
+    overflow:hidden;
+    padding:130px 0 80px;
+  }
+  .hero .wrap{position:relative;z-index:2;}
+  .eyebrow{font-size:12.5px;letter-spacing:4px;font-weight:700;color:var(--mod-fusion);text-transform:uppercase;margin-bottom:20px;}
+  .hero h1{font-size:clamp(38px,6.4vw,66px);font-weight:900;line-height:1.14;margin-bottom:22px;}
+  .hero h1 .accent-word{background:linear-gradient(90deg,var(--mod-text),var(--mod-image) 45%,var(--mod-audio));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .hero p.sub{font-size:clamp(14.5px,1.7vw,18px);color:#CFC8F2;max-width:660px;margin-bottom:40px;}
+  .chip-row{display:flex;flex-wrap:wrap;gap:11px;}
+  .chip{
+    padding:11px 20px;border-radius:30px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.14);
+    font-size:13px;font-weight:500;color:#DCD6F7;
+    transition:background .2s, border-color .2s, transform .2s;
+  }
+  .chip:hover{background:rgba(242,183,5,0.14);border-color:var(--mod-fusion);transform:translateY(-2px);color:var(--paper);}
+
+  /* HERO fusion diagram */
+  .fusion-viz{display:flex;align-items:center;justify-content:center;gap:0;margin-top:56px;flex-wrap:wrap;}
+  .fviz-node{width:78px;height:78px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;letter-spacing:.5px;box-shadow:0 0 0 6px rgba(255,255,255,0.05);flex-shrink:0;}
+  .fviz-node.n-text{background:var(--mod-text);}
+  .fviz-node.n-image{background:var(--mod-image);}
+  .fviz-node.n-audio{background:var(--mod-audio);}
+  .fviz-arrow{width:34px;height:2px;background:rgba(255,255,255,0.25);position:relative;flex-shrink:0;}
+  .fviz-arrow::after{content:'';position:absolute;right:-1px;top:-3px;width:0;height:0;border-top:4px solid transparent;border-bottom:4px solid transparent;border-left:6px solid rgba(255,255,255,0.35);}
+  .fviz-center{width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,var(--mod-fusion) 0%,#B98900 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--ink);font-weight:900;font-size:12.5px;text-align:center;line-height:1.3;box-shadow:0 0 0 8px rgba(242,183,5,0.12);flex-shrink:0;}
+  .fviz-col{display:flex;flex-direction:column;gap:14px;}
+  .scroll-cue{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);color:#CFC8F2;opacity:.7;font-size:12px;text-align:center;animation:bob 2s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(8px);}}
+
+  /* OVERVIEW compare */
+  .compare-2{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:44px;}
+  .compare-2 .card h4{font-size:13.5px;font-weight:700;color:var(--text-muted);margin:0 0 14px;text-transform:uppercase;letter-spacing:1px;}
+  .compare-2 .card.hi{background:var(--ink);color:var(--paper);}
+  .compare-2 .card.hi h4{color:var(--mod-fusion);}
+  .compare-2 .flow{font-family:'Noto Serif KR',serif;font-size:19px;font-weight:700;margin-bottom:8px;}
+  .compare-2 .small{font-size:12.8px;color:var(--text-muted);margin:0;}
+  .compare-2 .card.hi .small{color:#CFC8F2;}
+
+  /* WHY - gap table */
+  .gap-table-wrap{margin-top:36px;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+  .gap-table{width:100%;border-collapse:collapse;background:var(--paper);}
+  .gap-table th{background:var(--ink);color:var(--paper);font-size:12.5px;font-weight:700;padding:16px 20px;text-align:left;letter-spacing:.5px;}
+  .gap-table td{padding:16px 20px;font-size:13.3px;border-bottom:1px solid var(--line);vertical-align:top;}
+  .gap-table tr:last-child td{border-bottom:none;}
+  .gap-table td:first-child{width:180px;font-weight:700;color:var(--ink);background:var(--paper-tint);}
+  .limit-list{margin-top:28px;display:flex;flex-direction:column;gap:14px;}
+  .limit-item{display:flex;gap:14px;align-items:flex-start;}
+  .limit-item .x{width:26px;height:26px;border-radius:50%;background:rgba(214,69,91,0.12);color:var(--danger);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;margin-top:2px;}
+  .limit-item b{display:block;font-size:14px;margin-bottom:2px;}
+  .limit-item span{font-size:13px;color:var(--text-muted);}
+
+  /* CORE — encoders + fusion strategies */
+  .enc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:40px;}
+  .enc-card{border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);border-top:4px solid var(--mod-text);}
+  .enc-card.image{border-top-color:var(--mod-image);}
+  .enc-card.audio{border-top-color:var(--mod-audio);}
+  .enc-card h3{font-size:15px;font-weight:700;margin:10px 0 6px;}
+  .enc-card p{font-size:12.8px;color:var(--text-muted);margin:0;}
+
+  .fusion-strat{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:20px;}
+  .strat-card{background:var(--paper-tint);border-radius:var(--radius);padding:24px;position:relative;}
+  .strat-card.best{background:var(--ink);color:var(--paper);}
+  .strat-card .stag{position:absolute;top:-11px;right:18px;background:var(--mod-fusion);color:var(--mod-fusion-ink);font-size:10.5px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:.5px;}
+  .strat-card h4{font-size:14.5px;font-weight:700;margin-bottom:8px;}
+  .strat-card p{font-size:12.8px;color:var(--text-muted);margin:0;}
+  .strat-card.best p{color:#CFC8F2;}
+
+  /* CLIP contrastive */
+  .pair-row{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:40px;}
+  .pair-card{border-radius:var(--radius);padding:26px;box-shadow:var(--shadow);}
+  .pair-card.pos{background:rgba(14,163,131,0.07);border:1.5px solid rgba(14,163,131,0.3);}
+  .pair-card.neg{background:rgba(214,69,91,0.06);border:1.5px solid rgba(214,69,91,0.25);}
+  .pair-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .pair-head .mk{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;flex-shrink:0;}
+  .pair-card.pos .mk{background:var(--mod-audio);}
+  .pair-card.neg .mk{background:var(--danger);}
+  .pair-card h4{font-size:14.5px;font-weight:700;}
+  .pair-card p{font-size:13px;color:var(--text-muted);margin:6px 0 0;}
+  .pair-visual{display:flex;align-items:center;gap:12px;margin-top:16px;}
+  .pv-chip{padding:8px 14px;border-radius:10px;font-size:12px;font-weight:600;background:var(--paper);box-shadow:0 2px 6px rgba(0,0,0,.06);}
+  .pv-link{flex:1;height:2px;position:relative;}
+  .pair-card.pos .pv-link{background:repeating-linear-gradient(90deg,var(--mod-audio) 0 6px,transparent 6px 10px);}
+  .pair-card.neg .pv-link{background:repeating-linear-gradient(90deg,var(--danger) 0 6px,transparent 6px 10px);}
+
+  .zeroshot-note{margin-top:28px;display:flex;gap:16px;align-items:flex-start;background:var(--paper-tint);padding:22px 24px;border-radius:var(--radius);}
+  .zeroshot-note .badge{background:var(--mod-fusion);color:var(--mod-fusion-ink);}
+  .zeroshot-note p{font-size:13.5px;color:var(--text-dark);margin:0;}
+
+  /* ARCHITECTURE diagram — the signature element */
+  .arch-diagram{display:flex;align-items:stretch;gap:0;margin-top:48px;flex-wrap:wrap;}
+  .arch-box{flex:1;min-width:210px;border-radius:var(--radius);padding:28px 22px;text-align:center;box-shadow:var(--shadow);position:relative;}
+  .arch-box .role{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;opacity:.7;}
+  .arch-box .name{font-family:'Noto Serif KR',serif;font-size:18px;font-weight:700;margin-bottom:10px;}
+  .arch-box .desc{font-size:12.5px;line-height:1.6;}
+  .arch-box.sensor{background:rgba(232,93,61,0.08);border:1.5px solid rgba(232,93,61,0.28);}
+  .arch-box.sensor .role{color:var(--mod-image);}
+  .arch-box.bridge{background:var(--paper-tint);border:1.5px solid var(--line);}
+  .arch-box.bridge .role{color:var(--mod-text);}
+  .arch-box.brain{background:var(--ink);color:var(--paper);}
+  .arch-box.brain .role{color:var(--mod-fusion);}
+  .arch-box.brain .desc{color:#CFC8F2;}
+  .arch-connector{display:flex;align-items:center;justify-content:center;width:52px;flex-shrink:0;color:#B8B0DE;font-size:22px;}
+  .freeze-note{display:flex;gap:16px;align-items:flex-start;margin-top:32px;background:#EFF3FF;border-radius:var(--radius);padding:22px 24px;}
+  .freeze-note .ic{width:34px;height:34px;border-radius:8px;background:var(--mod-text);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+  .freeze-note p{font-size:13.3px;margin:0;color:var(--text-dark);}
+  .freeze-note b{color:var(--mod-text);}
+
+  /* PROS CONS */
+  .pc-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:44px;align-items:start;}
+  .pc-card{border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);}
+  .pc-card.pro{background:rgba(14,163,131,0.06);border:1.5px solid rgba(14,163,131,0.25);}
+  .pc-card.con{background:rgba(214,69,91,0.05);border:1.5px solid rgba(214,69,91,0.2);}
+  .pc-card h4{font-size:15px;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+  .pc-item{display:flex;gap:12px;margin-bottom:16px;}
+  .pc-item:last-child{margin-bottom:0;}
+  .pc-item .n{font-family:'Noto Serif KR',serif;font-weight:700;font-size:14px;color:var(--text-muted);flex-shrink:0;}
+  .pc-item b{display:block;font-size:13.5px;margin-bottom:2px;}
+  .pc-item span{font-size:12.8px;color:var(--text-muted);}
+
+  /* USE CASES */
+  .uc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:44px;}
+  .uc-card{background:var(--paper-tint);border-radius:var(--radius);padding:24px;}
+  .uc-card .uc-icon{width:42px;height:42px;border-radius:10px;background:var(--ink);color:var(--mod-fusion);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;margin-bottom:14px;}
+  .uc-card h4{font-size:14.5px;font-weight:700;margin-bottom:6px;}
+  .uc-card p{font-size:12.6px;color:var(--text-muted);margin:0;}
+
+  /* PRACTICE / CODE */
+  .code-block{background:var(--ink-deep);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);margin-top:24px;}
+  .code-head{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:var(--ink-2);}
+  .code-head .dots{display:flex;gap:6px;}
+  .code-head .dots span{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,0.2);}
+  .code-head .fname{font-family:var(--mono);font-size:11.5px;color:#CFC8F2;}
+  pre{margin:0;padding:22px 24px;overflow-x:auto;}
+  pre code{font-family:var(--mono);font-size:12.6px;line-height:1.75;color:#E4DEFF;white-space:pre;}
+  .cm{color:#8880B0;}
+  .kw{color:var(--mod-image);}
+  .st{color:var(--mod-audio);}
+  .fn{color:var(--mod-fusion);}
+  .out-block{background:var(--paper-tint);border-radius:var(--radius);padding:18px 22px;margin-top:16px;font-family:var(--mono);font-size:12.5px;color:var(--text-dark);}
+  .out-block .arrow{color:var(--mod-image);font-weight:700;}
+  .practice-lede{margin-top:8px;}
+  .practice-block{margin-top:44px;}
+  .practice-block h4{font-size:15px;font-weight:700;display:flex;align-items:center;gap:10px;}
+
+  /* COMPARE TABLE */
+  .cmp-table-wrap{margin-top:40px;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+  .cmp-table{width:100%;border-collapse:collapse;background:var(--paper);}
+  .cmp-table th{padding:16px 20px;font-size:12px;font-weight:700;text-align:left;letter-spacing:.5px;text-transform:uppercase;}
+  .cmp-table th:first-child{background:var(--ink);color:var(--paper);width:150px;}
+  .cmp-table th:nth-child(2){background:#EDEAF8;color:var(--text-muted);}
+  .cmp-table th:nth-child(3){background:var(--ink);color:var(--mod-fusion);}
+  .cmp-table td{padding:15px 20px;font-size:13px;border-bottom:1px solid var(--line);vertical-align:top;}
+  .cmp-table tr:last-child td{border-bottom:none;}
+  .cmp-table td:first-child{font-weight:700;color:var(--ink);background:var(--paper-tint);}
+  .cmp-table td:nth-child(3){font-weight:600;}
+
+  /* SUMMARY */
+  .summary{background:linear-gradient(180deg,var(--ink-2) 0%, var(--ink-deep) 100%);color:var(--paper);}
+  .recap-list{margin-top:36px;display:flex;flex-direction:column;gap:0;}
+  .recap-item{display:flex;align-items:flex-start;gap:20px;padding:20px 0;border-bottom:1px solid rgba(255,255,255,0.1);}
+  .recap-item:last-child{border-bottom:none;}
+  .recap-item .num{font-family:'Noto Serif KR',serif;font-size:15px;color:var(--mod-fusion);font-weight:700;width:30px;flex-shrink:0;}
+  .recap-item .rt{font-size:14.5px;line-height:1.65;color:#E4DEFF;}
+  .future-row{margin-top:36px;display:flex;gap:12px;flex-wrap:wrap;}
+  .future-chip{padding:10px 18px;border-radius:20px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);font-size:12.8px;color:#CFC8F2;}
+  .future-chip b{color:var(--paper);}
+
+  footer{background:var(--ink-deep);color:#8880B0;padding:36px 0;font-size:12.3px;}
+  footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+  .totop{border:1px solid rgba(255,255,255,0.2);padding:8px 16px;border-radius:20px;font-size:12px;transition:border-color .2s, color .2s;}
+  .totop:hover{border-color:var(--mod-fusion);color:var(--mod-fusion);}
+
+  @media(max-width:900px){
+    nav.links{display:none;}
+    .hamburger{display:flex;}
+    .compare-2{grid-template-columns:1fr;}
+    .enc-grid{grid-template-columns:1fr;}
+    .fusion-strat{grid-template-columns:1fr;}
+    .pair-row{grid-template-columns:1fr;}
+    .pc-grid{grid-template-columns:1fr;}
+    .uc-grid{grid-template-columns:1fr 1fr;}
+    .arch-diagram{flex-direction:column;}
+    .arch-connector{width:100%;height:36px;transform:rotate(90deg);}
+    section{padding:76px 0;}
+    .cmp-table{font-size:12px;}
+  }
+  @media(max-width:560px){
+    .uc-grid{grid-template-columns:1fr;}
+    .fviz-node,.fviz-center{transform:scale(.82);}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<header class="nav" id="siteNav">
+  <div class="wrap">
+    <div class="brand"><span class="dot3"><span></span><span></span><span></span></span> 멀티모달 AI</div>
+    <nav class="links">
+      <a href="#overview">개요</a>
+      <a href="#why">배경</a>
+      <a href="#core">핵심기술</a>
+      <a href="#clip">CLIP</a>
+      <a href="#architecture">아키텍처</a>
+      <a href="#pros-cons">장단점</a>
+      <a href="#use-cases">활용사례</a>
+      <a href="#practice">실습</a>
+      <a href="#compare">비교</a>
+    </nav>
+    <button class="hamburger" id="hamBtn" aria-label="메뉴 열기"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#overview">개요</a>
+  <a href="#why">왜 필요한가</a>
+  <a href="#core">핵심 기술</a>
+  <a href="#clip">CLIP</a>
+  <a href="#architecture">아키텍처</a>
+  <a href="#pros-cons">장단점</a>
+  <a href="#use-cases">활용 사례</a>
+  <a href="#practice">실습</a>
+  <a href="#compare">비교</a>
+</div>
+<button class="mobile-close" id="mobileClose">×</button>
+
+<main>
+
+<section class="hero" id="top">
+  <div class="wrap">
+    <div class="eyebrow">A03 · AI Basic</div>
+    <h1>텍스트를 넘어,<br><span class="accent-word">보고 듣는</span> AI로</h1>
+    <p class="sub">멀티모달(Multi-Modal) AI는 텍스트·이미지·오디오처럼 서로 다른 유형의 데이터를 하나의 의미 공간에서 함께 이해하고 추론하는 기술이다. 이 페이지는 개념 정의부터 CLIP, 현대 아키텍처, 실습 코드까지 한 번에 정리한다.</p>
+    <div class="chip-row">
+      <a class="chip" href="#why">모달리티 갭</a>
+      <a class="chip" href="#clip">CLIP · 대조학습</a>
+      <a class="chip" href="#architecture">인코더-프로젝션-LLM</a>
+      <a class="chip" href="#practice">BLIP 실습</a>
+    </div>
+
+    <div class="fusion-viz">
+      <div class="fviz-col">
+        <div class="fviz-node n-text">TEXT</div>
+      </div>
+      <div class="fviz-arrow"></div>
+      <div class="fviz-col">
+        <div class="fviz-node n-image">IMAGE</div>
+      </div>
+      <div class="fviz-arrow"></div>
+      <div class="fviz-center">공통<br>임베딩<br>공간</div>
+      <div class="fviz-arrow" style="transform:scaleX(-1);"></div>
+      <div class="fviz-col">
+        <div class="fviz-node n-audio">AUDIO</div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-cue">SCROLL ↓</div>
+</section>
+
+<section id="overview">
+  <div class="wrap reveal">
+    <div class="kicker">Overview</div>
+    <h2 class="title">멀티모달 AI란 무엇인가</h2>
+    <p class="lede"><b>Multi(여러 개의)</b> + <b>Modality(양식·형태)</b>의 합성어. 텍스트, 이미지, 음성 등 서로 다른 유형의 데이터를 결합해 정보를 처리하고 추론하는 인공지능 기술이다. 인간이 목소리 톤(청각)과 표정(시각), 말의 내용(언어)을 종합해 상대를 이해하듯, AI도 여러 감각을 <b>융합(Fusion)</b>해 맥락을 더 깊이 파악하는 것이 목표다.</p>
+
+    <div class="compare-2">
+      <div class="card">
+        <h4>유니모달 · Unimodal</h4>
+        <div class="flow">텍스트 → 텍스트</div>
+        <p class="small">단일 데이터 유형만 처리. 예: 초기 번역기, 텍스트 전용 챗봇. 텍스트 안의 정보만으로 판단하기 때문에 맥락 이해에 한계가 뚜렷하다.</p>
+      </div>
+      <div class="card hi">
+        <h4>멀티모달 · Multimodal</h4>
+        <div class="flow">텍스트 + 이미지 → 텍스트</div>
+        <p class="small">서로 다른 모달리티를 함께 입력받아 이해·생성. 예: 이미지 캡셔닝, 텍스트→이미지 생성(DALL·E). 시청각 정보를 통합해 훨씬 포괄적인 맥락을 파악한다.</p>
+      </div>
+    </div>
+
+    <div class="note-box"><b>핵심 철학</b> — "백문이 불여일견." 텍스트만으로 "노을 지는 해변"을 묘사하는 것보다 사진 한 장을 함께 주는 편이 정보 전달력이 훨씬 높다. 멀티모달 AI는 이 원리를 모델 내부에 그대로 옮겨온다.</div>
+  </div>
+</section>
+
+<section id="why" style="background:var(--paper-tint);">
+  <div class="wrap reveal">
+    <div class="kicker">Why It Emerged</div>
+    <h2 class="title">왜 멀티모달 LLM이 필요한가</h2>
+    <p class="lede">텍스트 기반 LLM은 토큰 시퀀스를 입력받아 다음 토큰을 예측하는 <b>문자열 중심 모델</b>이다. 하지만 현실 세계는 텍스트만으로 이루어져 있지 않다.</p>
+
+    <div class="limit-list">
+      <div class="limit-item"><div class="x">×</div><div><b>정보 손실</b><span>이미지를 텍스트로 설명해서 입력하면 위치·색상·구조 같은 시각 정보의 세밀한 맥락이 사라진다.</span></div></div>
+      <div class="limit-item"><div class="x">×</div><div><b>현실 세계와의 괴리</b><span>의료 영상 분석, 공장 센서 로그, UI 화면 해석 등 실제 산업 현장은 여러 모달리티를 동시에 해석해야 하는 경우가 대부분이다.</span></div></div>
+    </div>
+
+    <h3 style="font-size:16px;font-weight:700;margin-top:44px;margin-bottom:6px;">모달리티 갭(Modality Gap)</h3>
+    <p class="lede" style="margin-top:0;">텍스트와 이미지·오디오는 표현되는 방식 자체가 다르다. 이 간극을 줄여 <b>공통의 의미 공간</b>으로 정렬하는 것이 멀티모달 모델의 핵심 과제다.</p>
+
+    <div class="gap-table-wrap">
+      <table class="gap-table">
+        <tr><th>구분</th><th><span class="mtag text">TEXT</span></th><th><span class="mtag image">IMAGE / AUDIO</span></th></tr>
+        <tr><td>특성</td><td>이산적(Discrete), 순차적(Sequential)</td><td>연속적(Continuous), 공간적 / 시계열적</td></tr>
+        <tr><td>임베딩 공간</td><td>문자열 기반의 의미 공간</td><td>픽셀 / 파형 기반의 특징 공간</td></tr>
+      </table>
+    </div>
+
+    <div class="note-box" style="margin-top:32px;"><b>LLM 이전 시대의 한계</b> — 과거에는 이미지는 CNN, 텍스트는 RNN으로 각각 처리한 뒤 결과만 단순히 합쳤다(Early/Late Fusion). 모달리티가 늘수록 설계가 기하급수적으로 복잡해졌고, 의미 정렬이 부족했으며, VQA 같은 특정 태스크에만 특화되어 범용성이 떨어졌다.</div>
+  </div>
+</section>
+
+<section id="core">
+  <div class="wrap reveal">
+    <div class="kicker">Core Mechanics</div>
+    <h2 class="title">서로 다른 데이터를 어떻게 하나로 합칠까</h2>
+    <p class="lede">숫자로 된 텍스트 벡터와 픽셀로 된 이미지 벡터는 차원 자체가 다르다. 멀티모달 기술의 핵심은 이 이질적인 데이터를 특징으로 뽑아내고(인코딩), 같은 공간에 정렬한 뒤(임베딩 정렬), 적절한 시점에 섞는(융합) 것이다.</p>
+
+    <h3 style="font-size:15.5px;font-weight:700;margin-top:40px;margin-bottom:4px;">1 · 모달리티별 인코더</h3>
+    <div class="enc-grid">
+      <div class="enc-card">
+        <span class="mtag text">TEXT</span>
+        <h3>Transformer</h3>
+        <p>BERT, GPT 계열 모델이 문장을 의미 벡터로 변환한다.</p>
+      </div>
+      <div class="enc-card image">
+        <span class="mtag image">IMAGE</span>
+        <h3>CNN / ViT</h3>
+        <p>ResNet 같은 CNN 또는 Vision Transformer가 이미지를 패치 단위 특징으로 추출한다.</p>
+      </div>
+      <div class="enc-card audio">
+        <span class="mtag audio">AUDIO</span>
+        <h3>Spectrogram + CNN/Transformer</h3>
+        <p>음성을 스펙트로그램으로 변환한 뒤 CNN·Transformer로 특징을 뽑는다.</p>
+      </div>
+    </div>
+
+    <h3 style="font-size:15.5px;font-weight:700;margin-top:48px;margin-bottom:4px;">2 · 융합 전략(Fusion Strategies)</h3>
+    <p class="lede" style="margin-top:0;">데이터를 합치는 시점에 따라 성능이 달라진다.</p>
+    <div class="fusion-strat">
+      <div class="strat-card">
+        <h4>Early Fusion</h4>
+        <p>입력 단계에서 바로 데이터를 합친다. 모달리티 간 상관관계가 높을 때 유리하다.</p>
+      </div>
+      <div class="strat-card best">
+        <div class="stag">가장 많이 사용</div>
+        <h4>Joint (Intermediate) Fusion</h4>
+        <p>모델 중간 단계에서 Cross-Attention 등으로 서로의 정보를 교환하며 합친다. 오늘날 표준에 가깝다.</p>
+      </div>
+      <div class="strat-card">
+        <h4>Late Fusion</h4>
+        <p>각자 결과를 낸 뒤 투표(Voting)하거나 평균을 내어 합친다. 앙상블과 유사하다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="clip" style="background:var(--paper-tint);">
+  <div class="wrap reveal">
+    <div class="kicker">Turning Point</div>
+    <h2 class="title">CLIP — 멀티모달 패러다임의 전환점</h2>
+    <p class="lede">OpenAI가 제안한 <b>CLIP(Contrastive Language-Image Pre-training)</b>은 이미지와 텍스트를 하나의 임베딩 공간에 정렬하는 데 성공하며 현대 멀티모달 구조의 표준을 제시했다. "강아지"라는 텍스트 벡터와 강아지 사진의 이미지 벡터가 공간상에서 서로 가깝게 위치하도록 학습시키는 방식이다.</p>
+
+    <div class="pair-row">
+      <div class="pair-card pos">
+        <div class="pair-head"><div class="mk">✓</div><h4>Positive Pair · 일치 쌍</h4></div>
+        <p>이미지와 그에 대응하는 텍스트 설명은 서로 가깝게 배치되도록 학습한다.</p>
+        <div class="pair-visual"><span class="pv-chip">🐶 강아지 사진</span><div class="pv-link"></div><span class="pv-chip">"a dog"</span></div>
+      </div>
+      <div class="pair-card neg">
+        <div class="pair-head"><div class="mk">×</div><h4>Negative Pair · 불일치 쌍</h4></div>
+        <p>관련 없는 이미지-텍스트 쌍은 서로 멀어지도록 학습한다.</p>
+        <div class="pair-visual"><span class="pv-chip">🐶 강아지 사진</span><div class="pv-link"></div><span class="pv-chip">"a burger"</span></div>
+      </div>
+    </div>
+
+    <div class="zeroshot-note">
+      <div class="badge">0</div>
+      <p><b>제로샷(Zero-shot) 능력</b> — 인터넷상의 수억 개 이미지-텍스트 쌍을 별도 정답 레이블 없이 대규모로 학습한 덕분에, 고정된 클래스 없이도 텍스트 설명만으로 새로운 개념을 인식할 수 있다. 이는 이후 LLM이 텍스트만으로 새 태스크를 수행하는 방식과 구조적으로 동일하다.</p>
+    </div>
+  </div>
+</section>
+
+<section id="architecture">
+  <div class="wrap reveal">
+    <div class="kicker">Modern Architecture</div>
+    <h2 class="title">센서 · 다리 · 브레인 — 인코더-프로젝션-LLM 구조</h2>
+    <p class="lede">현대 멀티모달 시스템은 효율성과 성능을 위해 <b>인코더와 LLM을 분리</b>하는 구조를 채택한다. 이미 잘 학습된 강력한 비전 인코더와 LLM을 결합하는 방식이 현재 가장 효율적인 실무적 해법이다.</p>
+
+    <div class="arch-diagram">
+      <div class="arch-box sensor">
+        <div class="role">01 · 센서</div>
+        <div class="name">Vision Encoder</div>
+        <div class="desc">이미지를 임베딩 벡터로 변환. 주로 CLIP의 비전 인코더를 사용하며 "무엇을 보고 있는가"를 정의(인식)한다.</div>
+      </div>
+      <div class="arch-connector">→</div>
+      <div class="arch-box bridge">
+        <div class="role">02 · 다리</div>
+        <div class="name">Projection Layer</div>
+        <div class="desc">인코더의 출력을 LLM이 이해할 수 있는 토큰 임베딩 공간으로 변환하는 교량 역할을 한다.</div>
+      </div>
+      <div class="arch-connector">→</div>
+      <div class="arch-box brain">
+        <div class="role">03 · 브레인</div>
+        <div class="name">LLM Backbone</div>
+        <div class="desc">변환된 정보를 바탕으로 최종 추론과 문장 생성을 수행. "그것에 대해 무엇을 할 것인가"를 결정(추론/생성)한다.</div>
+      </div>
+    </div>
+
+    <div class="freeze-note">
+      <div class="ic">❄</div>
+      <p><b>Freeze 전략</b> — 대부분의 모델은 학습 시 비전 인코더를 가중치 고정(Freeze) 상태로 유지한다. 인코더가 이미 학습한 일반적인 시각 개념을 보존하기 위함이며, 다시 학습시키면 기존의 언어적 정렬 성질이 깨질 위험이 있다. 그래서 현대 멀티모달 설계의 핵심은 "인코더의 출력을 어떻게 LLM에 효율적으로 전달할 것인가"에 집중된다.</p>
+    </div>
+  </div>
+</section>
+
+<section id="pros-cons" style="background:var(--paper-tint);">
+  <div class="wrap reveal">
+    <div class="kicker">Trade-offs</div>
+    <h2 class="title">장점과 단점</h2>
+    <div class="pc-grid">
+      <div class="pc-card pro">
+        <h4>✅ 장점</h4>
+        <div class="pc-item"><span class="n">01</span><div><b>높은 정확도와 맥락 이해</b><span>텍스트만으로는 알 수 없는 뉘앙스(이미지 분위기, 목소리 톤)를 파악해 더 정확한 판단을 내린다.</span></div></div>
+        <div class="pc-item"><span class="n">02</span><div><b>UX 혁신</b><span>글로 설명하지 않고 사진을 찍거나 말로 물어보는 직관적인 인터랙션이 가능하다.</span></div></div>
+        <div class="pc-item"><span class="n">03</span><div><b>새로운 창작 가능성</b><span>텍스트로 이미지를 그리거나 영상을 보고 배경음악을 생성하는 등 창의적 작업이 가능하다.</span></div></div>
+      </div>
+      <div class="pc-card con">
+        <h4>❌ 단점</h4>
+        <div class="pc-item"><span class="n">01</span><div><b>방대한 데이터 및 비용</b><span>이미지·비디오는 텍스트보다 훨씬 커서 학습·추론 비용(GPU)이 매우 높다.</span></div></div>
+        <div class="pc-item"><span class="n">02</span><div><b>데이터 편향 및 품질 문제</b><span>텍스트-이미지가 잘 매칭된 양질의 페어 데이터를 구하기 어렵다.</span></div></div>
+        <div class="pc-item"><span class="n">03</span><div><b>복잡성</b><span>서로 다른 모달리티 간의 충돌·노이즈를 제어하는 아키텍처 설계가 까다롭다.</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="use-cases">
+  <div class="wrap reveal">
+    <div class="kicker">Use Cases</div>
+    <h2 class="title">주요 활용 분야</h2>
+    <p class="lede">멀티모달 AI는 이미 우리 생활 깊숙이 들어와 있다.</p>
+
+    <div class="uc-grid">
+      <div class="uc-card"><div class="uc-icon">✎</div><h4>생성형 AI</h4><p>텍스트 ↔ 이미지 생성 (Midjourney, DALL·E 3)</p></div>
+      <div class="uc-card"><div class="uc-icon">✚</div><h4>의료(Healthcare)</h4><p>CT/MRI 영상(비전)과 진료 기록(텍스트)을 결합해 정확한 진단을 보조</p></div>
+      <div class="uc-card"><div class="uc-icon">⛟</div><h4>자율주행</h4><p>카메라(비전) · 라이다(센서) · GPS(위치) 데이터를 융합해 도로 상황 판단</p></div>
+      <div class="uc-card"><div class="uc-icon">🛒</div><h4>이커머스</h4><p>상품 사진으로 유사 상품을 찾거나 상품 설명을 자동 생성</p></div>
+      <div class="uc-card"><div class="uc-icon">▶</div><h4>영상 분석</h4><p>영상 내용을 요약하거나 특정 하이라이트 장면을 자동 추출</p></div>
+      <div class="uc-card"><div class="uc-icon">＋</div><h4>RAG 결합</h4><p>차트·표가 포함된 복잡한 문서 해석, CCTV 관제 자동화 등 실질적 가치 창출</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="practice" style="background:var(--paper-tint);">
+  <div class="wrap reveal">
+    <div class="kicker">Hands-on</div>
+    <h2 class="title">직접 해보기 — BLIP & CLIP</h2>
+    <p class="lede practice-lede">Hugging Face의 <code>transformers</code> 라이브러리로 두 가지를 실습해본다. 이미지를 설명문으로 바꾸는 <b>이미지 캡셔닝(BLIP)</b>과, 텍스트-이미지 유사도를 계산하는 <b>CLIP</b>이다. CPU에서도 동작한다.</p>
+
+    <div class="code-block">
+      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">setup.sh</div></div>
+      <pre><code><span class="cm"># GPU가 있으면 좋지만, CPU에서도 동작합니다</span>
+pip install transformers torch pillow requests</code></pre>
+    </div>
+
+    <div class="practice-block">
+      <h4><span class="mtag image">IMAGE</span> 이미지 캡셔닝 (BLIP)</h4>
+      <div class="code-block">
+        <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">caption.py</div></div>
+        <pre><code><span class="kw">import</span> requests
+<span class="kw">from</span> PIL <span class="kw">import</span> Image
+<span class="kw">from</span> transformers <span class="kw">import</span> BlipProcessor, BlipForConditionalGeneration
+
+<span class="cm"># 1. 모델 및 프로세서 로드 (Salesforce의 BLIP 모델 사용)</span>
+processor = BlipProcessor.from_pretrained(<span class="st">"Salesforce/blip-image-captioning-base"</span>)
+model = BlipForConditionalGeneration.from_pretrained(<span class="st">"Salesforce/blip-image-captioning-base"</span>)
+
+<span class="cm"># 2. 이미지 준비 (URL에서 로드)</span>
+img_url = <span class="st">'https://storage.googleapis.com/sfr-vision-language-research/BLIP/demo.jpg'</span>
+raw_image = Image.<span class="fn">open</span>(requests.get(img_url, stream=<span class="kw">True</span>).raw).convert(<span class="st">'RGB'</span>)
+
+<span class="cm"># 3. 데이터 전처리 — 텍스트 힌트를 주면 더 정확한 캡션을 생성</span>
+text = <span class="st">"a photography of"</span>
+inputs = processor(raw_image, text, return_tensors=<span class="st">"pt"</span>)
+
+<span class="cm"># 4. 추론 (Caption Generation)</span>
+out = model.generate(**inputs, max_new_tokens=<span class="fn">50</span>)
+
+<span class="cm"># 5. 결과 디코딩</span>
+caption = processor.decode(out[<span class="fn">0</span>], skip_special_tokens=<span class="kw">True</span>)
+<span class="fn">print</span>(f<span class="st">"👉 {caption}"</span>)</code></pre>
+      </div>
+      <div class="out-block"><span class="arrow">▶</span> a photography of a woman and her dog on the beach</div>
+    </div>
+
+    <div class="practice-block">
+      <h4><span class="mtag fusion">CLIP</span> 텍스트로 이미지 검색하기</h4>
+      <div class="code-block">
+        <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">clip_search.py</div></div>
+        <pre><code><span class="kw">from</span> transformers <span class="kw">import</span> CLIPProcessor, CLIPModel
+
+<span class="cm"># 1. CLIP 모델 로드</span>
+model = CLIPModel.from_pretrained(<span class="st">"openai/clip-vit-base-patch32"</span>)
+processor = CLIPProcessor.from_pretrained(<span class="st">"openai/clip-vit-base-patch32"</span>)
+
+<span class="cm"># 2. 후보 텍스트 준비 (raw_image는 위 예제의 해변 사진 재사용)</span>
+candidates = [<span class="st">"a dog playing"</span>, <span class="st">"a cat sleeping"</span>, <span class="st">"a delicious burger"</span>]
+
+<span class="cm"># 3. 입력 처리 및 추론</span>
+inputs = processor(text=candidates, images=raw_image, return_tensors=<span class="st">"pt"</span>, padding=<span class="kw">True</span>)
+outputs = model(**inputs)
+
+<span class="cm"># 4. 유사도 계산 (Logits → Softmax)</span>
+logits_per_image = outputs.logits_per_image
+probs = logits_per_image.softmax(dim=<span class="fn">1</span>)
+
+<span class="cm"># 5. 결과 출력</span>
+<span class="kw">for</span> i, prob <span class="kw">in</span> <span class="fn">enumerate</span>(probs[<span class="fn">0</span>]):
+    <span class="fn">print</span>(f<span class="st">"'{candidates[i]}': {prob.item()*100:.2f}%"</span>)</code></pre>
+      </div>
+      <div class="out-block">
+        <span class="arrow">▶</span> 'a dog playing': 98.50%<br>
+        &nbsp;&nbsp;'a cat sleeping': 0.10%<br>
+        &nbsp;&nbsp;'a delicious burger': 1.40%
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="compare">
+  <div class="wrap reveal">
+    <div class="kicker">At a Glance</div>
+    <h2 class="title">한눈에 비교: 유니모달 vs 멀티모달</h2>
+
+    <div class="cmp-table-wrap">
+      <table class="cmp-table">
+        <tr><th>비교 항목</th><th>유니모달 AI</th><th>멀티모달 AI</th></tr>
+        <tr><td>입력 데이터</td><td>단일 유형 (텍스트 OR 이미지)</td><td>복합 유형 (텍스트 + 이미지 + 오디오)</td></tr>
+        <tr><td>학습 방식</td><td>각 모달리티별 독립적 학습</td><td>Joint Learning(공동 학습) 및 정렬</td></tr>
+        <tr><td>맥락 이해</td><td>제한적 — 텍스트 내 정보만 파악</td><td>포괄적 — 시청각 정보를 통합해 파악</td></tr>
+        <tr><td>응용 범위</td><td>번역, 분류, 단일 생성</td><td>VQA(시각 질의응답), 생성, 로봇 제어</td></tr>
+        <tr><td>대표 모델</td><td>BERT, GPT-3, ResNet</td><td>GPT-4o, Gemini, CLIP, Stable Diffusion</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="summary" id="summary">
+  <div class="wrap reveal">
+    <div class="kicker on-dark">Summary</div>
+    <h2 class="title on-dark">세 문장으로 정리하는 멀티모달 LLM</h2>
+    <p class="lede on-dark">인간이 보고 듣고 이해하듯, AI도 여러 감각을 하나의 인지 공간에서 통합하는 방향으로 진화하고 있다.</p>
+
+    <div class="recap-list">
+      <div class="recap-item"><span class="num">01</span><span class="rt">현실 세계를 제대로 이해하려면 텍스트만으로는 부족하다 — 위치·색상·톤 같은 정보는 언어로 온전히 옮겨지지 않는다.</span></div>
+      <div class="recap-item"><span class="num">02</span><span class="rt">서로 다른 데이터를 하나의 의미 공간으로 정렬하는 것이 관건이며, <b>CLIP</b>이 대조 학습으로 그 표준을 제시했다.</span></div>
+      <div class="recap-item"><span class="num">03</span><span class="rt">현대 아키텍처는 <b>인코더(센서) + 프로젝션 레이어(다리) + LLM(브레인)</b>의 분업 구조로 효율성과 확장성을 동시에 확보한다.</span></div>
+    </div>
+
+    <div class="future-row">
+      <span class="future-chip">향후 전망 →</span>
+      <span class="future-chip"><b>Flamingo</b></span>
+      <span class="future-chip"><b>BLIP-2</b></span>
+      <span class="future-chip"><b>LLaVA</b></span>
+      <span class="future-chip">CLIP의 사상을 바탕으로 프로젝션 레이어를 고도화하는 방향으로 전개 중</span>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>멀티모달(Multi-Modal) AI · A03 · AI Native World</span>
+    <a class="totop" href="#top">맨 위로 ↑</a>
+  </div>
+</footer>
+
+<script>
+  var progress = document.getElementById('progress');
+  var nav = document.getElementById('siteNav');
+  window.addEventListener('scroll', function(){
+    var h = document.documentElement;
+    var scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    progress.style.width = scrolled + '%';
+    if(h.scrollTop > 40){ nav.classList.add('scrolled'); } else { nav.classList.remove('scrolled'); }
+  });
+
+  var hamBtn = document.getElementById('hamBtn');
+  var mobileMenu = document.getElementById('mobileMenu');
+  var mobileClose = document.getElementById('mobileClose');
+  function openMenu(){ mobileMenu.classList.add('open'); mobileClose.style.display='block'; }
+  function closeMenu(){ mobileMenu.classList.remove('open'); mobileClose.style.display='none'; }
+  hamBtn.addEventListener('click', openMenu);
+  mobileClose.addEventListener('click', closeMenu);
+  mobileMenu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeMenu); });
+
+  var revealObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){ entry.target.classList.add('in-view'); }
+    });
+  }, {threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(function(el){ revealObserver.observe(el); });
+</script>
+
+</body>
+</html>
