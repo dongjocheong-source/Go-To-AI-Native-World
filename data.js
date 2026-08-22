@@ -55,6 +55,68 @@ const PORTAL_TOOLS = [
   { label: "Higgsfield", icon: "icon-higgsfield.png", bg: "#1e8449" },
 ];
 
+/**
+ * MODALITY_GROUPS — the 6 "modality" cards shown on the main portal, just
+ * below the PORTAL_TOOLS grid. Each group bundles the best tool(s) for one
+ * data modality (chat, research, image, code, video, audio).
+ *
+ * tools[].icon: filename inside assets/portal/ (reuses the same icon set
+ * as PORTAL_TOOLS above, so bg colors are kept consistent).
+ */
+const MODALITY_GROUPS = [
+  {
+    label: "대화 · 채팅",
+    icon: "message-circle",
+    tools: [
+      { icon: "icon-chatgpt.png", bg: "#ffffff" },
+      { icon: "icon-claude.png", bg: "#d97757" },
+    ],
+    desc: "ChatGPT · Claude — 모든 일의 출발점.",
+  },
+  {
+    label: "리서치",
+    icon: "device",
+    tools: [{ icon: "icon-notebooklm.png", bg: "#6c5ce7" }],
+    desc: "NotebookLM — 자료 더미를 인사이트로.",
+  },
+  {
+    label: "이미지 · 디자인",
+    icon: "image",
+    tools: [
+      { icon: "icon-claude.png", bg: "#141414" },
+      { icon: "icon-nanobanana.png", bg: "#1a1a1e" },
+    ],
+    desc: "Claude Design · Nano Banana — 브랜드 자산을 직접.",
+  },
+  {
+    label: "코드 · 빌드",
+    icon: "code",
+    tools: [
+      { icon: "icon-claudecode.png", bg: "#141414" },
+      { icon: "icon-replit.png", bg: "#141414" },
+    ],
+    desc: "Claude Code · Replit — 비개발자도 앱을 띄웁니다.",
+  },
+  {
+    label: "영상",
+    icon: "video",
+    tools: [
+      { icon: "icon-higgsfield.png", bg: "#1e8449" },
+      { icon: "icon-capcut.png", bg: "#141414" },
+    ],
+    desc: "Higgsfield · CapCut — 광고와 숏폼을 한 자리에서.",
+  },
+  {
+    label: "오디오 · 보이스",
+    icon: "music",
+    tools: [
+      { icon: "icon-suno.png", bg: "#ff7a59" },
+      { icon: "icon-elevenlabs.png", bg: "#141414" },
+    ],
+    desc: "Suno · ElevenLabs — BGM부터 더빙까지.",
+  },
+];
+
 const CATEGORIES = [
   // ── A00 ────────────────────────────────────────────────────────────
   {
@@ -250,7 +312,7 @@ const CATEGORIES = [
       { id: "e01", title: "AI시대 생존전략", meta: "E01", hue: 5,
         body: "AI시대를 주도하는 실리콘밸리 엔지니어의 생존공식" },
       { id: "e02", title: "Karpathy LLM", meta: "E04", hue: 5,
-        body: "Andrej Karpathy가 제안한 \"LLM을 활용한 개인 지식 베이스 구축 패턴\" 입니다." },
+        body: "Andrej Karpathy가 제안한 \"LLM을 활용한 개인 지식 베이스 구축 패턴\"입니다." },
       { id: "e03", title: "AI로보틱스", meta: "E03", hue: 5,
         body: "AI로보틱스에 대한 내용을 준비 중입니다." },
       { id: "e04", title: "소형언어모델", meta: "E04", hue: 5,
