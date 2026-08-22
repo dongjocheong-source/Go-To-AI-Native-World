@@ -320,7 +320,16 @@ const CATEGORIES = [
         body: "AI로보틱스에 대한 내용을 준비 중입니다." },
       { id: "e04", title: "소형언어모델", meta: "E04", hue: 5,
         body: "소형언어모델에 대한 내용을 준비 중입니다." },
-
+      { id: "e05", title: "Langfuse-guide", meta: "E05", hue: 5,
+        body: "Langfuse 설치 및 사용 가이드 (Docker 기반)" },
+      { id: "e06", title: "LangChain vs Pure Python", meta: "E06", hue: 5,
+        body: " LLM Fallback 메커니즘 완벽 가이드 (LangChain vs Pure Python)." },
+      { id: "e07", title: "Speed-Metrics-Guide", meta: "E07", hue: 5,
+        body: "LLM 속도 파헤쳐보기 (TTFT, TPOT, Throughput 개념)." },
+      { id: "e08", title: "GPU-Monitoring-Guide", meta: "E08", hue: 5,
+        body: "NVIDIA GPU 모니터링 완벽 가이드 (정의, 구성요소, 실습)." },
+      { id: "e09", title: "Server-ops-guide", meta: "E09", hue: 5,
+        body: "개발자를 위한 AI 서버 관리 꿀팁 A to Z (screen, git, Postman)." },
     ],
   },
 
