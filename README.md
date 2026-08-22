@@ -124,7 +124,12 @@ Go to AI native라는 모토로 AI World로 들어가기 위해 공부하는 각
 ---
 
 ## [H] 데이터베이스
--
+- H01_데이터베이스
+    - H01a - DB-Types-Guide
+    - H01b - Elastic-Search-Guide
+    - H01c - Metadata-Guide
+    - H01d - Qdrant-Guide
+- H02_Supabase-Guide  
 ---
 
 ## [I] ML_DL
