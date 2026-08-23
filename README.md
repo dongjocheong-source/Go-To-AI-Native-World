@@ -144,10 +144,10 @@ Go to AI native라는 모토로 AI World로 들어가기 위해 공부하는 각
 - I04_[AIDL] 3)RNN (순환 신경망) 완벽 가이드
 - I05_[AIDL] 4)Transformers (트랜스포머) 완벽 가이드
 - I06_[AIML] 1)로지스틱 회귀 (Logistic Regression) 완벽 가이드
-- I07_[AIML] 2)Feature Engineering이란
-- I08_[AIML] 2)KNN (K-Nearest Neighbors) 완벽 가이드
-- I09_[AIML] 3)나이브 베이즈 (Naive Bayes) 완벽 가이드
-- I10_[AIML] 4)SVM (Support Vector Machine) 완벽 가이드
+- I07_[AIML] 2)KNN (K-Nearest Neighbors) 완벽 가이드
+- I08_[AIML] 3)나이브 베이즈 (Naive Bayes) 완벽 가이드
+- I09_[AIML] 4)SVM (Support Vector Machine) 완벽 가이드
+- I10_[AIML] 5)Feature Engineering이란
 - I11_[AIML] 6)랜덤 포레스트(Random Forest) 완벽 가이드
 - I12_[AIML] 7)Gradient Boosting(GBM) 완벽 가이드
 - I13_[AIML] 8)XGBoost (eXtreme Gradient Boosting) 완벽 가이드
