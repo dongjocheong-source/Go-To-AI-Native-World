@@ -204,7 +204,7 @@ Go to AI native라는 모토로 AI World로 들어가기 위해 공부하는 각
 - R02_[Python] venv, Conda, 그리고 uv
 - R03_[Python] 파이썬 가상환경(venv) 사용하는 법
 - R04_[AIPython] Json-Repair - AI 시대의 망가진 JSON 자동 복구 라이브러리R05_
-- [AIPython] pydantic이란 무엇인가
+- R05_[AIPython] pydantic이란 무엇인가
 - R06_[AIPython] python Poetry에 대해 자세히 알아보자!
 - R07_[AIPython] 뮤텍스(Mutex) vs 세마포어(Semaphore) 완벽 정리
 - R08_[AIPython] 온디바이스 AI(On-Device AI)에 대해 자세히 알아보자!
