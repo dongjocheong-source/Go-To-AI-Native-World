@@ -166,14 +166,69 @@ Go to AI native라는 모토로 AI World로 들어가기 위해 공부하는 각
 - I26_[AIML&DL] 하이퍼파라미터(Hyperparameter) 종류에 대해 자세히 알아보자! 
 ---
 
-## [T] IT기술
-- T01_IT
-- T02_HTTP외
-- T03_Python
-- T04_Linux
-- T05_Git_GitHub
-- T06_NodeJS
----
+## [P] IT_Tips
+- P01_[IT_Tips] AX (AI Transformation)란 무엇인가
+- P02_[IT_Tips] MarkItDown이란 무엇인가
+- P03_[IT_Tips] GPU, CPU, TPU, NPU 완벽 비교
+- P04_[IT_Tips] VS Code 자주 쓰는 유용한 단축키 모음
+- P05_[IT_Tips] MVP, PoC, Prototype, Pilot 완벽 비교 및 차이점 총정리
+- P06_[IT_Tips] NAS(Network Attached Storage)에 대해 자세히 알아보자!
+- P07_[IT_Tips] Nested(중첩) 구조 완벽 가이드
+- P08_[IT_Tips] npm, npx, yarn 완벽 가이드
+- P09_[IT_Tips] Obsidian ↔ Notion 양방향 동기화 오픈소스 (Im-Nobsidian) 소개
+- P10_[IT_Tips] RSS에 대해 자세히 알아보자!
+- P11_[IT_Tips] RTK (Rust Token Killer) 완벽 가이드
+- P12_[IT_Tips] SDK(Software Development Kit)에 대해 자세히 알아보자!
+- P13_[IT_Tips] Stack Overflow(스택 오버플로우)란 무엇일까
+- P14_[IT_Tips] SVN(Subversion) 완벽 가이드
+- P15_[IT_Tips] Verification(검증)과 Validation(확인타당성 검증)의 차이 완벽 정리
+- P16_[IT_Tips] Vibe Coding(바이브 코딩)에 대해 자세히 알아보자!
+- P17_[IT_Tips] 동기비동기 & 직렬병렬 완벽 가이드
+- P18_[IT_TIPS] 사용자 인터페이스(UI)의 모든 것
+- P19_[IT_Tips] 채팅으로 맞춤형 Notion Template 자동 제작 AI Agent 소개
+
+## [Q] HTTP 외
+- Q01_[FEBE] API란 무엇일까
+- Q02_[FEBE] API 운영 가이드
+- Q03_[FEBE] API, 프로토콜, 소켓, JSON, gRPC 통신 스택 총정리
+- Q04_[FEBE] Beautiful Soup에 대해 자세히 알아보자!
+- Q05_[FEBE] HTTP 상태 코드 - _서버 오류_와 _리다이렉션_ (5xx, 3xx)
+- Q06_[FEBE] HTTP 상태 코드 - _클라이언트 오류_ (4xx)
+- Q07_[FEBE] JWT(JSON Web Token), Secret Key(시크릿 키) 완벽 가이드
+- Q08_[FEBE] Prometheus(프로메테우스)에 대해 자세히 알아보자!
+- Q09_[FEBE] Vite(비트)에 대해 자세히 알아보자! 
+
+## [R] Python 
+- R01_[Python] uv 실전 가이드
+- R02_[Python] venv, Conda, 그리고 uv
+- R03_[Python] 파이썬 가상환경(venv) 사용하는 법
+- R04_[AIPython] Json-Repair - AI 시대의 망가진 JSON 자동 복구 라이브러리R05_
+- [AIPython] pydantic이란 무엇인가
+- R06_[AIPython] python Poetry에 대해 자세히 알아보자!
+- R07_[AIPython] 뮤텍스(Mutex) vs 세마포어(Semaphore) 완벽 정리
+- R08_[AIPython] 온디바이스 AI(On-Device AI)에 대해 자세히 알아보자!
+
+
+## [S] Linux
+- S01_[Linux] 리눅스 관리자의 기본
+- S02_[Linux] 리눅스 네트워크와 원격 접속
+- S03_[Linux] 리눅스 명령어
+- S04_[Linux] 리눅스 시스템 정보 및 프로세스 관리
+- S05_[Linux] 리눅스 활용 꿀팁
+- S06_[Linux] screen 사용법 A to Z 정의
+- S07_[Linux] 우분투(Ubuntu)에서 구글 드라이브 연동 및 사용 완벽 가이드
+
+## [T] Git_and_Github
+- T01_[Git] CICD(지속적 통합지속적 배포) 완벽 정복 가이드
+- T02_[Git] Git Flow vs GitHub Flow 완전 비교 가이드
+- T03_[Git] GitHub Actions 완벽 정복 가이드 코드 푸시부터 자동 배포까지 한 번에
+- T04_[Git] GitHub Pull Request부터 Merge까지 코드 리뷰의 모든 것
+- T05_[Git] GitHub 100MB 이상 대용량 파일 업로드 완벽 가이드
+- T06_[Git] GitLab Merge Request 완벽 가이드
+- T07_[GitHub] 로그인 계정 확인 및 변경 방법
+- T08_[Github] 원격 저장소 연결 및 관리 (git remote)
+- T09_[GitHub] Git 브랜치(Branch) 핵심 가이드
+- T10_[AIGit] GitHub Copilot SDK 완전 정복 가이드
 
 ## [U] 학습 자료
 - U01_On-Premise_LLM
