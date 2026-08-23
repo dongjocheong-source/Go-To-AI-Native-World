@@ -551,7 +551,7 @@ const CATEGORIES = [
       { id: "q04", title: "자연어이해", meta: "Q04", hue: 275,
         body: "Beautiful Soup에 대해 자세히 알아보자!" },
       { id: "q05", title: "NLP", meta: "Q05", hue: 275,
-        body: "HTTP 상태 코드 - _서버 오류_와 _리다이렉션_ (5xx, 3xx)
+        body: "HTTP 상태 코드 - _서버 오류_와 _리다이렉션_ (5xx, 3xx)" },
       { id: "q06", title: "OnDeviceAI", meta: "Q06", hue: 275,
         body: "HTTP 상태 코드 - _클라이언트 오류_ (4xx)" },
       { id: "q07", title: "Inference / Reasoning", meta: "Q07", hue: 275,
