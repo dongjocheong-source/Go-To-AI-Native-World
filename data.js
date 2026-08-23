@@ -487,8 +487,8 @@ const CATEGORIES = [
 
 // ── P00 ────────────────────────────────────────────────────────────
   {
-    id: "u00",
-    folder: "U_IT_Tips",
+    id: "p00",
+    folder: "P_IT_Tips",
     label: "IT_Tips",
     icon: "book-open",
     description: "IT관련 전반적인 학습 자료를 모읍니다.",
