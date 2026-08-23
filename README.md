@@ -196,7 +196,8 @@ Go to AI native라는 모토로 AI World로 들어가기 위해 공부하는 각
 - Q06_[FEBE] HTTP 상태 코드 - _클라이언트 오류_ (4xx)
 - Q07_[FEBE] JWT(JSON Web Token), Secret Key(시크릿 키) 완벽 가이드
 - Q08_[FEBE] Prometheus(프로메테우스)에 대해 자세히 알아보자!
-- Q09_[FEBE] Vite(비트)에 대해 자세히 알아보자! 
+- Q09_[FEBE] Vite(비트)에 대해 자세히 알아보자!
+- Q10_NodeJS
 
 ## [R] Python 
 - R01_[Python] uv 실전 가이드
