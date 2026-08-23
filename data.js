@@ -476,7 +476,7 @@ const CATEGORIES = [
         body: "지도 학습(Supervised Learning) 파헤쳐 보기." },
       { id: "i23", title: "YOLO-Guide", meta: "I23", hue: 320,
         body: "YOLO (You Only Look Once) 완벽 가이드." },
-      { id: "i24", title: "Data-Labeling-Guide: "I24", hue: 320,
+      { id: "i24", title: "Data-Labeling-Guide", meta: "I24", hue: 320,
         body: "데이터 라벨링(Data Labeling)이란 무엇인가." },
       { id: "i25", title: "Hyperparameter-Guide", meta: "I25", hue: 320,
         body: "하이퍼파라미터(Hyperparameter) 종류에 대해 자세히 알아보자!" },
