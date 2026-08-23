@@ -162,8 +162,8 @@ Go to AI native라는 모토로 AI World로 들어가기 위해 공부하는 각
 - I22_[AIML] 지도 학습(Supervised Learning) 파헤쳐 보기
 - I23_[AIML&DL] YOLO (You Only Look Once) 완벽 가이드
 - I24_[AIML&DL] 데이터 라벨링(Data Labeling)이란 무엇인가
-- I25_[AIML&DL] 하이퍼파라미터 튜닝(Hyperparameter Tuning) 완벽 가이드
-- I26_[AIML&DL] 하이퍼파라미터(Hyperparameter) 종류에 대해 자세히 알아보자! 
+- I25_[AIML&DL] 하이퍼파라미터(Hyperparameter) 종류에 대해 자세히 알아보자! 
+- I26_[AIML&DL] 하이퍼파라미터 튜닝(Hyperparameter Tuning) 완벽 가이드
 ---
 
 ## [P] IT_Tips
