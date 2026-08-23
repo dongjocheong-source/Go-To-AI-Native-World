@@ -138,33 +138,36 @@ Go to AI native라는 모토로 AI World로 들어가기 위해 공부하는 각
 ---
 
 ## [I] ML_DL
-- I01_[AIDL] 0)딥러닝(Deep Learning)이란 무엇일까 
-- I02_[AIDL] 1)ANN (인공신경망) 완벽 가이드
-- I03_[AIDL] 2)CNN (합성곱 신경망) 완벽 가이드
-- I04_[AIDL] 3)RNN (순환 신경망) 완벽 가이드
-- I05_[AIDL] 4)Transformers (트랜스포머) 완벽 가이드
-- I06_[AIML] 1)로지스틱 회귀 (Logistic Regression) 완벽 가이드
-- I07_[AIML] 2)KNN (K-Nearest Neighbors) 완벽 가이드
-- I08_[AIML] 3)나이브 베이즈 (Naive Bayes) 완벽 가이드
-- I09_[AIML] 4)SVM (Support Vector Machine) 완벽 가이드
-- I10_[AIML] 5)Feature Engineering이란
-- I11_[AIML] 6)랜덤 포레스트(Random Forest) 완벽 가이드
-- I12_[AIML] 7)Gradient Boosting(GBM) 완벽 가이드
-- I13_[AIML] 8)XGBoost (eXtreme Gradient Boosting) 완벽 가이드
-- I14_[AIML] 9)LightGBM 완벽 가이드
-- I15_[AIML] 10)CatBoost 완벽 가이드
-- I16_[AIML] Python Pickle이란 무엇일까
-- I17_[AIML] 강화 학습(Reinforcement Learning) 파헤쳐보기
-- I18_[AIML] 머신러닝(Machine Learning)이란 무엇일까
+- I01_[AIDL] 딥러닝(Deep Learning)이란 무엇일까 
+- I02_[AIDL] ANN(인공신경망) 완벽 가이드
+- I03_[AIDL] CNN(합성곱 신경망) 완벽 가이드
+- I04_[AIDL] RNN(순환 신경망) 완벽 가이드
+- I05_[AIDL] Transformers(트랜스포머) 완벽 가이드
+- I06_[AIML] 로지스틱 회귀 (Logistic Regression) 완벽 가이드
+- I07_[AIML] KNN (K-Nearest Neighbors) 완벽 가이드
+- I08_[AIML] 나이브 베이즈 (Naive Bayes) 완벽 가이드
+- I09_[AIML] SVM (Support Vector Machine) 완벽 가이드
+- I10_[AIML] 의사결정 나무 (Decision Tree) 완벽 가이드
+- I11_[AIML] Feature Engineering이란
+- I12_[AIML] 랜덤 포레스트(Random Forest) 완벽 가이드
+- I13_[AIML] Gradient Boosting(GBM) 완벽 가이드
+- I14_[AIML] XGBoost (eXtreme Gradient Boosting) 완벽 가이드
+- I15_[AIML] LightGBM 완벽 가이드
+- I16_[AIML] CatBoost 완벽 가이드
+- I17_[AIML] 머신러닝(Machine Learning)이란 무엇일까
+- I18_[AIML] 지도 학습(Supervised Learning) 파헤쳐 보기
 - I19_[AIML] 비지도 학습(Unsupervised Learning) 파헤쳐 보기
-- I20_[AIML] 의사결정 나무 (Decision Tree) 완벽 가이드
-- I21_[AIML] 준지도 학습 (Semi-Supervised Learning) 파헤쳐 보기
-- I22_[AIML] 지도 학습(Supervised Learning) 파헤쳐 보기
-- I23_[AIML&DL] YOLO (You Only Look Once) 완벽 가이드
-- I24_[AIML&DL] 데이터 라벨링(Data Labeling)이란 무엇인가
-- I25_[AIML&DL] 하이퍼파라미터(Hyperparameter) 종류에 대해 자세히 알아보자! 
-- I26_[AIML&DL] 하이퍼파라미터 튜닝(Hyperparameter Tuning) 완벽 가이드
+- I20_[AIML] 준지도 학습 (Semi-Supervised Learning) 파헤쳐 보기
+- I21_[AIML] 강화 학습(Reinforcement Learning) 파헤쳐보기
+- I22_[AIML&DL] YOLO (You Only Look Once) 완벽 가이드
+- I23_[AIML&DL] 데이터 라벨링(Data Labeling)이란 무엇인가
+- I24_[AIML&DL] 하이퍼파라미터(Hyperparameter) 종류에 대해 자세히 알아보자! 
+- I25_[AIML&DL] 하이퍼파라미터 튜닝(Hyperparameter Tuning) 완벽 가이드
+- I26_[AIML] Python Pickle이란 무엇일까
 ---
+
+
+
 
 ## [P] IT_Tips
 - P01_[IT_Tips] AX (AI Transformation)란 무엇인가
