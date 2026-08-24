@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>c00_AI_Tool_Intro</title>
+<style>
+:root {
+  --bg-base: #121212;
+  --bg-card: #252525;
+  --text-bright: #fdfdfd;
+  --text-secondary: #b3b3b3;
+  --radius-lg: 8px;
+  --radius-md: 6px;
+  --shadow-medium: rgba(0, 0, 0, 0.3) 0px 8px 8px;
+  --font-title: "Helvetica Neue", Arial, "Malgun Gothic", "Noto Sans KR", sans-serif;
+  --font-ui: "Helvetica Neue", Arial, "Malgun Gothic", "Noto Sans KR", sans-serif;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  background: var(--bg-base);
+  color: #ffffff;
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1080px; margin: 0 auto; padding: 56px 24px 96px; }
+
+.intro-eyebrow {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: #1ed760;
+  margin: 0 0 14px;
+}
+.portal-title {
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 34px;
+  text-align: center;
+  color: var(--text-bright);
+  margin: 0 0 72px;
+}
+
+.portal-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 28px 24px;
+  max-width: 980px;
+  margin: 0 auto;
+}
+.portal-tile { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.portal-tile-icon {
+  width: 100%; aspect-ratio: 1 / 1; max-width: 108px;
+  border-radius: var(--radius-lg);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow-medium);
+}
+.portal-tile-icon img { width: 55%; height: 55%; object-fit: contain; }
+.portal-tile-label { font-size: 13px; font-weight: 400; color: var(--text-secondary); margin: 0; text-align: center; }
+
+.modality-section { max-width: 1080px; margin: 96px auto 0; padding: 0; }
+.modality-header { text-align: center; margin-bottom: 40px; }
+.modality-title { font-family: var(--font-title); font-weight: 700; font-size: 28px; color: var(--text-bright); margin: 0 0 12px; }
+.modality-subtitle { font-size: 15px; color: var(--text-secondary); margin: 0; }
+
+.modality-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.modality-card { background: var(--bg-card); border-radius: var(--radius-lg); padding: 24px; }
+.modality-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; color: var(--text-secondary); text-transform: uppercase; margin: 0 0 16px; }
+.modality-name { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+.modality-name svg { width: 22px; height: 22px; color: var(--text-bright); flex-shrink: 0; }
+.modality-name span { font-size: 19px; font-weight: 700; color: var(--text-bright); }
+.modality-tools { display: flex; gap: 10px; margin-bottom: 20px; }
+.modality-tool-icon { width: 56px; height: 56px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-medium); }
+.modality-tool-icon img { width: 55%; height: 55%; object-fit: contain; }
+.modality-desc { font-size: 14px; line-height: 1.6; color: var(--text-secondary); margin: 0; }
+.modality-footnote { text-align: right; font-size: 12px; color: var(--text-secondary); opacity: 0.7; margin: 24px 0 0; }
+
+@media (max-width: 1024px) {
+  .portal-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .modality-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .portal-title { font-size: 24px; margin-bottom: 40px; }
+  .portal-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px 16px; }
+  .modality-section { margin-top: 56px; }
+  .modality-title { font-size: 22px; }
+  .modality-grid { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="intro-eyebrow">C00 · AI Tool</p>
+  <h1 class="portal-title">Go to AI Native World with 12 AI Tools</h1>
+
+  <div class="portal-grid">
+    <div class="portal-tile">
+      <div class="portal-tile-icon" style="background: #ffffff;"><img src="../../assets/portal/icon-chatgpt.png" alt="ChatGPT" /></div>
+      <p class="portal-tile-label">ChatGPT</p>
+    </div>
+    <div class="portal-tile">
+      <div class="portal-tile-icon" style="background: #d97757;"><img src="../../assets/portal/icon-claude.png" alt="Claude" /></div>
+      <p class="portal-tile-label">Claude</p>
+    </div>
+    <div class="portal-tile">
+      <div class="portal-tile-icon" style="background: #141414;"><img src="../../assets/portal/icon-claudecode.png" alt="Claude Code" /></div>
+      <p class="portal-tile-label">Claude Code</p>
+    </div>
+    <div class="portal-tile">
+      <div class="portal-tile-icon" style="background: #6c5ce7;"><img src="../../assets/portal/icon-notebooklm.png" alt="NotebookLM" /></div>
+      <p class="portal-tile-label">NotebookLM</p>
+    </div>
+    <div class="portal-tile">
+      <div class="portal-tile-icon" style="background: #ff7a59;"><img src="../../assets/portal/icon-suno.png" alt="Suno" /></div>
+      <p class="portal-tile-label">Suno</p>
+    </div>
+    <div class="portal-tile">
+      <div class="portal-tile-icon" style="background: #1a1a1e;"><img src="../../assets/portal/icon-nanobanana.png" alt="Nano Banana" /></div>
+      <p class="portal-tile-label">Nano Banana</p>
+    </div>
+    <div class="portal-tile">
+      <div class="portal-tile-icon" style="background: #e8734a;"><img src="../../assets/portal/icon-claude.png" alt="Claude Cowork" /></div>
+      <p class="portal-tile-label">Claude Cowork</p>
+    </div>
+    <div class="portal-tile">
+      <div class="portal-tile-icon" style="background: #141414;"><img src="../../assets/portal/icon-claude.png" alt="Claude Design" /></div>
+      <p class="portal-tile-label">Claude Design</p>
+    </div>
+    <div class="portal-tile">
+      <div class="portal-tile-icon" style="background: #141414;"><img src="../../assets/portal/icon-elevenlabs.png" alt="ElevenLabs" /></div>
+      <p class="portal-tile-label">ElevenLabs</p>
+    </div>
+    <div class="portal-tile">
+      <div class="portal-tile-icon" style="background: #141414;"><img src="../../assets/portal/icon-replit.png" alt="Replit" /></div>
+      <p class="portal-tile-label">Replit</p>
+    </div>
+    <div class="portal-tile">
+      <div class="portal-tile-icon" style="background: #141414;"><img src="../../assets/portal/icon-capcut.png" alt="CapCut" /></div>
+      <p class="portal-tile-label">CapCut</p>
+    </div>
+    <div class="portal-tile">
+      <div class="portal-tile-icon" style="background: #1e8449;"><img src="../../assets/portal/icon-higgsfield.png" alt="Higgsfield" /></div>
+      <p class="portal-tile-label">Higgsfield</p>
+    </div>
+  </div>
+
+  <div class="modality-section">
+    <header class="modality-header">
+      <h2 class="modality-title">일에 필요한 모든 모달리티를 커버</h2>
+      <p class="modality-subtitle">채팅부터 코드까지, 리서치부터 영상까지 — 각 모달리티의 베스트 도구를 묶었습니다.</p>
+    </header>
+
+    <div class="modality-grid">
+
+      <div class="modality-card">
+        <p class="modality-eyebrow">MODALITY 01</p>
+        <div class="modality-name">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8Z"/></svg>
+          <span>대화 · 채팅</span>
+        </div>
+        <div class="modality-tools">
+          <div class="modality-tool-icon" style="background: #ffffff;"><img src="../../assets/portal/icon-chatgpt.png" alt="" /></div>
+          <div class="modality-tool-icon" style="background: #d97757;"><img src="../../assets/portal/icon-claude.png" alt="" /></div>
+        </div>
+        <p class="modality-desc">ChatGPT · Claude — 모든 일의 출발점.</p>
+      </div>
+
+      <div class="modality-card">
+        <p class="modality-eyebrow">MODALITY 02</p>
+        <div class="modality-name">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>
+          <span>리서치</span>
+        </div>
+        <div class="modality-tools">
+          <div class="modality-tool-icon" style="background: #6c5ce7;"><img src="../../assets/portal/icon-notebooklm.png" alt="" /></div>
+        </div>
+        <p class="modality-desc">NotebookLM — 자료 더미를 인사이트로.</p>
+      </div>
+
+      <div class="modality-card">
+        <p class="modality-eyebrow">MODALITY 03</p>
+        <div class="modality-name">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <span>이미지 · 디자인</span>
+        </div>
+        <div class="modality-tools">
+          <div class="modality-tool-icon" style="background: #141414;"><img src="../../assets/portal/icon-claude.png" alt="" /></div>
+          <div class="modality-tool-icon" style="background: #1a1a1e;"><img src="../../assets/portal/icon-nanobanana.png" alt="" /></div>
+        </div>
+        <p class="modality-desc">Claude Design · Nano Banana — 브랜드 자산을 직접.</p>
+      </div>
+
+      <div class="modality-card">
+        <p class="modality-eyebrow">MODALITY 04</p>
+        <div class="modality-name">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 6-6 6 6 6"/><path d="m16 6 6 6-6 6"/></svg>
+          <span>코드 · 빌드</span>
+        </div>
+        <div class="modality-tools">
+          <div class="modality-tool-icon" style="background: #141414;"><img src="../../assets/portal/icon-claudecode.png" alt="" /></div>
+          <div class="modality-tool-icon" style="background: #141414;"><img src="../../assets/portal/icon-replit.png" alt="" /></div>
+        </div>
+        <p class="modality-desc">Claude Code · Replit — 비개발자도 앱을 띄웁니다.</p>
+      </div>
+
+      <div class="modality-card">
+        <p class="modality-eyebrow">MODALITY 05</p>
+        <div class="modality-name">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7Z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+          <span>영상</span>
+        </div>
+        <div class="modality-tools">
+          <div class="modality-tool-icon" style="background: #1e8449;"><img src="../../assets/portal/icon-higgsfield.png" alt="" /></div>
+          <div class="modality-tool-icon" style="background: #141414;"><img src="../../assets/portal/icon-capcut.png" alt="" /></div>
+        </div>
+        <p class="modality-desc">Higgsfield · CapCut — 광고와 숏폼을 한 자리에서.</p>
+      </div>
+
+      <div class="modality-card">
+        <p class="modality-eyebrow">MODALITY 06</p>
+        <div class="modality-name">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          <span>오디오 · 보이스</span>
+        </div>
+        <div class="modality-tools">
+          <div class="modality-tool-icon" style="background: #ff7a59;"><img src="../../assets/portal/icon-suno.png" alt="" /></div>
+          <div class="modality-tool-icon" style="background: #141414;"><img src="../../assets/portal/icon-elevenlabs.png" alt="" /></div>
+        </div>
+        <p class="modality-desc">Suno · ElevenLabs — BGM부터 더빙까지.</p>
+      </div>
+
+    </div>
+
+    <p class="modality-footnote">*모달리티(modality) : 텍스트, 이미지, 음성, 영상 등 서로 다른 종류의 데이터 형태</p>
+  </div>
+
+</div>
+</body>
+</html>
