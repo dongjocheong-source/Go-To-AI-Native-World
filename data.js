@@ -246,6 +246,9 @@ const CATEGORIES = [
     icon: "zap",
     description: "대화형 AI부터 영상·오디오·자동화까지, 카테고리별 AI 툴을 정리합니다.",
     items: [
+      { id: "c00", title: "AI Tool Intro", meta: "C00", hue: 25,
+        skipGenerate: true,
+        body: "AI Native World의 12가지 AI Tool과 6가지 모달리티(대화·리서치·이미지·코드·영상·오디오) 소개." },
       { id: "c01a", title: "대화채팅 (Chat_AI_Tools) 소개", meta: "C01a", hue: 25,
         skipGenerate: true,
         body: "대화채팅 툴들 소개(Chat_AI_Tools_Full_Comparison" },

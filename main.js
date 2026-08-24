@@ -1,67 +1,30 @@
 /**
- * main.js — renders the sidebar (from CATEGORIES), the main portal (from
- * PORTAL_TOOLS), and the item grid for whichever category is currently
- * selected. Clicking an item card navigates to its static detail page at
- * items/{id}.html, or items/{category.folder}/{id}.html when the category
- * declares a `folder` (see data.js).
+ * main.js — renders the sidebar (from CATEGORIES) and the item grid for
+ * whichever category is currently selected. Clicking an item card navigates
+ * to its static detail page at items/{id}.html, or
+ * items/{category.folder}/{id}.html when the category declares a `folder`
+ * (see data.js).
  *
  * View states:
  * - Portal view (#portal-view): default view on first load, and whatever
- *   the "INFO HUB" logo button (#brand-home) returns you to. Shows the
- *   12 AI-tool tiles. No sidebar item is active in this state.
+ *   the "INFO HUB" logo button (#brand-home) returns you to. Shows a static
+ *   cover hero (see .hero-cover in style.css). No sidebar item is active in
+ *   this state. The old 12-tool/modality showcase now lives at
+ *   items/C_AI_Tools/c00.html (category C00's intro item).
  * - Category view (#category-view): shown after clicking a sidebar item.
  *
- * Depends on: data.js (CATEGORIES, PORTAL_TOOLS), icons.js (iconSvg)
+ * Depends on: data.js (CATEGORIES), icons.js (iconSvg)
  */
 (function () {
   const navList = document.getElementById("nav-list");
   const brandHome = document.getElementById("brand-home");
   const portalView = document.getElementById("portal-view");
-  const portalGrid = document.getElementById("portal-grid");
-  const modalityGrid = document.getElementById("modality-grid");
   const categoryView = document.getElementById("category-view");
   const pageEyebrow = document.getElementById("page-eyebrow");
   const pageTitle = document.getElementById("page-title");
   const pageDesc = document.getElementById("page-desc");
   const itemCount = document.getElementById("item-count");
   const itemGrid = document.getElementById("item-grid");
-
-  function renderPortalGrid() {
-    portalGrid.innerHTML = PORTAL_TOOLS.map(
-      (tool) => `
-        <div class="portal-tile">
-          <div class="portal-tile-icon" style="background: ${tool.bg};">
-            <img src="assets/portal/${tool.icon}" alt="${tool.label}" />
-          </div>
-          <p class="portal-tile-label">${tool.label}</p>
-        </div>`
-    ).join("");
-  }
-
-  function renderModalityGrid() {
-    if (!modalityGrid) return;
-    modalityGrid.innerHTML = MODALITY_GROUPS.map(
-      (group, i) => `
-        <div class="modality-card">
-          <p class="modality-eyebrow">MODALITY ${String(i + 1).padStart(2, "0")}</p>
-          <div class="modality-name">
-            ${iconSvg(group.icon)}
-            <span>${group.label}</span>
-          </div>
-          <div class="modality-tools">
-            ${group.tools
-              .map(
-                (tool) => `
-              <div class="modality-tool-icon" style="background: ${tool.bg};">
-                <img src="assets/portal/${tool.icon}" alt="" />
-              </div>`
-              )
-              .join("")}
-          </div>
-          <p class="modality-desc">${group.desc}</p>
-        </div>`
-    ).join("");
-  }
 
   function renderSidebar(activeId) {
     navList.innerHTML = CATEGORIES.map((cat) => {
@@ -138,8 +101,6 @@
   }
 
   brandHome.addEventListener("click", goToPortal);
-  renderPortalGrid();
-  renderModalityGrid();
 
   const initialId = (location.hash || "").replace("#", "");
   if (initialId && CATEGORIES.some((c) => c.id === initialId)) {
