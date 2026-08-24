@@ -62,7 +62,8 @@ Go to AI native라는 모토로 AI World로 들어가기 위해 공부하는 각
 ## [C]  AI_Tool
 - C01_대화채팅(ChatGPT,Claude,Gemini)
   - C01a - Chat AI Tools Full Comparison
-  - C01b - ChatGPT Gemini Claude Comparison 
+  - C01b - ChatGPT Gemini Claude Comparison
+  - C01c - Claude 아티팩트
 - C02_리서치(NotebookLM,Perplexity)
   - C02a - NotebookLM 2.0 달라진 7가지
   - C02b - Perplexity AI 특장점 상세 정리
