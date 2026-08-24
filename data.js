@@ -533,10 +533,10 @@ const CATEGORIES = [
 // ── Q00 ────────────────────────────────────────────────────────────
   {
     id: "q00",
-    folder: "Q_HTTP외",
+    folder: "Q_HTTP 외",
     label: "HTTP외",
     icon: "book-open",
-    description: "온프레미스/온디바이스 LLM, 추론, 자연어처리 등 심화 학습 자료를 모읍니다.",
+    description: "HTTP 외 전반적인 프로토콜 학습 자료를 모읍니다.",
     items: [
       { id: "q01", title: "Api-basics-guide", meta: "Q01", hue: 275,
         body: "API란 무엇일까." },
