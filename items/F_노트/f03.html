@@ -208,7 +208,7 @@
         <div class="idx">01</div>
         <div class="meta">
           <div class="card-title"> Skill 정보 활용 그룹#1 </div>
-          <div class="card-desc">Embedded 및 추가 설치 통해 활용 가능한 Skill 정보/Pill UI</div>
+          <div class="card-desc">Embedded Skill 정보</div>
         </div>
         <span class="chev">⌄</span>
       </div>
@@ -216,7 +216,7 @@
         <div class="body-inner">
           <div class="pills" style="margin-bottom:18px">
             <span class="pill accent">HTML 리포트</span>
-            <span class="pill">Spotify 다크</span>
+            <span class="pill">Embedded Skill</span>
             <span class="pill">Spotify Green</span>
             <span class="pill">Pill UI</span>
             <span class="pill">카드 스타일</span>
@@ -224,23 +224,13 @@
 
           <div class="block-label">Prompt</div>
           <pre class="Skill List & Description">
-[Embedded]
-1. /deep-research : 워크플로, 교차 검증을 통한 결과 제공
-2. /goal              : 목표만 걸어두고 수단은 claude가 하도록 한다
-3. /batch             : 토큰 사용량이 많을 수 있다.
-
-[별도 설치 필요]
-4. superpowers    : 질문하고 설계하면서 진행 (On/off하면서 쓰는것이 좋다)
-5. remotion         : 영상 관련 skill로 내부적으로 skill이 12개 들어있다. 
-6. gstack             : Skill이 54개 들어있다 (초보자는 쉽지 않다)
-7. Karpathy skill   : 
-8. /doctor           : 별도 설치 필요 없음.
-9. claude-code-setup : 내가 만들고 있는 것에 대한 자동화 추천
-10. skill-creator    : 
-
-· /plan-plus  : 기획/개발 아이디어를 인터뷰 형식을 통해 구체적으로 다듬는 방법의 bkit 스킬 <br>
-. taste-skill  : AI가 막는 뻔한 디자인 제거 목적 (다이얼로 조절, GitHub에 있음), 가져와서 내 skill로 등록하면 됨 --> 개성있는 Page 구성 가능 <br>
-. sonner : 깃허브에 있는 skill, 버튼에 마우스를 올리면 반응하는것 등 감각적인 디자인 적용 가능 <br>
+            
+[Embedded Skill]
+. /deep-research : 워크플로, 교차 검증을 통한 결과 제공
+. /goal          : 목표만 걸어두고 수단은 claude가 하도록 한다
+. /batch         : 토큰 사용량이 많을 수 있다.
+. /doctor        : 별도 설치 필요 없음.
+· /plan-plus     : 기획/개발 아이디어를 인터뷰 형식을 통해 구체적으로 다듬는 방법의 bkit 스킬 <br>
             
          </pre>
           </div>
@@ -254,74 +244,38 @@
         <div class="idx">02</div>
         <div class="meta">
           <div class="card-title">Skill 정보 활용 그룹#2 </div>
-          <div class="card-desc"> 스킬그룹#2에 대한 설명</div>
+          <div class="card-desc"> 별도 설치가 필요한 Skill 정보</div>
         </div>
         <span class="chev">⌄</span>
       </div>
       <div class="card-body">
         <div class="body-inner">
           <div class="pills" style="margin-bottom:18px">
-            <span class="pill accent">유용한 스킬 정보</span>
-            <span class="pill">스킬 활용1</span>
-            <span class="pill">스킬 활용2</span>            
+            <span class="pill accent">HTML 리포트</span>
+            <span class="pill">별도 설치 필요 Skill</span>
+            <span class="pill">Spotify Green</span>
+            <span class="pill">Pill UI</span>
+            <span class="pill">카드 스타일</span>           
           </div>
 
-          <div class="block-label">유용한 Skill</div>
-      
-· 내용 추가 예정/plan-plus  : 기획/개발 아이디어를 인터뷰 형식을 통해 구체적으로 다듬는 방법의 bkit 스킬 <br>
-. taste-skill  : AI가 막는 뻔한 디자인 제거 목적 (다이얼로 조절, GitHub에 있음), 가져와서 내 skill로 등록하면 됨 --> 개성있는 Page 구성 가능 <br>
-. sonner : 깃허브에 있는 skill, 버튼에 마우스를 올리면 반응하는것 등 감각적인 디자인 적용 가능 <br>
- 
+          <div class="block-label">Prompt</div>
+          <pre class="Skill List & Description">
+            
+[추가 설치 필요 Skill]
+. skill-creator     : 
+. superpowers       : 질문하고 설계하면서 진행 (On/off하면서 쓰는것이 좋다)
+. remotion          : 영상 관련 skill로 내부적으로 skill이 12개 추가적으로 들어 있음. 
+. gstack            : Skill이 내부적으로 54개 들어있음 (초보자는 쉽지 않다)
+. Karpathy skill    : 
+. claude-code-setup : 내가 만들고 있는 것에 대한 자동화 추천
+. taste-skill       : AI가 막는 뻔한 디자인 제거 목적 (다이얼로 조절, GitHub에 있음), 가져와서 내 skill로 등록하면 됨 --> 개성있는 Page 구성 가능 <br>
+. sonner            : 깃허브에 있는 skill, 버튼에 마우스를 올리면 반응하는것 등 감각적인 디자인 적용 가능 <br>
+            
+        </pre>
         </div>
       </div>
     </article>
-    
-    <!-- ============ 여기부터 프롬프팅 3, 4 ... 추가 ============ -->
-    <!-- 아래 TEMPLATE 카드를 복사해서 붙여넣으면 됩니다 -->
-
-  </div>
-
-  <div class="add-hint">
-    <p><b>프롬프팅 3, 4 …를 추가하려면?</b></p>
-    <p style="margin-top:8px">HTML에서 <code>&lt;!-- TEMPLATE --&gt;</code> 카드 블록을 복사해 <code>id="log"</code> 안에 붙여넣고, 번호(<code>03</code>, <code>04</code>…)·제목·프롬프트·링크만 바꾸면 됩니다.</p>
-  </div>
-</div>
-
-<footer>
-  <div class="wrap">
-    <span>© 2026 Skill References </span>
-    <span>Dark · Pill UI · Card layout · autokliq-style</span>
-  </div>
-</footer>
-
-<!-- ================= 복사용 TEMPLATE (렌더링 안 됨) =================
-<article class="card">
-  <div class="card-head" onclick="toggle(this)">
-    <div class="idx">03</div>
-    <div class="meta">
-      <div class="card-title">제목을 여기에</div>
-      <div class="card-desc">한 줄 요약 설명</div>
-    </div>
-    <span class="chev">⌄</span>
-  </div>
-  <div class="card-body">
-    <div class="body-inner">
-      <div class="pills" style="margin-bottom:18px">
-        <span class="pill accent">태그</span>
-        <span class="pill">태그</span>
-      </div>
-      <div class="block-label">Prompt</div>
-      <pre class="prompt">여기에 프롬프트 내용</pre>
-      <div class="block-label">Result</div>
-      <div class="result"><p>결과 설명</p></div>
-      <div class="block-label" style="margin-top:20px">원본 / 참고 링크</div>
-      <div class="links">
-        <a class="link-btn" href="URL" target="_blank" rel="noopener"><span class="ico">↗</span> 링크</a>
-      </div>
-    </div>
-  </div>
-</article>
-==================================================================== -->
+        
 
 <script>
   function toggle(el){
