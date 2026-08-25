@@ -57,6 +57,21 @@ Go to AI native라는 모토로 AI World로 들어가기 위해 공부하는 각
 - B10_온톨로지(Ontology)
   - B10a_온톨로지(Ontology)란 무엇인가
   - B10b_온톨로지(Ontology) 프로젝트 분석
+- B11_On-Premise LLM 
+  - B11a_[AILLM] 온프레미스AI(On-premise AI) 완벽가이드
+  - B11b_[AILLM] Docker + vLLM으로 Gemma4 31B 모델 서빙하기
+  - B11c_[AILLM] Docker로 vLLM 모델 서빙 및 서버 구축
+  - B11d_[Docker] AI 개발을 위한 Docker 완벽가이드
+- B12_[AIPython] 온디바이스AI(On-Device AI)에 대해 자세히 알아보자!
+- B13_[AILLM] Inference와 Reasoning (추론) 완벽 가이드
+- B14_자연어이해
+  - B14a_[AINLP] NLP(자연어 처리)란 무엇인가
+  - B14b_[AILLM] 자연어 이해(NLU)란 무엇일까
+  - B14c_[AIASR] ASR(자동 음성 인식)이란 무엇인가
+- B15_NLP
+  - B15a_[AINLP] 임베딩(Embedding)이란
+  - B15b_[AINLP] 최신 임베딩 모델과 원리
+  - B15c_[AINLP] Embedding 실습 및 Vector DB 맛보기
  ---
  
 ## [C]  AI_Tool
