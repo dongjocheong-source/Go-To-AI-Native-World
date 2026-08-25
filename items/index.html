@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>싱크의 정보 허브 · Sync's Info Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <nav class="sidebar">
+      <button class="brand" id="brand-home" type="button" title="메인 포털로 돌아가기">
+        <span class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Z"/>
+            <path d="M12 12v9"/>
+            <path d="M8 21h8"/>
+          </svg>
+        </span>
+        <span class="brand-name">INFO HUB</span>
+      </button>
+
+      <ul class="nav-list" id="nav-list"></ul>
+
+      <div class="sidebar-footer">
+        모든 정보를 한 곳에서.<br />
+        카테고리를 선택해 항목을 확인하세요.
+      </div>
+    </nav>
+
+    <main class="main">
+      <section id="portal-view" class="portal-view">
+
+        <section class="bold-hero">
+          <p class="bold-hero-eyebrow">BOLD IDEAS, WRITTEN DOWN</p>
+          <h1 class="bold-hero-title">AI Native World로 가기 위한<br />사람들을 위한 공간</h1>
+          <p class="bold-hero-sub">AI 관련 각종 자료 조사, 프로젝트 진행 내용들에 대한 기록을 남기는 공간입니다.</p>
+          <a href="#latest-posts" class="bold-hero-cta">글 둘러보기</a>
+        </section>
+
+        <div class="hero-cover">
+          <div class="hero-cover-image" style="background-image: url('assets/hero/hero-stairs.jpg');" role="img" aria-label="계단과 상승 그래프 이미지"></div>
+          <div class="hero-cover-content">
+            <h1 class="hero-cover-title">Go To AI Native World</h1>
+            <div class="hero-cover-rule"></div>
+            <div class="hero-cover-tagline">
+              <p class="hero-cover-sub">AI 네이티브를 위한 4단계 정공법:</p>
+              <p class="hero-cover-highlight">!! 믿음 &gt;&gt; 목격 &gt;&gt; 활용 &gt;&gt; 행동 !!</p>
+            </div>
+            <div class="hero-cover-rule"></div>
+            <p class="hero-cover-credit">EDITING BY SYNC</p>
+          </div>
+        </div>
+
+        <section class="latest-section" id="latest-posts">
+          <h2 class="latest-title">최신 글</h2>
+          <div class="latest-grid">
+            <a class="latest-card" href="items/B_AI_Advanced/b15a.html">
+              <p class="latest-tag">B15a · AI Advanced</p>
+              <h3 class="latest-card-title">임베딩(Embedding)이란</h3>
+              <p class="latest-card-desc">RAG의 뿌리이자 핵심 엔진, 임베딩의 정의와 발전 과정, 최신 트렌드 (3부작 1편)</p>
+              <span class="latest-more">더 읽기 →</span>
+            </a>
+            <a class="latest-card" href="items/B_AI_Advanced/b15b.html">
+              <p class="latest-tag">B15b · AI Advanced</p>
+              <h3 class="latest-card-title">최신 임베딩 모델과 원리</h3>
+              <p class="latest-card-desc">BERT, OpenAI, MTEB, 거리 계산까지 최신 임베딩 모델 총정리 (3부작 2편)</p>
+              <span class="latest-more">더 읽기 →</span>
+            </a>
+            <a class="latest-card" href="items/B_AI_Advanced/b15c.html">
+              <p class="latest-tag">B15c · AI Advanced</p>
+              <h3 class="latest-card-title">Embedding 실습 및 Vector DB 맛보기</h3>
+              <p class="latest-card-desc">OpenAI, ChromaDB로 직접 구현해보는 임베딩과 의미 검색 (3부작 완결편)</p>
+              <span class="latest-more">더 읽기 →</span>
+            </a>
+          </div>
+
+          <div class="subscribe-box">
+            <h3>새 글 소식 받아보기</h3>
+            <p>이메일만 남겨주시면 새 글이 올라올 때마다 알려드려요.</p>
+          </div>
+        </section>
+
+      </section>
+
+      <section id="category-view" class="category-view" hidden>
+        <header class="main-header">
+          <p class="eyebrow" id="page-eyebrow">CATEGORY</p>
+          <h1 class="page-title" id="page-title">-</h1>
+          <p class="page-desc" id="page-desc"></p>
+          <p class="item-count" id="item-count"></p>
+        </header>
+
+        <section class="item-grid" id="item-grid"></section>
+      </section>
+    </main>
+  </div>
+
+  <script src="icons.js"></script>
+  <script src="data.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,914 @@
+/* ==========================================================================
+   Info Hub — Spotify-inspired design system
+   Source tokens: DESIGN-spotify.md
+   ========================================================================== */
+
+:root {
+  /* Surfaces */
+  --bg-base: #121212;
+  --bg-sidebar: #000000;
+  --bg-surface: #181818;
+  --bg-surface-2: #1f1f1f;
+  --bg-card: #252525;
+  --bg-card-alt: #272727;
+
+  /* Text */
+  --text-base: #ffffff;
+  --text-bright: #fdfdfd;
+  --text-secondary: #b3b3b3;
+  --text-tertiary: #cbcbcb;
+
+  /* Brand */
+  --accent: #1ed760;
+  --accent-border: #1db954;
+  --accent-ink: #04140a;
+
+  /* Semantic */
+  --negative: #f3727f;
+  --warning: #ffa42b;
+  --announcement: #539df5;
+
+  /* Borders */
+  --border: #4d4d4d;
+  --border-light: #7c7c7c;
+  --separator: #2a2a2a;
+
+  /* Radius */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 16px;
+  --radius-pill: 9999px;
+
+  /* Shadows */
+  --shadow-medium: rgba(0, 0, 0, 0.3) 0px 8px 8px;
+  --shadow-heavy: rgba(0, 0, 0, 0.5) 0px 8px 24px;
+  --shadow-inset: rgb(18, 18, 18) 0px 1px 0px, rgb(124, 124, 124) 0px 0px 0px 1px inset;
+
+  /* Fonts (proprietary SpotifyMixUI is not distributed; fall back per spec) */
+  --font-title: "SpotifyMixUITitle", "Helvetica Neue", Arial, "Hiragino Sans",
+    "Hiragino Kaku Gothic ProN", Meiryo, "Malgun Gothic", sans-serif;
+  --font-ui: "SpotifyMixUI", "Helvetica Neue", Arial, "Hiragino Sans",
+    "Hiragino Kaku Gothic ProN", Meiryo, "Malgun Gothic", sans-serif;
+
+  --sidebar-width: 260px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-base);
+  color: var(--text-base);
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   Layout
+   ========================================================================== */
+
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ==========================================================================
+   Sidebar
+   ========================================================================== */
+
+.sidebar {
+  width: var(--sidebar-width);
+  flex: 0 0 var(--sidebar-width);
+  background: var(--bg-sidebar);
+  padding: 20px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px 18px;
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  text-align: left;
+  border-radius: var(--radius-sm);
+  transition: opacity 0.15s ease;
+}
+
+.brand:hover {
+  opacity: 0.85;
+}
+
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-ink);
+  flex: none;
+}
+
+.brand-mark svg {
+  width: 18px;
+  height: 18px;
+}
+
+.brand-name {
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.2px;
+  color: var(--text-bright);
+}
+
+.nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 400;
+  text-align: left;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.nav-item svg {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  opacity: 0.85;
+}
+
+.nav-item:hover {
+  background: var(--bg-surface-2);
+  color: var(--text-base);
+}
+
+.nav-item.active {
+  background: var(--bg-surface-2);
+  color: var(--text-base);
+  font-weight: 700;
+}
+
+.nav-item.active svg {
+  opacity: 1;
+  color: var(--accent);
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 10px 12px 4px;
+  font-size: 11px;
+  color: var(--border-light);
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   Main content
+   ========================================================================== */
+
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: 28px 40px 60px;
+}
+
+.main-header {
+  margin-bottom: 28px;
+}
+
+/* ==========================================================================
+   Main portal (default landing view) — 3-part scrollable story:
+   1) bold-hero (dark statement)  2) hero-cover (photo cover)  3) latest-section
+   ========================================================================== */
+
+.portal-view {
+  padding: 48px 0 80px;
+  display: block;
+}
+
+.portal-view[hidden] {
+  display: none;
+}
+
+/* ---- Section 1: bold statement hero ---- */
+
+.bold-hero {
+  max-width: 1120px;
+  margin: 0 auto 40px;
+  background: var(--bg-base, #0a0a0a);
+  border-radius: var(--radius-xl);
+  padding: 96px 40px;
+  text-align: center;
+  box-shadow: var(--shadow-heavy);
+}
+
+.bold-hero-eyebrow {
+  color: #ff6b1a;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  margin: 0 0 22px;
+}
+
+.bold-hero-title {
+  font-family: "Baloo 2", var(--font-title);
+  font-weight: 800;
+  font-size: clamp(26px, 4vw, 44px);
+  line-height: 1.35;
+  color: #ffffff;
+  margin: 0 0 22px;
+}
+
+.bold-hero-sub {
+  max-width: 620px;
+  margin: 0 auto 36px;
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.bold-hero-cta {
+  display: inline-block;
+  background: #ff6b1a;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 14px 34px;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.bold-hero-cta:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+/* ---- Section 2: hero-cover (photo + tagline) ---- */
+
+.hero-cover {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto 40px;
+  display: flex;
+  align-items: stretch;
+  background: #ffffff;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-heavy);
+  aspect-ratio: 16 / 9;
+}
+
+.hero-cover-image {
+  flex: 0 0 37.5%;
+  background-size: cover;
+  background-position: center;
+}
+
+.hero-cover-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 28px;
+  padding: 48px 64px;
+}
+
+.hero-cover-title {
+  font-family: "Baloo 2", var(--font-title);
+  font-weight: 800;
+  font-size: clamp(26px, 3.4vw, 42px);
+  color: #1a1a1a;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.hero-cover-rule {
+  height: 1px;
+  background: #d5d5d5;
+  width: 100%;
+}
+
+.hero-cover-tagline {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.hero-cover-sub {
+  font-family: "Baloo 2", var(--font-title);
+  font-weight: 700;
+  font-size: clamp(15px, 1.5vw, 19px);
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.hero-cover-highlight {
+  font-family: "Baloo 2", var(--font-title);
+  font-weight: 700;
+  font-size: clamp(18px, 2vw, 24px);
+  color: #e0201e;
+  margin: 0;
+}
+
+.hero-cover-credit {
+  align-self: flex-end;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+/* ---- Section 3: latest posts ---- */
+
+.latest-section {
+  max-width: 1120px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: var(--radius-xl);
+  padding: 56px 48px 48px;
+  box-shadow: var(--shadow-heavy);
+}
+
+.latest-title {
+  font-family: "Baloo 2", var(--font-title);
+  font-weight: 800;
+  font-size: 22px;
+  color: #1a1a1a;
+  margin: 0 0 28px;
+}
+
+.latest-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.latest-card {
+  display: block;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 12px;
+  padding: 24px;
+  text-decoration: none;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.latest-card:hover {
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.latest-tag {
+  color: #ff6b1a;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  margin: 0 0 12px;
+}
+
+.latest-card-title {
+  color: #1a1a1a;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.4;
+  margin: 0 0 10px;
+}
+
+.latest-card-desc {
+  color: #6b6b6b;
+  font-size: 13.5px;
+  line-height: 1.65;
+  margin: 0 0 18px;
+}
+
+.latest-more {
+  color: #1a1a1a;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.subscribe-box {
+  margin-top: 44px;
+  padding-top: 40px;
+  border-top: 1px solid #ececec;
+  text-align: center;
+}
+
+.subscribe-box h3 {
+  font-family: "Baloo 2", var(--font-title);
+  font-size: 18px;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0 0 10px;
+}
+
+.subscribe-box p {
+  color: #7a7a7a;
+  font-size: 13.5px;
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .bold-hero {
+    padding: 64px 28px;
+  }
+  .hero-cover {
+    aspect-ratio: auto;
+    flex-direction: column;
+  }
+  .hero-cover-image {
+    flex: 0 0 220px;
+    width: 100%;
+  }
+  .hero-cover-content {
+    padding: 36px 28px;
+    gap: 22px;
+  }
+  .hero-cover-credit {
+    align-self: center;
+  }
+  .latest-section {
+    padding: 44px 24px 36px;
+  }
+  .latest-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .portal-view {
+    padding: 28px 0 56px;
+  }
+  .bold-hero {
+    padding: 48px 20px;
+    margin-bottom: 28px;
+  }
+  .hero-cover {
+    margin-bottom: 28px;
+  }
+}
+
+.eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 8px;
+}
+
+.page-title {
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 32px;
+  margin: 0 0 10px;
+  color: var(--text-bright);
+}
+
+.page-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0 0 4px;
+  max-width: 640px;
+  line-height: 1.5;
+}
+
+.item-count {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* ==========================================================================
+   Item grid + cards
+   ========================================================================== */
+
+.item-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.item-card {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 16px;
+  row-gap: 2px;
+  align-items: center;
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  padding: 10px 16px;
+  position: relative;
+  transition: background-color 0.2s ease;
+}
+
+.item-card:hover {
+  background: var(--bg-card-alt);
+}
+
+.card-cover {
+  grid-column: 1;
+  grid-row: 1 / 3;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-medium);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.card-cover svg {
+  width: 20px;
+  height: 20px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Whole row is already a clear click target in list view, so the
+   hover play-button affordance used in the old grid cards is hidden. */
+.card-play {
+  display: none;
+}
+
+.card-title {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: end;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-base);
+  margin: 0;
+  overflow: visible;
+  text-overflow: unset;
+  white-space: normal;
+  line-height: 1.4;
+}
+
+.card-meta {
+  grid-column: 2;
+  grid-row: 2;
+  align-self: start;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 0;
+  overflow: visible;
+  text-overflow: unset;
+  white-space: normal;
+}
+
+/* ==========================================================================
+   Buttons (pills)
+   ========================================================================== */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-surface-2);
+  color: var(--text-base);
+  font-size: 14px;
+  font-weight: 700;
+  border: none;
+}
+
+.pill.outlined {
+  background: transparent;
+  border: 1px solid var(--border-light);
+}
+
+.pill svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ==========================================================================
+   Detail page
+   ========================================================================== */
+
+.detail-shell {
+  max-width: 720px;
+}
+
+.back-link {
+  margin-bottom: 24px;
+}
+
+.detail-tag {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: rgba(30, 215, 96, 0.12);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  margin-bottom: 14px;
+}
+
+.detail-title {
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 30px;
+  color: var(--text-bright);
+  margin: 0 0 10px;
+}
+
+.detail-meta {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0 0 28px;
+}
+
+.detail-card {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--shadow-medium);
+}
+
+.detail-card p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-tertiary);
+  margin: 0 0 16px;
+}
+
+.detail-card p:last-child {
+  margin-bottom: 0;
+}
+
+.detail-cover {
+  width: 100%;
+  height: 200px;
+  border-radius: var(--radius-lg);
+  margin-bottom: 28px;
+  box-shadow: var(--shadow-medium);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-cover svg {
+  width: 56px;
+  height: 56px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ==========================================================================
+   Editable entry list (used by hand-written "skipGenerate" pages,
+   e.g. items/ai-trend.html) — add / edit / delete cards, persisted to
+   localStorage from that page's own inline script.
+   ========================================================================== */
+
+.entry-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.entry-toolbar .pill {
+  font-size: 13px;
+  padding: 8px 14px;
+}
+
+.entry-toolbar .pill.primary {
+  background: var(--accent);
+  color: #04140a;
+}
+
+.entry-toolbar .pill.primary:hover {
+  filter: brightness(1.05);
+}
+
+.entry-toolbar .pill.subtle {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+.entry-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.entry-card {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  padding: 22px 24px;
+  box-shadow: var(--shadow-medium);
+}
+
+.entry-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.entry-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-bright);
+  margin: 0;
+}
+
+.entry-actions {
+  display: flex;
+  gap: 6px;
+  flex: none;
+}
+
+.entry-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: var(--bg-surface-2);
+  color: var(--text-secondary);
+}
+
+.entry-action-btn:hover {
+  color: var(--text-base);
+  background: #2a2a2a;
+}
+
+.entry-action-btn.danger:hover {
+  color: var(--negative);
+}
+
+.entry-action-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.entry-content ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.entry-content li {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text-tertiary);
+  margin-bottom: 6px;
+}
+
+.entry-content li:last-child {
+  margin-bottom: 0;
+}
+
+.entry-empty {
+  color: var(--text-secondary);
+  font-size: 14px;
+  padding: 32px 0;
+  text-align: center;
+}
+
+.entry-edit-form label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin: 0 0 6px;
+}
+
+.entry-edit-form input[type="text"],
+.entry-edit-form textarea {
+  width: 100%;
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-base);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+  resize: vertical;
+}
+
+.entry-edit-form input[type="text"]:focus,
+.entry-edit-form textarea:focus {
+  outline: none;
+  border-color: var(--border-light);
+}
+
+.entry-edit-form textarea {
+  min-height: 120px;
+  line-height: 1.6;
+}
+
+.entry-edit-form .hint {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin: -10px 0 16px;
+}
+
+.entry-edit-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* ==========================================================================
+   Empty state
+   ========================================================================== */
+
+.empty-state {
+  color: var(--text-secondary);
+  font-size: 14px;
+  padding: 40px 0;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 896px) {
+  :root {
+    --sidebar-width: 84px;
+  }
+  .brand-name,
+  .nav-item span {
+    display: none;
+  }
+  .nav-item {
+    justify-content: center;
+  }
+  .brand {
+    justify-content: center;
+    padding: 6px 0 18px;
+  }
+  .main {
+    padding: 24px 20px 48px;
+  }
+}
+
+@media (max-width: 560px) {
+  .item-card {
+    grid-template-columns: 44px 1fr;
+    column-gap: 12px;
+    padding: 8px 12px;
+  }
+  .card-cover {
+    width: 44px;
+    height: 44px;
+  }
+  .page-title {
+    font-size: 24px;
+  }
+}
