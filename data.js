@@ -411,7 +411,7 @@ const CATEGORIES = [
     id: "h00",
     folder: "H_데이터베이스",
     label: "데이터베이스",
-    icon: "folder",
+    icon: "database",
     description: "데이터베이스 대한 정보를 제공합니다.",
     items: [
       { id: "h01a", title: "DB-Types-Guide", meta: "H01a", hue: 265,
