@@ -126,15 +126,15 @@
   <div class="toolbar">
     <div class="filters" id="filters">
       <span class="fpill active" data-filter="all" onclick="filter(this)">전체</span>
-      <span class="fpill" data-filter="design" onclick="filter(this)">Skill Reference</span>
-      <span class="fpill" data-filter="video" onclick="filter(this)">Skill Items</span>
-      <span class="fpill" data-filter="site" onclick="filter(this)">MCP 관련</span>
+      <span class="fpill" data-filter="site" onclick="filter(this)">Reference Sites</span>
+      <span class="fpill" data-filter="site" onclick="filter(this)">Embedded Skill Items</span>
+      <span class="fpill" data-filter="site" onclick="filter(this)">3rd Party Skill Items</span>
     </div>
     <div class="search"><input type="text" id="search" placeholder="검색…" oninput="doSearch()"></div>
   </div>
     
   <section class="cat" data-cat="site">
-    <div class="cat-head"><span class="cat-icon">📐</span><h2>Skill Reference</h2><span class="count">1</span></div>
+    <div class="cat-head"><span class="cat-icon">📐</span><h2>Reference Sites</h2><span class="count">1</span></div>
     <div class="rows">
       <a class="row" data-type="site" href="https://www.skills.sh/" target="_blank" rel="noopener">
         <span class="r-name">Top installation</span>
@@ -151,10 +151,58 @@
         <span class="go">↗ 열기</span>
       </a>
     </div>
+    
   </section>
-
-  <section class="cat" data-cat="Skill Items">
-    <div class="cat-head"><span class="cat-icon">🎬</span><h2>Skill Items</h2><span class="count">1</span></div>
+  <section class="cat" data-cat="Embedded Skill Items">
+    <div class="cat-head"><span class="cat-icon">🎬</span><h2>Embeded Skill Items</h2><span class="count">1</span></div>
+    <div class="rows">
+      <a class="row" data-type="site" href="https://github.com/ayghri/i-have-adhd" target="_blank" rel="noopener">
+        <span class="r-name">I-have-adhd</span>
+        <span class="r-badge b-site">토큰 절약</span>
+        <span class="r-desc">불필요한 설명없이 필요한 사항만 답변하도록 강제 - Site에서 2가지 설치 필요</span>
+        <span class="r-tags"><span class="tag">skills</span><span class="tag">cinematic</span><span class="tag">generation</span></span>
+        <span class="go">↗ 열기</span>
+      </a>
+      <a class="row" data-type="site" href="https://github.com/leonxlnx/taste-skill" target="_blank" rel="noopener">
+        <span class="r-name">Taste skill</span>
+        <span class="r-badge b-site"> 디자인</span>
+        <span class="r-desc">밋밋한 UI 대신 더욱 강력한 레이아웃, 타이포그래피, 모션 및 간격 조정을 제공</span>
+        <span class="r-tags"><span class="tag">AI video</span><span class="tag">cinematic</span><span class="tag">generation</span></span>
+        <span class="go">↗ 열기</span>
+      </a>
+      <a class="row" data-type="site" href="https://github.com/pbakaus/impeccable" target="_blank" rel="noopener">
+        <span class="r-name">Impeccable</span>
+        <span class="r-badge b-site">디자인</span>
+        <span class="r-desc">AI 디자인의 냄새를 최소화 하는 skills(Taste skill과 유사) — Gibhub 내용 설치 필요</span>
+        <span class="r-tags"><span class="tag">AI video</span><span class="tag">cinematic</span><span class="tag">generation</span></span>
+        <span class="go">↗ 열기</span>
+      </a>
+      <a class="row" data-type="site" href="https://github.com/mattpocock/skills" target="_blank" rel="noopener">
+        <span class="r-name">Mattpocock/skills</span>
+        <span class="r-badge b-site">계획</span>
+        <span class="r-desc">Mattpocock의 Skill Repo - 여기에 있는 많은 skill들이 상위권에 위치하고 있음</span>
+        <span class="r-tags"><span class="tag">AI video</span><span class="tag">cinematic</span><span class="tag">generation</span></span>
+        <span class="go">↗ 열기</span>
+      </a>
+      <a class="row" data-type="site" href="https://github.com/mattpocock/skills/blob/main/skills/engineering/wayfinder/SKILL.md" target="_blank" rel="noopener">
+        <span class="r-name">Wayfinder</span>
+        <span class="r-badge b-site">계획</span>
+        <span class="r-desc">Mattpocock의 Skill Repo 중 wayfinder라는 skill이 유명 (Mattpocock의 grill-me와 함께 아주 유명함) </span>
+        <span class="r-tags"><span class="tag">AI video</span><span class="tag">cinematic</span><span class="tag">generation</span></span>
+        <span class="go">↗ 열기</span>
+      </a>
+      <a class="row" data-type="site" href="https://aside.com/" target="_blank" rel="noopener">
+        <span class="r-name">Aside</span>
+        <span class="r-badge b-site"> 서칭</span>
+        <span class="r-desc">Aside browser + Claude 연동 - 로그인 되어 있는 내 정보를 반영한 Searching 결과 도출</span>
+        <span class="r-tags"><span class="tag">AI video</span><span class="tag">cinematic</span><span class="tag">generation</span></span>
+        <span class="go">↗ 열기</span>
+      </a>
+    </div>
+  </section>
+  
+  <section class="cat" data-cat="Embedded Skill Items">
+    <div class="cat-head"><span class="cat-icon">🎬</span><h2>Embeded Skill Items</h2><span class="count">1</span></div>
     <div class="rows">
       <a class="row" data-type="site" href="https://github.com/ayghri/i-have-adhd" target="_blank" rel="noopener">
         <span class="r-name">I-have-adhd</span>
