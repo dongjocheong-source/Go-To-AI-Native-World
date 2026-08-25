@@ -547,7 +547,7 @@ const CATEGORIES = [
     icon: "book-open",
     description: "HTTP 외 전반적인 프로토콜 학습 자료를 모읍니다.",
     items: [
-      { id: "q01", title: "Api-basics-guide", meta: "Q01", hue: 275,
+      { id: "q01", title: "Api-basic-guide", meta: "Q01", hue: 275,
         body: "API란 무엇일까." },
       { id: "q02", title: "Api-operations-guide", meta: "Q02", hue: 275,
         body: "API 운영 가이드." },
