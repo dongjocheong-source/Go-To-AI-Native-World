@@ -602,7 +602,7 @@ const CATEGORIES = [
     id: "s00",
     folder: "S_Linux",
     label: "Linux",
-    icon: "book-open",
+    icon: "edit-3",
     description: "Linux에 대해 이해하는 자료를 모읍니다.",
     items: [
       { id: "s01", title: "리눅스 관리자의 기본", meta: "S01", hue: 275,
