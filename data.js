@@ -542,7 +542,7 @@ const CATEGORIES = [
 // ── Q00 ────────────────────────────────────────────────────────────
   {
     id: "q00",
-    folder: "Q_HTTP 외",
+    folder: "Q_HTTP외",
     label: "HTTP외",
     icon: "book-open",
     description: "HTTP 외 전반적인 프로토콜 학습 자료를 모읍니다.",
