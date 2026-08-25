@@ -658,7 +658,7 @@ const CATEGORIES = [
     id: "u00",
     folder: "U_학습자료",
     label: "학습자료",
-    icon: "book-open",
+    icon: "plus",
     description: "온프레미스/온디바이스 LLM, 추론, 자연어처리 등 심화 학습 자료를 모읍니다.",
     items: [
       { id: "u01", title: "On-Premise LLM", meta: "U01", hue: 275,
