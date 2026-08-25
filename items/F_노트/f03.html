@@ -546,6 +546,38 @@
         </div>
       </article>
 
+      <!-- 9. friecrawl -->
+      <article class="cmd thirdp" id="firecrawl">
+        <div class="cmd-head">
+          <div class="cmd-name">firecrawl</div>
+          <span class="cmd-src">remotion.dev</span>
+          <span class="cmd-tag p">search, scrape, interact</span>
+        </div>
+        <div class="cmd-body">
+          <p class="cmd-summary">하나의 Skill 저장소라기보다 Firecrawl 본체 + CLI + Agent Skills + MCP 등을 함께 제공하는 통합 오픈소스 프로젝트. 
+            GitHub README에서도 Firecrawl을 “웹을 검색하고(search), 스크랩하고(scrape), 상호작용(interact)하는 API”로 설명.</p>
+          <ul class="cmd-notes">
+            <li>역할은 웹사이트를 AI가 사용하기 좋은 데이터로 바꿔주는 것입니다. 예를 들어 사람이 Claude에게
+                “삼성전자 최신 제품 정보를 웹에서 찾아서 정리해줘” 라고 요청하면, 일반적인 브라우징은 페이지를 열고 내용을 읽는 과정이 필요합니다.
+                Firecrawl을 붙이면 Agent가 웹을 대상으로 다음 작업을 할 수 있습니다.
+                Search → Scrape → Map → Crawl → Interact
+                즉, 검색하고, 페이지 내용을 추출하고, 사이트 구조를 파악하고, 여러 페이지를 수집하고, 필요하면 웹페이지에서 클릭·입력 같은 행동까지 수행할 수 있습니다. 
+                Firecrawl은 결과를 Markdown, JSON, HTML, Screenshot 등의 형태로 제공하며 JS-heavy 페이지도 처리하는 것을 주요 기능으로 내세우고 있습니다. <li>
+           <li> 아래와 같은 역활을 제공합니다 (Firecrawl은 MCP 서버도 별도로 제공하고 있습니다)
+                Claude Skill = 사용법/업무 규칙
+                Firecrawl = 웹 데이터 수집 엔진
+                MCP = AI Agent와 Firecrawl을 연결하는 인터페이스<li>
+           <li> 현재 별도 firecrawl/skills 저장소에는 다음과 같은 Skill들이 있습니다.
+                firecrawl-build-onboarding - API Key, SDK 등 Firecrawl 연동 준비
+                firecrawl-build-scrape - 애플리케이션에 /scrape 기능 구현 
+                firecrawl-build-search - 애플리케이션에 /search 기능 구현
+                firecrawl-build-interact	웹페이지 상호작용 기능 구현 <li>
+          </ul>
+          <div class="install-box"><div class="ilabel">Install · 공식 Agent Skills (프로젝트 안에서 실행)</div><code>npx skills add remotion-dev/skills   #또는  npx remotion skills add</code></div>
+          <div class="warn-box"><b>유의 —</b> MP4 렌더에는 로컬 렌더링 환경(Node/FFmpeg 등) 설정이 필요할 수 있습니다.</div>
+        </div>
+      </article>
+
     </div><!-- /cmd-list -->
   </div>
 </section>
