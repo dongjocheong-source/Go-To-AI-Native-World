@@ -178,7 +178,7 @@ const CATEGORIES = [
     id: "b00",
     folder: "B_AI_Advanced",
     label: "AI Advanced",
-    icon: "layers",
+    icon: "star",
     description: "기본 개념 외의 자료들을 모아둔 폴더 입니다.",
     items: [
       { id: "b01", title: "AI발전역사", meta: "B01", hue: 205,
