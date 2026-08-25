@@ -575,7 +575,7 @@ const CATEGORIES = [
     id: "r00",
     folder: "R_Python",
     label: "Python",
-    icon: "book-open",
+    icon: "code",
     description: "Python Tool에 대해 심화 학습 자료를 모읍니다.",
     items: [
       { id: "r01", title: "uv 실전 가이드", meta: "R01", hue: 275,
