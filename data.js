@@ -239,7 +239,7 @@ const CATEGORIES = [
         body: "온프레미스AI(On-premise AI) 완벽가이드." },
       { id: "b11b", title: "vLLM-gemma4-guide", meta: "B11b", hue: 205,
         body: "Docker + vLLM으로 Gemma4 31B 모델 서빙하기" },   
-      { id: "b11c", title: "Docker-vllm-atoz-guide", meta: "B11c", hue: 205,
+      { id: "b11c", title: "Docker-vLLM-atoz-guide", meta: "B11c", hue: 205,
         body: "Docker로 vLLM 모델 서빙 및 서버 구축." },
       { id: "b11d", title: "Docker-guide", meta: "B11d", hue: 205,
         body: "AI 개발을 위한 Docker 완벽가이드" },
