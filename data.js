@@ -259,8 +259,7 @@ const CATEGORIES = [
         body: "최신 임베딩 모델과 원리" },
       { id: "b15c", title: "Embedding-practice-guide", meta: "B15c", hue: 205,
         body: "Embedding 실습 및 Vector DB 맛보기" },
-    ],
-    ],
+     ],
   },
 
   // ── C00 ────────────────────────────────────────────────────────────
