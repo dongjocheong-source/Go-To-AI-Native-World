@@ -544,7 +544,7 @@ const CATEGORIES = [
     id: "q00",
     folder: "Q_HTTP외",
     label: "HTTP외",
-    icon: "cpu",
+    icon: "message-circle",
     description: "HTTP 외 전반적인 프로토콜 학습 자료를 모읍니다.",
     items: [
       { id: "q01", title: "Api-basic-guide", meta: "Q01", hue: 275,
