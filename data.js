@@ -255,7 +255,7 @@ const CATEGORIES = [
       { id: "c01b", title: "대화채팅 (ChatGPT, Claude, Gemini 비교)", meta: "C01b", hue: 25,
         skipGenerate: true,
         body: "주요 대화채팅(ChatGPT, Claude, Gemini)에 대한 비교" },
-      { id: "c01c", title: "Claude Infro", meta: "C01c", hue: 25,
+      { id: "c01c", title: "Claude Intro", meta: "C01c", hue: 25,
         skipGenerate: true,
         body: "Claude 입문을 위한 기본 가이드" },
       { id: "c01d", title: "Claude-artifacts-manual", meta: "C01d", hue: 25,
