@@ -92,7 +92,8 @@ Go to AI native라는 모토로 AI World로 들어가기 위해 공부하는 각
 - C05_영상(Higgsfield, CapCut)
 - C06_오디오_보이스(Suno, ElevenLabs)
 - C07_자동화에이전트(n8n, Zapier, Make)
-- C08_문서_생산성(Notion AI, Obsidian) 
+- C08_문서_생산성(Notion AI, Obsidian)
+- C09_AI Tool Reference Sites 
 ---
 
 ## [D] AI 활용
