@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MCP & Connector References </title>
+<title>MCP/Connector References </title>
 <style>
   :root{
     --bg:#07070a;--bg-soft:#0e0e14;--card:#13131b;--card-hover:#191922;
@@ -109,7 +109,7 @@
 
 <nav>
   <div class="wrap">
-    <div class="brand"><span class="dot"></span>MCP & Connector&nbsp;References</div>
+    <div class="brand"><span class="dot"></span>MCP/Connector&nbsp;References</div>
     <div class="nav-right">
       <span class="nav-stat"><b id="nav-total">3</b> 자료</span>
       <span class="nav-stat"><b id="nav-cat">3</b> 카테고리</span>
@@ -119,8 +119,8 @@
 
 <header>
   <div class="wrap">
-    <span class="eyebrow">◆ MCP & Connector Reference Library</span>
-    <h1>MCP & Connector 자료 <span class="grad">아카이브</span></h1>
+    <span class="eyebrow">◆ MCP/Connector Reference Library</span>
+    <h1>MCP/Connector 자료 <span class="grad">아카이브</span></h1>
     <p class="sub">한 줄에 하나씩 가로로 정리해 한 화면에 최대한 많이 담습니다. 카테고리 필터·검색으로 빠르게 찾고, 행을 복제해 계속 추가하세요.</p>
   </div>
 </header>
@@ -130,35 +130,15 @@
   <div class="toolbar">
     <div class="filters" id="filters">
       <span class="fpill active" data-filter="all" onclick="filter(this)">전체</span>
+      <span class="fpill" data-filter="MCP" onclick="filter(this)">설치항목</span>
+      <span class="fpill" data-filter="Connector" onclick="filter(this)">연결항목</span>
       <span class="fpill" data-filter="site" onclick="filter(this)">Reference sites</span>
-      <span class="fpill" data-filter="MCP" onclick="filter(this)">MCP 항목</span>
-      <span class="fpill" data-filter="Connector" onclick="filter(this)">Connector 항목</span>
     </div>
     <div class="search"><input type="text" id="search" placeholder="검색…" oninput="doSearch()"></div>
   </div>
 
-  <section class="cat" data-cat="Reference sites">
-    <div class="cat-head"><span class="cat-icon">📐</span><h2>Reference Sites</h2><span class="count">1</span></div>
-    <div class="rows">
-      <a class="row" data-type="site" href="https://www.skills.sh/" target="_blank" rel="noopener">
-        <span class="r-name">Top installation</span>
-        <span class="r-badge b-site">skills.sh</span>
-        <span class="r-desc" data-tooltip="Vercel에서 운영하는 skill 리더보드로서 설치수를 기준으로 skill 순위 확인 가능">Vercel에서 운영하는 skill 리더보드로서 설치수를 기준으로 skill 순위 확인 가능</span>
-        <span class="r-tags"><span class="tag">skill</span><span class="tag">AI agent</span><span class="tag">tokens</span></span>
-        <span class="go">↗ 열기</span>
-      </a>
-      <a class="row" data-type="site" href="https://www.star-history.com/" target="_blank" rel="noopener">
-        <span class="r-name">Star skills</span>
-        <span class="r-badge b-site">Stars history</span>
-        <span class="r-desc" data-tooltip="GitHub 스타 기준 순위를 알수 있는 리더보드 로서 지속적으로 인기있는 skill이 무엇인지 확인 가능">GitHub 스타 기준 순위를 알수 있는 리더보드 로서 지속적으로 인기있는 skill이 무엇인지 확인 가능</span>
-        <span class="r-tags"><span class="tag">skill</span><span class="tag">AI agent</span><span class="tag">tokens</span></span>
-        <span class="go">↗ 열기</span>
-      </a>
-    </div>
-
-  </section>
   <section class="cat" data-cat="MCP">
-    <div class="cat-head"><span class="cat-icon">🎬</span><h2>MCP 항목</h2><span class="count">1</span></div>
+    <div class="cat-head"><span class="cat-icon">🎬</span><h2>설치항목</h2><span class="count">1</span></div>
     <div class="rows">
       <a class="row" data-type="MCP">
         <span class="r-name">Playwright MCP</span>
@@ -212,10 +192,43 @@
         <span class="r-tags"><span class="tag">Connector</span><span class="tag">Higgsfield</span><span class="tag">Higgsfield크레딧</span></span>
         <span class="go">↗ 열기</span>
       </a>
-     
+      <a class="row" data-type="Connector" href="https://gmailmcp.googleapis.com/mcp/v1" target="_blank" rel="noopener">
+        <span class="r-name">Gmail MCP/Connector</span>
+        <span class="r-badge b-site">동영상</span>
+        <span class="r-desc" data-tooltip="AI Agent에게 이미지·영상 제작 능력을 연결해 주는 MCP">AI Agent에게 이미지·영상 제작 능력을 연결해 주는 MCP</span>
+        <span class="r-tags"><span class="tag">Connector</span><span class="tag">Higgsfield</span><span class="tag">Higgsfield크레딧</span></span>
+        <span class="go">↗ 열기</span>
+      </a>
+      <a class="row" data-type="Connector" href="https://mcp.higgsfield.ai/mcp" target="_blank" rel="noopener">
+        <span class="r-name">힉스필드 MCP 플러그인</span>
+        <span class="r-badge b-site">동영상</span>
+        <span class="r-desc" data-tooltip="AI Agent에게 이미지·영상 제작 능력을 연결해 주는 MCP">AI Agent에게 이미지·영상 제작 능력을 연결해 주는 MCP</span>
+        <span class="r-tags"><span class="tag">Connector</span><span class="tag">Higgsfield</span><span class="tag">Higgsfield크레딧</span></span>
+        <span class="go">↗ 열기</span>
+      </a>
     </div>
   </section>
 
+  <section class="cat" data-cat="Reference sites">
+    <div class="cat-head"><span class="cat-icon">📐</span><h2>Reference Sites</h2><span class="count">1</span></div>
+    <div class="rows">
+      <a class="row" data-type="site" href="https://www.skills.sh/" target="_blank" rel="noopener">
+        <span class="r-name">Top installation</span>
+        <span class="r-badge b-site">skills.sh</span>
+        <span class="r-desc" data-tooltip="Vercel에서 운영하는 skill 리더보드로서 설치수를 기준으로 skill 순위 확인 가능">Vercel에서 운영하는 skill 리더보드로서 설치수를 기준으로 skill 순위 확인 가능</span>
+        <span class="r-tags"><span class="tag">skill</span><span class="tag">AI agent</span><span class="tag">tokens</span></span>
+        <span class="go">↗ 열기</span>
+      </a>
+      <a class="row" data-type="site" href="https://www.star-history.com/" target="_blank" rel="noopener">
+        <span class="r-name">Star skills</span>
+        <span class="r-badge b-site">Stars history</span>
+        <span class="r-desc" data-tooltip="GitHub 스타 기준 순위를 알수 있는 리더보드 로서 지속적으로 인기있는 skill이 무엇인지 확인 가능">GitHub 스타 기준 순위를 알수 있는 리더보드 로서 지속적으로 인기있는 skill이 무엇인지 확인 가능</span>
+        <span class="r-tags"><span class="tag">skill</span><span class="tag">AI agent</span><span class="tag">tokens</span></span>
+        <span class="go">↗ 열기</span>
+      </a>
+    </div>
+    </section>
+  
   <div class="empty" id="empty">검색 결과가 없습니다.</div>
 
   <div class="add-hint">
