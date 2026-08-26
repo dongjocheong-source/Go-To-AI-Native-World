@@ -118,6 +118,22 @@ const MODALITY_GROUPS = [
 ];
 
 
+/**
+ * LATEST_POSTS — 메인 포털 맨 아래 "최신 글" 카드 3장.
+ * 새 글을 올렸으면 이 배열 맨 앞에 한 줄 추가하고 마지막 줄을 지우면 됩니다.
+ * cat/item 은 CATEGORIES의 id를 가리키며, 제목과 링크는 거기서 자동으로 가져옵니다.
+ * summary 를 비워두면 해당 항목의 body 첫 문장이 쓰입니다.
+ */
+const LATEST_POSTS = [
+  { cat: "e00", item: "e09", date: "2026년 8월 24일",
+    summary: "screen, git, Postman으로 AI 서버를 운영하며 쓰는 관리 꿀팁을 정리했습니다." },
+  { cat: "h00", item: "h02", date: "2026년 8월 18일",
+    summary: "Supabase로 데이터베이스를 처음 붙여보는 초보 개발자용 시작 가이드." },
+  { cat: "g00", item: "g04", date: "2026년 8월 11일",
+    summary: "영상 프로젝트의 진행 상황과 다음 단계를 기록합니다." },
+];
+
+
 const CATEGORIES = [
   // ── A00 ────────────────────────────────────────────────────────────
   {

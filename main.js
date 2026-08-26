@@ -8,8 +8,9 @@
  * View states:
  * - Portal view (#portal-view): default view on first load, and whatever
  *   the "INFO HUB" logo button (#brand-home) returns you to. Shows a static
- *   cover hero (see .hero-cover in style.css). No sidebar item is active in
- *   this state. The old 12-tool/modality showcase now lives at
+ *   three stacked sections: intro (.hero-intro) → cover (.hero-cover) →
+ *   latest posts (.latest, filled from LATEST_POSTS in data.js). No sidebar
+ *   item is active in this state. The old 12-tool/modality showcase now lives at
  *   items/C_AI_Tools/c00.html (category C00's intro item).
  * - Category view (#category-view): shown after clicking a sidebar item.
  *
@@ -25,6 +26,29 @@
   const pageDesc = document.getElementById("page-desc");
   const itemCount = document.getElementById("item-count");
   const itemGrid = document.getElementById("item-grid");
+  const latestGrid = document.getElementById("latest-grid");
+
+  // Portal section (3): the three "최신 글" cards. Content comes from
+  // LATEST_POSTS in data.js; title/href are resolved from CATEGORIES so a
+  // renamed item never has to be updated in two places.
+  function renderLatest() {
+    if (!latestGrid || typeof LATEST_POSTS === "undefined") return;
+
+    latestGrid.innerHTML = LATEST_POSTS.map((post) => {
+      const cat = CATEGORIES.find((c) => c.id === post.cat);
+      const item = cat && cat.items.find((i) => i.id === post.item);
+      if (!item) return "";
+      const href = `items/${cat.folder ? cat.folder + "/" : ""}${item.id}.html`;
+      const summary = post.summary || (item.body || "").split("\n")[0];
+      return `
+        <a class="latest-card" href="${href}">
+          <p class="latest-card-date">${post.date || ""}</p>
+          <h3 class="latest-card-title">${item.title}</h3>
+          <p class="latest-card-summary">${summary}</p>
+          <p class="latest-card-more">더 읽기 →</p>
+        </a>`;
+    }).join("");
+  }
 
   function renderSidebar(activeId) {
     navList.innerHTML = CATEGORIES.map((cat) => {
@@ -101,6 +125,7 @@
   }
 
   brandHome.addEventListener("click", goToPortal);
+  renderLatest();
 
   const initialId = (location.hash || "").replace("#", "");
   if (initialId && CATEGORIES.some((c) => c.id === initialId)) {

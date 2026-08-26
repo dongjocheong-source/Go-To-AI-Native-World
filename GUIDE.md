@@ -24,7 +24,16 @@ AI-Native-World-main/
 카드를 클릭하면 `items/{항목id}.html`이라는 독립된 정적 HTML 페이지로 이동합니다.
 어느 카테고리에 있든 왼쪽 위의 로고("INFO HUB")를 클릭하면 다시 메인 포털로 돌아갑니다.
 
-### 메인 포털 (기본 화면)
+### 메인 포털 (기본 화면) — 3단 구성
+
+위에서 아래로 세 개의 섹션이 이어집니다.
+
+1. `.hero-intro` — 다크 인트로. 큰 제목 · 한 줄 소개 · "글 둘러보기" 버튼(`#latest`로 스크롤).
+2. `.hero-cover` — 기존 계단 이미지 커버.
+3. `.latest` — "최신 글" 카드 3장. `data.js`의 `LATEST_POSTS` 배열(`{ cat, item, date, summary }`)을
+   `main.js`의 `renderLatest()`가 렌더링합니다. 제목과 링크는 `CATEGORIES`에서 자동으로 찾아오므로
+   새 글을 올렸을 때는 `LATEST_POSTS` 맨 앞에 한 줄 추가하고 마지막 줄만 지우면 됩니다.
+   `summary`를 비우면 해당 항목 `body`의 첫 문장이 쓰입니다.
 
 - 콘텐츠는 `data.js`의 `PORTAL_TOOLS` 배열입니다. 각 항목은 `{ label, icon, bg }`로,
   `icon`은 `assets/portal/` 안의 파일명, `bg`는 타일 배경색입니다.
