@@ -129,8 +129,8 @@ Go to AI native라는 모토로 AI World로 들어가기 위해 공부하는 각
 - F01_프롬프팅
 - F02_Skill References
 - F03_Skill Description
-- F04_MCP/Connector References
-- F05_MCP/컨넥터 Description
+- F04_MCP_Connector References
+- F05_MCP_Connector Description
 - F06_디자인노트
 - F07_영상_미디어
 - F08_Claude활용
