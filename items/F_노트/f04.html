@@ -130,8 +130,8 @@
   <div class="toolbar">
     <div class="filters" id="filters">
       <span class="fpill active" data-filter="all" onclick="filter(this)">전체</span>
-      <span class="fpill" data-filter="MCP" onclick="filter(this)">설치항목</span>
-      <span class="fpill" data-filter="Connector" onclick="filter(this)">연결항목</span>
+      <span class="fpill" data-filter="MCP" onclick="filter(this)">설치 항목</span>
+      <span class="fpill" data-filter="Connector" onclick="filter(this)">연동 항목</span>
       <span class="fpill" data-filter="site" onclick="filter(this)">Reference sites</span>
     </div>
     <div class="search"><input type="text" id="search" placeholder="검색…" oninput="doSearch()"></div>
@@ -144,7 +144,7 @@
         <span class="r-name">Playwright MCP</span>
         <span class="r-badge b-site">브라우저 자동화</span>
         <span class="r-desc" data-tooltip="AI 에이전트가 웹 브라우저를 직접 조작할 수 있게 해주는 MCP 서버">AI 에이전트가 웹 브라우저를 직접 조작할 수 있게 해주는 MCP 서버</span>
-        <span class="r-tags"><span class="tag">MCP</span><span class="tag">Snapshot 기반</span><span class="tag">브라우저 자동화</span></span>
+        <span class="r-tags"><span class="tag">브라우저 자동화</span><span class="tag">Snapshot 기반</span><span class="tag">Local설정</span></span>
       </a>
       <a class="row" data-type="MCP">
         <span class="r-name">Firecrawl MCP</span>
@@ -162,15 +162,8 @@
   </section>
 
   <section class="cat" data-cat="Connector">
-    <div class="cat-head"><span class="cat-icon">🎬</span><h2>Connector 항목</h2><span class="count">1</span></div>
+    <div class="cat-head"><span class="cat-icon">🎬</span><h2>연동 항목</h2><span class="count">1</span></div>
     <div class="rows">
-      <a class="row" data-type="Connector" href="https://drivemcp.googleapis.com/mcp/v1" target="_blank" rel="noopener">
-        <span class="r-name">Google Drive MCP</span>
-        <span class="r-badge b-site">G-Docs/Sheets</span>
-        <span class="r-desc" data-tooltip="AI에게 문제를 단계적으로 검토·수정·분기하는 사고용 작업공간을 제공(각 문서는 각각의 MCP설치 필요)">AI에게 문제를 단계적으로 검토·수정·분기하는 사고용 작업공간을 제공(각 문서는 각각의 MCP설치 필요)</span>
-        <span class="r-tags"><span class="tag">Connector</span><span class="tag">Google Docs/Sheets</span><span class="tag">Drive MCP</span></span>
-        <span class="go">↗ 열기</span>
-      </a>
       <a class="row" data-type="Connector" href="https://api.githubcopilot.com/mcp/" target="_blank" rel="noopener">
         <span class="r-name">GitHub MCP</span>
         <span class="r-badge b-site">Github관리</span>
@@ -192,17 +185,24 @@
         <span class="r-tags"><span class="tag">Connector</span><span class="tag">Higgsfield</span><span class="tag">Higgsfield크레딧</span></span>
         <span class="go">↗ 열기</span>
       </a>
+      <a class="row" data-type="Connector" href="https://drivemcp.googleapis.com/mcp/v1" target="_blank" rel="noopener">
+        <span class="r-name">Google Drive MCP</span>
+        <span class="r-badge b-site">Google Drive</span>
+        <span class="r-desc" data-tooltip="AI에게 문제를 단계적으로 검토·수정·분기하는 사고용 작업공간을 제공(각 문서는 각각의 MCP설치 필요)">AI에게 문제를 단계적으로 검토·수정·분기하는 사고용 작업공간을 제공(각 문서는 각각의 MCP설치 필요)</span>
+        <span class="r-tags"><span class="tag">Connector</span><span class="tag">Google Docs/Sheets</span><span class="tag">Drive MCP</span></span>
+        <span class="go">↗ 열기</span>
+      </a>
       <a class="row" data-type="Connector" href="https://gmailmcp.googleapis.com/mcp/v1" target="_blank" rel="noopener">
         <span class="r-name">Gmail MCP/Connector</span>
-        <span class="r-badge b-site">동영상</span>
-        <span class="r-desc" data-tooltip="AI Agent에게 이미지·영상 제작 능력을 연결해 주는 MCP">AI Agent에게 이미지·영상 제작 능력을 연결해 주는 MCP</span>
+        <span class="r-badge b-site">Google Gmail</span>
+        <span class="r-desc" data-tooltip="사용자의 이메일을 검색·읽고 정리하며, 필요한 이메일 초안을 작성하거나 라벨을 관리">사용자의 이메일을 검색·읽고 정리하며, 필요한 이메일 초안을 작성하거나 라벨을 관리</span>
         <span class="r-tags"><span class="tag">Connector</span><span class="tag">Higgsfield</span><span class="tag">Higgsfield크레딧</span></span>
         <span class="go">↗ 열기</span>
       </a>
-      <a class="row" data-type="Connector" href="https://mcp.higgsfield.ai/mcp" target="_blank" rel="noopener">
-        <span class="r-name">힉스필드 MCP 플러그인</span>
-        <span class="r-badge b-site">동영상</span>
-        <span class="r-desc" data-tooltip="AI Agent에게 이미지·영상 제작 능력을 연결해 주는 MCP">AI Agent에게 이미지·영상 제작 능력을 연결해 주는 MCP</span>
+      <a class="row" data-type="Connector" href="https://calendarmcp.googleapis.com/mcp/v1" target="_blank" rel="noopener">
+        <span class="r-name">Calendar Connector/MCP</span>
+        <span class="r-badge b-site">Google Calendar</span>
+        <span class="r-desc" data-tooltip="내 일정을 이해하고 회의를 잡거나 변경하는 Calendar Assistant 역할">내 일정을 이해하고 회의를 잡거나 변경하는 Calendar Assistant 역할</span>
         <span class="r-tags"><span class="tag">Connector</span><span class="tag">Higgsfield</span><span class="tag">Higgsfield크레딧</span></span>
         <span class="go">↗ 열기</span>
       </a>
