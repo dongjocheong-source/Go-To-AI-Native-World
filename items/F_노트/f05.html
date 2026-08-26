@@ -358,3 +358,367 @@
   </div>
 </section>
 
+<!-- ============================================================ -->
+<!-- CATEGORY 2 · LOCAL 설치 / 설정                                -->
+<!-- ============================================================ -->
+<section class="cat-section tinted" id="local">
+  <div class="wrap reveal">
+    <div class="cat-banner">
+      <span class="cat-badge local">Local Setup</span>
+      <span class="cat-count">Local 설치 / 설정 · 4개</span>
+    </div>
+    <h2 class="cat-title">Local 설치 / 설정</h2>
+    <p class="cat-lede">로컬에서 직접 <b>실행·설치</b>하는 MCP 서버입니다. 주로 <code>npx</code>·Docker로 구동하며, 브라우저 조작·크롤링·추론·DB 조회 등 <b>실행 환경이 필요한 도구</b>가 여기에 속합니다.</p>
+
+    <div class="cmd-list">
+
+      <!-- Playwright MCP -->
+      <article class="cmd local" id="playwright">
+        <div class="cmd-head">
+          <div class="cmd-name">Playwright MCP</div>
+          <span class="cmd-src">Browser Automation</span>
+          <span class="cmd-tag l">Action</span>
+        </div>
+        <div class="cmd-body">
+          <p class="cmd-summary">AI 에이전트가 <b>웹 브라우저를 직접 조작</b>하게 해주는 MCP 서버. Playwright는 Microsoft의 브라우저 자동화 도구이며, MCP가 AI와 이를 연결합니다.</p>
+          <div class="flow-box">
+            <div class="flabel2">동작 구조</div>
+            <code><span class="node">AI/LLM</span> <span class="arw">→</span> <span class="node">MCP</span> <span class="arw">→</span> <span class="node">Playwright</span> <span class="arw">→</span> <span class="node">Chrome/Edge</span> <span class="arw">→</span> <span class="node">웹사이트</span></code>
+          </div>
+          <ul class="cmd-notes">
+            <li>웹사이트를 열고 특정 정보 검색, 로그인 후 <b>내부 웹 시스템 탐색</b></li>
+            <li>버튼/메뉴 클릭 및 <b>폼 입력</b>, 페이지 텍스트·UI 구조 확인</li>
+            <li><b>E2E 테스트</b> 수행 및 실패 원인 분석, 반복적 웹 업무 자동화</li>
+            <li>AI Coding Agent가 개발 중인 웹앱을 직접 실행해 확인, 자연어 지시로 <b>브라우저 QA</b> 수행</li>
+          </ul>
+          <div class="fit-box">
+            <div class="flabel">적합한 상황</div>
+            <p>클릭·입력·로그인 등 <b>"행동(Action)" 중심</b> 작업. "버튼을 눌러 주문 과정을 테스트해줘" 같은 QA·E2E·Agent browsing에 적합합니다.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- Firecrawl MCP -->
+      <article class="cmd local" id="firecrawl">
+        <div class="cmd-head">
+          <div class="cmd-name">Firecrawl MCP</div>
+          <span class="cmd-src">Web Crawling</span>
+          <span class="cmd-tag l">Data</span>
+        </div>
+        <div class="cmd-body">
+          <p class="cmd-summary">AI Agent가 웹사이트에서 정보를 <b>검색·수집·구조화</b>하도록 Firecrawl을 MCP로 연결한 것. Hosted 연결 방식과 <b>Local npx 실행</b> 방식을 모두 지원합니다.</p>
+          <div class="flow-box">
+            <div class="flabel2">접근법</div>
+            <code><span class="node">AI</span> <span class="arw">→</span> <span class="node">Firecrawl MCP</span> <span class="arw">→</span> <span class="node">Search / Crawl / Scrape</span> <span class="arw">→</span> <span class="node">Markdown·구조화 데이터</span> <span class="arw">→</span> <span class="node">AI 분석</span></code>
+          </div>
+          <table class="cmp-table">
+            <thead>
+              <tr><th>비교 항목</th><th>Playwright MCP</th><th>Firecrawl MCP</th></tr>
+            </thead>
+            <tbody>
+              <tr><th>핵심 목적</th><td>브라우저 조작</td><td>웹 데이터 수집</td></tr>
+              <tr><th>잘하는 것</th><td>클릭·입력·로그인·UI 테스트</td><td>크롤링·검색·본문 추출</td></tr>
+              <tr><th>웹페이지 접근</th><td>실제 브라우저 중심</td><td>크롤러/API 중심</td></tr>
+              <tr><th>여러 페이지 수집</th><td>상대적으로 비효율적</td><td><b>강점</b></td></tr>
+              <tr><th>구조화 데이터 추출</th><td>가능하나 주목적 아님</td><td><b>강점</b></td></tr>
+              <tr><th>로그인/버튼 조작</th><td><b>강점</b></td><td>제한적</td></tr>
+              <tr><th>대표 용도</th><td>QA · E2E · Agent browser</td><td>RAG · 리서치 · 데이터 수집</td></tr>
+            </tbody>
+          </table>
+          <div class="fit-box">
+            <div class="flabel">적합한 상황</div>
+            <p>Playwright는 <b>행동(Action) 중심</b>, Firecrawl은 <b>정보(Data) 중심</b>. "이 사이트 제품 페이지를 수집해 기능 차이를 표로 만들어줘" 같은 작업은 Firecrawl이 훨씬 자연스럽습니다.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- Sequential Thinking MCP -->
+      <article class="cmd local" id="sequential">
+        <div class="cmd-head">
+          <div class="cmd-name">Sequential Thinking MCP</div>
+          <span class="cmd-src">Reasoning</span>
+          <span class="cmd-tag l">Reasoning</span>
+        </div>
+        <div class="cmd-body">
+          <p class="cmd-summary">AI에게 문제를 <b>단계적으로 검토·수정·분기</b>하는 사고용 작업공간을 제공하는 공식 reference MCP 서버. 공식 설명은 "dynamic and reflective problem-solving through thought sequences"입니다.</p>
+          <div class="flow-box">
+            <div class="flabel2">접근 방식</div>
+            <code><span class="node">질문</span> <span class="arw">→</span> <span class="node">AI Agent</span> <span class="arw">→</span> <span class="node">Sequential Thinking MCP</span> <span class="arw">→</span> <span class="node">Thought1 → Thought2 → Thought3</span> <span class="arw">→</span> <span class="node">Revision? / Branch?</span> <span class="arw">→</span> <span class="node">Conclusion</span></code>
+          </div>
+          <div class="install-box">
+            <div class="ilabel">npm 패키지</div>
+            <code>@modelcontextprotocol/server-sequential-thinking</code>
+          </div>
+        </div>
+      </article>
+
+      <!-- PostgreSQL MCP -->
+      <article class="cmd local" id="postgresql">
+        <div class="cmd-head">
+          <div class="cmd-name">PostgreSQL MCP</div>
+          <span class="cmd-src">Structured Data</span>
+          <span class="cmd-tag l">Database</span>
+        </div>
+        <div class="cmd-body">
+          <p class="cmd-summary">AI Agent가 PostgreSQL의 <b>Schema와 데이터를 이해</b>하고, 자연어로 조회·분석·관리하게 해주는 MCP 서버. "지난 30일 매출이 가장 많이 증가한 제품 10개를 알려줘" 같은 요청을 처리합니다.</p>
+          <ul class="cmd-notes">
+            <li>AI가 SQL을 직접 실행하는 것이 아니라, <b>MCP Server가 DB와 AI 사이의 통제된 인터페이스</b> 역할을 합니다.</li>
+            <li>Microsoft PostgreSQL MCP는 별도의 global 설치 없이 <b>npx로 실행</b> 가능합니다.</li>
+          </ul>
+        </div>
+      </article>
+
+    </div><!-- /cmd-list -->
+  </div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- CATEGORY 3 · 연동 MCP / Connector                             -->
+<!-- ============================================================ -->
+<section class="cat-section" id="connector">
+  <div class="wrap reveal">
+    <div class="cat-banner">
+      <span class="cat-badge conn">Connector</span>
+      <span class="cat-count">연동 MCP / Connector · 10개</span>
+    </div>
+    <h2 class="cat-title">연동 MCP / Connector 구조</h2>
+    <p class="cat-lede">Hosted(Remote) MCP 서버에 <b>연결·인증</b>해서 사용하는 방식입니다. 대개 <code>Settings → Connectors → Add custom connector</code>에서 서버 URL을 등록하고 <b>OAuth/계정 로그인</b>으로 인증합니다.</p>
+
+    <div class="cmd-list">
+
+      <!-- Google Drive MCP -->
+      <article class="cmd conn" id="gdrive">
+        <div class="cmd-head">
+          <div class="cmd-name">Google Drive MCP</div>
+          <span class="cmd-src">Google · Remote</span>
+          <span class="cmd-tag p">Files + Knowledge</span>
+        </div>
+        <div class="cmd-body">
+          <p class="cmd-summary">AI Agent에게 사용자의 Google Drive를 <b>검색·읽기·파일 작업</b> 능력으로 제공하는 MCP. 단순 다운로드를 넘어 <b>Agent의 지식 저장소/업무 Context</b>로 활용하는 것이 진짜 가치입니다.</p>
+          <ul class="cmd-notes">
+            <li>기업 환경에서 <b>Agentic RAG / Knowledge Assistant / 업무 Agent</b> 구성의 기반으로 활용됩니다.</li>
+            <li>보안: <b>OAuth 2.0</b>을 사용하며, Agent가 사용자의 기존 Drive 권한·데이터 거버넌스 정책을 상속하도록 설계.</li>
+            <li>서버를 설치하는 게 아니라 Google의 <b>Remote MCP Server에 연결</b>. Google Cloud Project에서 Drive API·Drive MCP API 활성화 필요.</li>
+            <li>Drive MCP는 파일 저장소 관점의 검색·읽기·생성·복사·다운로드에 초점. 문서를 정교하게 편집하려면 <b>Docs / Sheets / Slides MCP</b>를 별도 연결.</li>
+          </ul>
+          <div class="endpoint"><span class="elabel">Endpoint</span><code>https://drivemcp.googleapis.com/mcp/v1</code></div>
+          <div class="install-box">
+            <div class="ilabel">Claude 연결</div>
+            <code>Settings → Connectors → Add custom connector → Google Drive</code>
+            <code>Advanced Settings에 OAuth Client ID / Secret 등록</code>
+          </div>
+        </div>
+      </article>
+
+      <!-- GitHub MCP -->
+      <article class="cmd conn" id="github">
+        <div class="cmd-head">
+          <div class="cmd-name">GitHub MCP</div>
+          <span class="cmd-src">GitHub · Remote / Local</span>
+          <span class="cmd-tag p">Development</span>
+        </div>
+        <div class="cmd-body">
+          <p class="cmd-summary">AI Agent에게 GitHub를 <b>읽고 조작</b>하는 개발 협업 능력을 제공하는 공식 MCP. Repository·Issue·Pull Request·Actions·보안 정보를 자연어로 조회·조작합니다.</p>
+          <ul class="cmd-notes">
+            <li>"이 Repository의 최근 PR 5개를 분석하고 문제가 있는 PR을 알려줘", "로그인 오류 Issue를 만들고 수정 Branch·PR을 만들어줘" 같은 요청 수행.</li>
+            <li>Remote·Local <b>두 방식 모두 제공</b>.</li>
+          </ul>
+          <div class="variant-row">
+            <div class="variant p">
+              <div class="vname">Remote 방식</div>
+              <p class="vdesc">GitHub가 직접 서버 운영. 설정이 가장 편하고, OAuth 지원 Client에서는 PAT 없이 <b>GitHub OAuth 인증</b>도 가능.</p>
+            </div>
+            <div class="variant l">
+              <div class="vname">Local 방식</div>
+              <p class="vdesc">공식 Docker image로 로컬 직접 실행. <b>PAT를 환경 변수</b>로 전달하는 방식을 공식 문서에서 제공.</p>
+            </div>
+          </div>
+          <div class="endpoint"><span class="elabel">Remote</span><code>https://api.githubcopilot.com/mcp/</code></div>
+          <div class="install-box">
+            <div class="ilabel">Local · Docker image</div>
+            <code>ghcr.io/github/github-mcp-server</code>
+          </div>
+        </div>
+      </article>
+
+      <!-- Figma MCP -->
+      <article class="cmd conn" id="figma">
+        <div class="cmd-head">
+          <div class="cmd-name">Figma MCP</div>
+          <span class="cmd-src">Figma · Remote</span>
+          <span class="cmd-tag p">Design</span>
+        </div>
+        <div class="cmd-body">
+          <p class="cmd-summary">Figma 디자인과 AI 개발 에이전트를 연결하는 MCP. 디자인 요소·컴포넌트·프로토타입 정보를 읽고 분석하며, 최근에는 <b>Canvas에 직접 생성·수정하는 양방향 workflow</b>까지 지원합니다.</p>
+          <ul class="cmd-notes">
+            <li>Figma는 <b>Remote MCP Server</b>를 권장. VS Code·Cursor·Claude Code·Codex·Windsurf 등에서 사용 가능.</li>
+            <li>공식 안내는 <b>Figma Plugin 설치 후</b> MCP 연결·인증을 진행하는 방식을 권장.</li>
+          </ul>
+          <div class="endpoint"><span class="elabel">Endpoint</span><code>https://mcp.figma.com/mcp</code></div>
+        </div>
+      </article>
+
+      <!-- Higgsfield MCP -->
+      <article class="cmd conn" id="higgsfield">
+        <div class="cmd-head">
+          <div class="cmd-name">Higgsfield MCP</div>
+          <span class="cmd-src">Higgsfield · Hosted</span>
+          <span class="cmd-tag p">Media Gen</span>
+        </div>
+        <div class="cmd-body">
+          <p class="cmd-summary">AI Agent에게 <b>이미지·영상 제작(Media Generation)</b> 능력을 연결하는 Hosted MCP. Higgsfield AI가 공식 제공합니다.</p>
+          <ul class="cmd-notes">
+            <li>직접 접근하면 인증이 필요해 <b>401이 나오는 것이 정상</b>. MCP Client에서 Higgsfield 계정으로 OAuth 인증해 사용.</li>
+            <li>로컬 설치가 아닌 <b>Hosted 방식</b> — 서버 URL을 Client에 등록하면 됨. 별도 API Key 없이 계정으로 인증.</li>
+          </ul>
+          <div class="endpoint"><span class="elabel">Endpoint</span><code>https://mcp.higgsfield.ai/mcp</code></div>
+          <div class="install-box">
+            <div class="ilabel">연결</div>
+            <code>Settings → Connectors → Add custom connector → Higgsfield → Connect → 계정 로그인</code>
+          </div>
+          <div class="warn-box"><b>유의 —</b> MCP를 통한 생성은 <b>Higgsfield 크레딧</b>을 사용합니다. 웹의 Unlimited/무료 혜택이 있어도 MCP 자동 생성에는 적용되지 않고 표준 크레딧이 차감됩니다.</div>
+        </div>
+      </article>
+
+      <!-- Gamma Connector -->
+      <article class="cmd conn" id="gamma">
+        <div class="cmd-head">
+          <div class="cmd-name">Gamma Connector</div>
+          <span class="cmd-src">Gamma · Hosted</span>
+          <span class="cmd-tag p">Presentation</span>
+        </div>
+        <div class="cmd-body">
+          <p class="cmd-summary">프레젠테이션·문서를 <b>빠르게 생성</b>하는 콘텐츠 생성 Connector(Presentation·Document·Webpage·Social post). 특히 <b>Presentation에 매우 특화</b>되어 있습니다.</p>
+          <ul class="cmd-notes">
+            <li>Claude의 Connector 설정에서 Gamma를 추가하고 <b>Gamma 계정으로 로그인</b>하면 사용 가능.</li>
+            <li>예: "AI Agent와 MCP의 발전 방향" 10장짜리 임원 보고용 프레젠테이션 · 16:9 · Professional theme · 각 페이지 적절한 이미지 포함.</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- Canva Connector -->
+      <article class="cmd conn" id="canva">
+        <div class="cmd-head">
+          <div class="cmd-name">Canva Connector</div>
+          <span class="cmd-src">Canva · Hosted</span>
+          <span class="cmd-tag p">Design Suite</span>
+        </div>
+        <div class="cmd-body">
+          <p class="cmd-summary">디자인 생성·편집·관리를 아우르는 Connector로 <b>Gamma보다 범위가 넓음</b>. 단순 생성보다 기존 디자인 검색 + 생성 + 수정 + Brand/Asset + Export까지 <b>디자인 작업환경 연결</b>에 초점.</p>
+          <ul class="cmd-notes">
+            <li>생성 예: "이번 분기 Galaxy 마케팅 캠페인용 프레젠테이션을 만들어줘".</li>
+            <li>편집도 지원 — "이 프레젠테이션을 일본 시장용으로 바꾸고 모든 슬라이드를 일본어로 번역해줘".</li>
+          </ul>
+          <div class="endpoint"><span class="elabel">Endpoint</span><code>https://mcp.canva.com/mcp</code></div>
+        </div>
+      </article>
+
+      <!-- Gmail Connector -->
+      <article class="cmd conn" id="gmail">
+        <div class="cmd-head">
+          <div class="cmd-name">Gmail Connector</div>
+          <span class="cmd-src">Google · Remote</span>
+          <span class="cmd-tag p">Email</span>
+        </div>
+        <div class="cmd-body">
+          <p class="cmd-summary">AI Agent가 이메일을 <b>검색·읽기·정리</b>하고, 초안 작성이나 라벨 관리를 하도록 해주는 MCP.</p>
+          <div class="endpoint"><span class="elabel">Endpoint</span><code>https://gmailmcp.googleapis.com/mcp/v1</code></div>
+          <div class="warn-box"><b>유의 —</b> 공식 MCP Tool 기준으로 <b>create_draft는 있지만 직접 send_email하는 Tool은 없습니다.</b> "AI가 마음대로 바로 발송하는 구조"가 아닙니다.</div>
+        </div>
+      </article>
+
+      <!-- Calendar Connector -->
+      <article class="cmd conn" id="calendar">
+        <div class="cmd-head">
+          <div class="cmd-name">Google Calendar Connector</div>
+          <span class="cmd-src">Google · Remote</span>
+          <span class="cmd-tag p">Schedule</span>
+        </div>
+        <div class="cmd-body">
+          <p class="cmd-summary">Gmail보다 <b>Action 범위가 더 적극적</b>. "내 일정을 이해하고 회의를 잡거나 변경하는 <b>Calendar Assistant</b>" 역할을 목적으로 합니다.</p>
+          <ul class="cmd-notes">
+            <li><b>Gmail + Calendar를 함께 연결</b>하는 것이 핵심 — 각각 쓰는 것보다 훨씬 유용.</li>
+            <li>여기에 <b>Google Drive까지 연결</b>하면 더 강력해집니다.</li>
+          </ul>
+          <div class="endpoint"><span class="elabel">Endpoint</span><code>https://calendarmcp.googleapis.com/mcp/v1</code></div>
+        </div>
+      </article>
+
+      <!-- Notion MCP -->
+      <article class="cmd conn" id="notion">
+        <div class="cmd-head">
+          <div class="cmd-name">Notion MCP</div>
+          <span class="cmd-src">Notion · Remote Hosted</span>
+          <span class="cmd-tag p">Knowledge + Workspace</span>
+        </div>
+        <div class="cmd-body">
+          <p class="cmd-summary">AI Agent에게 Notion Workspace를 <b>지식베이스이자 작업공간</b>으로 제공하는 공식 Hosted MCP. 검색·읽기뿐 아니라 <b>페이지 생성·수정 등 쓰기 작업</b>까지 수행합니다.</p>
+          <ul class="cmd-notes">
+            <li><b>Knowledge Access + Workspace Action</b>이 결합된 점이 핵심.</li>
+            <li>Drive가 파일 저장소에 대한 AI Access라면, Notion은 AI가 <b>읽고 작업하는 Knowledge Workspace</b>에 가깝습니다.</li>
+            <li>현재 권장 방식은 <b>Remote Hosted MCP</b>.</li>
+          </ul>
+          <div class="endpoint"><span class="elabel">Endpoint</span><code>https://mcp.notion.com/mcp</code></div>
+        </div>
+      </article>
+
+      <!-- Slack MCP -->
+      <article class="cmd conn" id="slack">
+        <div class="cmd-head">
+          <div class="cmd-name">Slack MCP</div>
+          <span class="cmd-src">Slack · Official</span>
+          <span class="cmd-tag p">Communication</span>
+        </div>
+        <div class="cmd-body">
+          <p class="cmd-summary">사용자 권한 범위 안에서 Slack의 <b>메시지·채널·파일·사용자 정보를 검색·읽고</b>, 메시지 전송·채널/Canvas 관리 같은 <b>Action</b>까지 수행하는 공식 MCP.</p>
+          <ul class="cmd-notes">
+            <li>예: "지난 2주간 Project Alpha 관련 논의를 찾아 주요 결정사항과 Action Item을 정리해줘".</li>
+            <li>단순 검색 Connector와 달리 <b>Read + Write가 모두 가능</b>한 점이 특징.</li>
+          </ul>
+          <div class="endpoint"><span class="elabel">Endpoint</span><code>https://mcp.slack.com/mcp</code></div>
+        </div>
+      </article>
+
+    </div><!-- /cmd-list -->
+  </div>
+</section>
+
+
+<!-- ============================================================ -->
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>MCP / Connector Reference · 개요 · Local · 연동 구조 — 서버 URL·설치 방식·Tool 구성은 제공처/버전에 따라 달라질 수 있습니다</span>
+    <a class="totop" href="#top">맨 위로 ↑</a>
+  </div>
+</footer>
+
+<script>
+  var progress = document.getElementById('progress');
+  var nav = document.getElementById('siteNav');
+  window.addEventListener('scroll', function(){
+    var h = document.documentElement;
+    var scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    progress.style.width = scrolled + '%';
+    if(h.scrollTop > 40){ nav.classList.add('scrolled'); } else { nav.classList.remove('scrolled'); }
+  });
+  var hamBtn = document.getElementById('hamBtn');
+  var mobileMenu = document.getElementById('mobileMenu');
+  var mobileClose = document.getElementById('mobileClose');
+  function openMenu(){ mobileMenu.classList.add('open'); mobileClose.style.display='block'; }
+  function closeMenu(){ mobileMenu.classList.remove('open'); mobileClose.style.display='none'; }
+  hamBtn.addEventListener('click', openMenu);
+  mobileClose.addEventListener('click', closeMenu);
+  mobileMenu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeMenu); });
+  var revealObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){ if(entry.isIntersecting){ entry.target.classList.add('in-view'); } });
+  }, {threshold:0.06});
+  document.querySelectorAll('.reveal').forEach(function(el){ revealObserver.observe(el); });
+</script>
+
+</body>
+</html>
+
