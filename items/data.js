@@ -313,6 +313,8 @@ const CATEGORIES = [
         body: "자동화 에이전트(n8n, Zapier, Make)에 대한 내용을 준비 중입니다." },
       { id: "c08", title: "문서 생산성 (Notion AI, Obsidian)", meta: "C08", hue: 25,
         body: "문서 생산성(Notion AI, Obsidian)에 대한 내용을 준비 중입니다." },
+      { id: "c09", title: "AI Tool Reference Sites", meta: "C09", hue: 25,
+        body: "AI Tool관련 참조 영상, 문서 들을 정리합니다." },
     ],
   },
 
