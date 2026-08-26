@@ -253,55 +253,30 @@ button {
   flex: 1;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 28px;
+  gap: 56px;
   padding: 48px 64px;
+  text-align: center;
 }
 
-.hero-cover-title {
-  font-family: "Baloo 2", var(--font-title);
+.hero-cover-heading {
+  font-family: var(--font-title);
   font-weight: 800;
-  font-size: clamp(26px, 3.4vw, 42px);
+  font-size: clamp(24px, 3vw, 36px);
   color: #1a1a1a;
   margin: 0;
   letter-spacing: -0.01em;
-}
-
-.hero-cover-rule {
-  height: 1px;
-  background: #d5d5d5;
-  width: 100%;
-}
-
-.hero-cover-tagline {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.hero-cover-sub {
-  font-family: "Baloo 2", var(--font-title);
-  font-weight: 700;
-  font-size: clamp(15px, 1.5vw, 19px);
-  color: #1a1a1a;
-  margin: 0;
+  text-decoration: underline;
+  text-underline-offset: 10px;
+  text-decoration-thickness: 2px;
 }
 
 .hero-cover-highlight {
-  font-family: "Baloo 2", var(--font-title);
-  font-weight: 700;
-  font-size: clamp(18px, 2vw, 24px);
+  font-family: var(--font-title);
+  font-weight: 800;
+  font-size: clamp(22px, 2.6vw, 32px);
   color: #e0201e;
-  margin: 0;
-}
-
-.hero-cover-credit {
-  align-self: flex-end;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  color: #1a1a1a;
   margin: 0;
 }
 
@@ -316,10 +291,7 @@ button {
   }
   .hero-cover-content {
     padding: 36px 28px;
-    gap: 22px;
-  }
-  .hero-cover-credit {
-    align-self: center;
+    gap: 36px;
   }
 }
 
@@ -375,7 +347,7 @@ button {
 
 .hero-intro-title {
   margin: 0;
-  font-family: "Baloo 2", var(--font-title);
+  font-family: "ADLaM Display", "Baloo 2", var(--font-title);
   font-weight: 800;
   font-size: clamp(30px, 4.6vw, 58px);
   line-height: 1.18;
