@@ -2,340 +2,359 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>유용한 컨넥터 정보 — 아카이브</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCP / Connector Reference</title>
+<meta name="description" content="MCP · Connector 레퍼런스 — 개요 / Local 설치·설정 / 연동 MCP·Connector 구조를 카테고리별로 정리한 확장형 카드 문서">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#07070a;
-    --bg-soft:#0e0e14;
-    --card:#13131b;
-    --card-hover:#191922;
-    --border:#232330;
-    --txt:#f4f4f6;
-    --txt-dim:#9a9aad;
-    --txt-faint:#5f5f72;
-    --accent:#c8ff3d;      /* lime accent, autokliq feel */
-    --accent-2:#7c5cff;    /* violet gradient partner */
-    --pink:#ff5c8a;
-    --radius:20px;
+    --ink:#150F2E;
+    --ink-2:#1E1745;
+    --ink-deep:#0B0820;
+    --paper:#FFFFFF;
+    --paper-tint:#F6F3FF;
+    --line:#E7E1FA;
+    --text-dark:#1B1730;
+    --text-muted:#655F82;
+    --acc-a:#16A34A;
+    --acc-a-ink:#166534;
+    --acc-b:#57534E;
+    --acc-b-ink:#292524;
+    --acc-c:#8880B0;
+    --acc-c-ink:#3A3560;
+    --danger:#D6455B;
+    /* category accents */
+    --cat-over:#16A34A;
+    --cat-over-soft:rgba(22,163,74,0.10);
+    --cat-local:#E0803C;
+    --cat-local-soft:rgba(224,128,60,0.10);
+    --cat-conn:#4C63E0;
+    --cat-conn-soft:rgba(76,99,224,0.10);
+    --radius:18px;
+    --shadow:0 16px 40px rgba(21,15,46,0.12);
+    --maxw:1140px;
+    --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',Consolas,monospace;
   }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
   body{
-    background:var(--bg);
-    color:var(--txt);
-    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
-    line-height:1.6;
+    margin:0;
+    font-family:'Noto Sans KR','Apple SD Gothic Neo',sans-serif;
+    color:var(--text-dark);
+    background:var(--paper);
+    line-height:1.68;
     -webkit-font-smoothing:antialiased;
-    overflow-x:hidden;
   }
-  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  h1,h2,h3{font-family:'Noto Serif KR','Noto Sans KR',serif;margin:0;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px;}
+  code{font-family:var(--mono);}
 
-  /* ambient glow */
-  body::before{
-    content:"";position:fixed;top:-30%;left:50%;transform:translateX(-50%);
-    width:900px;height:900px;
-    background:radial-gradient(circle,rgba(124,92,255,.18),transparent 60%);
-    filter:blur(40px);z-index:0;pointer-events:none;
-  }
+  #progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--cat-over),var(--cat-local),var(--cat-conn));z-index:9999;width:0%;transition:width .1s linear;}
 
-  /* NAV */
-  nav{
-    position:sticky;top:0;z-index:50;
-    backdrop-filter:blur(14px);
-    background:rgba(7,7,10,.72);
-    border-bottom:1px solid var(--border);
-  }
-  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
-  .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.02em;font-size:18px}
-  .brand .dot{width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 16px var(--accent)}
-  .nav-tag{font-size:12px;color:var(--txt-dim);border:1px solid var(--border);padding:4px 12px;border-radius:999px}
+  header.nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:16px 0;transition:background .3s ease, padding .3s ease, box-shadow .3s ease;}
+  header.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;}
+  header.nav.scrolled{background:rgba(21,15,46,0.94);backdrop-filter:blur(10px);padding:11px 0;box-shadow:0 4px 20px rgba(0,0,0,0.18);}
+  .brand{font-weight:900;font-size:15px;color:var(--paper);letter-spacing:.3px;display:flex;align-items:center;gap:9px;flex-shrink:0;}
+  .brand .dot2{display:inline-flex;gap:3px;}
+  .brand .dot2 span{width:7px;height:7px;border-radius:50%;display:block;}
+  .brand .dot2 span:nth-child(1){background:var(--cat-over);}
+  .brand .dot2 span:nth-child(2){background:var(--cat-local);}
+  .brand .dot2 span:nth-child(3){background:var(--cat-conn);}
+  nav.links{display:flex;gap:7px 13px;flex-wrap:wrap;align-items:center;}
+  nav.links .navcat{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#8880B0;padding-right:2px;}
+  nav.links .navcat.o{color:#5EE0AC;}
+  nav.links .navcat.l{color:#F5B983;}
+  nav.links .navcat.c{color:#9DACFF;}
+  nav.links a{font-size:12px;font-weight:500;color:#CFC8F2;opacity:.85;transition:opacity .2s,color .2s;font-family:var(--mono);}
+  nav.links a:hover{opacity:1;color:#fff;}
+  nav.links .sep{width:1px;height:16px;background:rgba(255,255,255,0.18);}
+  .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:6px;}
+  .hamburger span{width:22px;height:2px;background:var(--paper);display:block;}
+  .mobile-menu{display:none;position:fixed;top:0;right:0;bottom:0;width:78%;max-width:320px;background:var(--ink-2);z-index:1100;padding:80px 30px;flex-direction:column;gap:12px;box-shadow:-10px 0 30px rgba(0,0,0,.3);overflow-y:auto;}
+  .mobile-menu.open{display:flex;}
+  .mobile-menu .mcat{font-size:10.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#7d76a8;margin-top:14px;}
+  .mobile-menu a{color:#DCD6F7;font-size:14px;font-weight:500;font-family:var(--mono);}
+  .mobile-close{position:fixed;top:22px;right:6%;z-index:1200;display:none;color:var(--paper);font-size:26px;background:none;border:none;cursor:pointer;}
 
-  /* HERO */
-  header{position:relative;z-index:1;padding:90px 0 60px}
-  .eyebrow{
-    display:inline-flex;align-items:center;gap:8px;
-    font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
-    color:var(--accent);border:1px solid rgba(200,255,61,.3);
-    padding:6px 14px;border-radius:999px;margin-bottom:24px;
+  /* hero */
+  .hero-simple{
+    background:radial-gradient(circle at 12% 22%, rgba(22,163,74,0.20), transparent 42%),
+               radial-gradient(circle at 50% 12%, rgba(224,128,60,0.18), transparent 40%),
+               radial-gradient(circle at 88% 20%, rgba(76,99,224,0.24), transparent 46%),
+               linear-gradient(180deg,var(--ink) 0%, var(--ink-deep) 100%);
+    color:var(--paper);min-height:62vh;display:flex;align-items:center;overflow:hidden;padding:130px 0 60px;
   }
-  h1{
-    font-size:clamp(38px,7vw,72px);line-height:1.03;font-weight:800;letter-spacing:-.03em;
-  }
-  h1 .grad{
-    background:linear-gradient(100deg,var(--accent),var(--accent-2) 60%,var(--pink));
-    -webkit-background-clip:text;background-clip:text;color:transparent;
-  }
-  .sub{margin-top:22px;font-size:clamp(16px,2vw,19px);color:var(--txt-dim);max-width:600px}
+  .hero-simple .wrap{position:relative;z-index:2;}
+  .hero-simple .eyebrow{font-size:12.5px;letter-spacing:4px;font-weight:700;color:#9DACFF;text-transform:uppercase;margin-bottom:18px;}
+  .hero-simple h1{font-size:clamp(28px,4.4vw,46px);font-weight:900;line-height:1.24;margin-bottom:18px;}
+  .hero-simple h1 .accent-word{background:linear-gradient(90deg,var(--cat-over),var(--cat-local),var(--cat-conn));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .hero-simple p.sub{font-size:clamp(14px,1.6vw,17px);color:#CFC8F2;max-width:760px;margin-bottom:0;}
+  .cat-chip-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;}
+  .cat-chip{display:flex;align-items:center;gap:9px;padding:11px 18px;border-radius:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.14);font-size:13px;font-weight:600;color:#DCD6F7;transition:transform .2s, background .2s;}
+  .cat-chip:hover{transform:translateY(-2px);background:rgba(255,255,255,0.09);color:#fff;}
+  .cat-chip .cdot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+  .cat-chip .cdot.o{background:var(--cat-over);}
+  .cat-chip .cdot.l{background:var(--cat-local);}
+  .cat-chip .cdot.c{background:var(--cat-conn);}
+  .cat-chip .cnum{font-family:var(--mono);font-size:11px;color:#8880B0;}
 
-  .stats{display:flex;gap:40px;margin-top:44px;flex-wrap:wrap}
-  .stat .num{font-size:34px;font-weight:800;letter-spacing:-.02em}
-  .stat .lbl{font-size:13px;color:var(--txt-faint);margin-top:2px}
+  /* ===== CATEGORY SECTION ===== */
+  .cat-section{padding:74px 0 20px;scroll-margin-top:80px;}
+  .cat-section.tinted{background:var(--paper-tint);}
+  .cat-banner{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .cat-badge{
+    font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+    padding:7px 15px;border-radius:20px;color:#fff;
+  }
+  .cat-badge.over{background:var(--cat-over);}
+  .cat-badge.local{background:var(--cat-local);}
+  .cat-badge.conn{background:var(--cat-conn);}
+  .cat-count{font-family:var(--mono);font-size:12px;color:var(--text-muted);}
+  h2.cat-title{font-size:clamp(23px,3vw,32px);font-weight:700;color:var(--text-dark);line-height:1.3;margin-top:14px;}
+  .cat-lede{font-size:14.5px;color:var(--text-muted);max-width:820px;margin-top:12px;}
+  .cat-lede b{color:var(--text-dark);}
+  .cat-lede code{background:#fff;border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:12px;}
 
-  /* SECTION HEAD */
-  .sec-head{margin:70px 0 30px}
-  .sec-head .kicker{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-faint);font-weight:600}
-  .sec-head h2{font-size:clamp(26px,4vw,40px);font-weight:800;letter-spacing:-.02em;margin-top:8px}
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease, transform .6s ease;}
+  .reveal.in-view{opacity:1;transform:translateY(0);}
 
-  /* PROMPT CARD */
-  .log{display:flex;flex-direction:column;gap:20px;position:relative;z-index:1}
-  .card{
-    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
-    overflow:hidden;transition:.25s;
+  /* ===== CARD (reusable box) ===== */
+  .cmd-list{display:flex;flex-direction:column;gap:28px;margin-top:38px;}
+  .cmd{
+    scroll-margin-top:88px;
+    border-radius:var(--radius);
+    background:var(--paper);
+    border:1px solid var(--line);
+    box-shadow:var(--shadow);
+    overflow:hidden;
   }
-  .card:hover{border-color:#34344a;background:var(--card-hover)}
-  .card-head{
-    display:flex;align-items:center;gap:18px;padding:22px 26px;cursor:pointer;user-select:none;
-  }
-  .idx{
-    flex:none;width:52px;height:52px;border-radius:14px;
-    display:grid;place-items:center;font-weight:800;font-size:20px;
-    background:linear-gradient(135deg,rgba(200,255,61,.15),rgba(124,92,255,.15));
-    border:1px solid var(--border);color:var(--accent);letter-spacing:-.02em;
-  }
-  .card-head .meta{flex:1;min-width:0}
-  .card-title{font-size:18px;font-weight:700;letter-spacing:-.01em}
-  .card-desc{font-size:13.5px;color:var(--txt-dim);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:0}
-  .pill{
-    font-size:11px;font-weight:600;padding:5px 12px;border-radius:999px;
-    background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--txt-dim);white-space:nowrap;
-  }
-  .pill.accent{color:var(--accent);border-color:rgba(200,255,61,.3);background:rgba(200,255,61,.06)}
-  .chev{flex:none;color:var(--txt-faint);transition:transform .25s;font-size:20px}
-  .card.open .chev{transform:rotate(180deg)}
+  .cmd.over{border-left:5px solid var(--cat-over);}
+  .cmd.local{border-left:5px solid var(--cat-local);}
+  .cmd.conn{border-left:5px solid var(--cat-conn);}
+  .cmd-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:20px 26px;background:var(--ink);color:var(--paper);}
+  .cmd-head .cmd-name{font-family:var(--mono);font-weight:700;font-size:18px;color:var(--paper);display:flex;align-items:center;gap:9px;}
+  .cmd-head .cmd-name .slash{color:var(--cat-over);}
+  .cmd.local .cmd-head .cmd-name .slash{color:#F5B983;}
+  .cmd.conn .cmd-head .cmd-name .slash{color:#9DACFF;}
+  .cmd-head .cmd-tag{font-size:10.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:5px 12px;border-radius:14px;color:#fff;margin-left:auto;}
+  .cmd-head .cmd-tag.a{background:var(--acc-a);}
+  .cmd-head .cmd-tag.b{background:var(--acc-b);}
+  .cmd-head .cmd-tag.c{background:var(--acc-c);}
+  .cmd-head .cmd-tag.l{background:var(--cat-local);}
+  .cmd-head .cmd-tag.p{background:var(--cat-conn);}
+  .cmd-head .cmd-src{font-size:10.5px;font-weight:600;color:#B8B0DE;font-family:var(--mono);border:1px solid rgba(255,255,255,0.16);padding:4px 10px;border-radius:12px;}
+  .cmd-body{padding:24px 26px 26px;}
+  .cmd-summary{font-size:14px;color:var(--text-dark);margin:0 0 20px;line-height:1.72;}
+  .cmd-summary b{color:var(--ink);}
 
-  .card-body{
-    max-height:0;overflow:hidden;transition:max-height .35s ease;
-    border-top:1px solid transparent;
-  }
-  .card.open .card-body{max-height:3000px;border-top-color:var(--border)}
-  .body-inner{padding:24px 26px 28px}
+  /* 2-up variant compare */
+  .variant-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px;}
+  .variant{border-radius:14px;padding:19px 21px;background:var(--paper-tint);border-top:3px solid var(--acc-a);}
+  .variant.b{border-top-color:var(--acc-b);}
+  .variant.l{border-top-color:var(--cat-local);}
+  .variant.p{border-top-color:var(--cat-conn);}
+  .variant .vname{font-family:var(--mono);font-weight:700;font-size:13.5px;color:var(--ink);margin-bottom:8px;}
+  .variant .vdesc{font-size:12.6px;color:var(--text-muted);line-height:1.7;margin:0;}
 
-  .block-label{
-    font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-faint);
-    font-weight:700;margin-bottom:10px;
-  }
-  pre.prompt{
-    background:var(--bg-soft);border:1px solid var(--border);border-radius:14px;
-    padding:18px 20px;font-family:'SF Mono','JetBrains Mono',Consolas,monospace;
-    font-size:13.5px;line-height:1.7;color:#d6d6e2;white-space:pre-wrap;word-break:break-word;
-    margin-bottom:20px;
-  }
-  .result{
-    background:linear-gradient(135deg,rgba(124,92,255,.07),rgba(200,255,61,.04));
-    border:1px solid var(--border);border-radius:14px;padding:18px 20px;font-size:14.5px;color:var(--txt);
-  }
-  .result p{margin-bottom:8px}
-  .result p:last-child{margin-bottom:0}
+  /* comparison table */
+  .cmp-table{width:100%;border-collapse:collapse;margin:6px 0 18px;font-size:12.6px;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(21,15,46,0.06);}
+  .cmp-table th,.cmp-table td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.6;}
+  .cmp-table thead th{background:var(--ink);color:#fff;font-family:var(--mono);font-weight:700;font-size:11.5px;letter-spacing:.4px;}
+  .cmp-table tbody th{background:var(--paper-tint);color:var(--ink);font-weight:700;width:26%;}
+  .cmp-table tbody tr:last-child td,.cmp-table tbody tr:last-child th{border-bottom:none;}
+  .cmp-table td b{color:var(--ink);}
 
-  .links{margin-top:18px;display:flex;flex-wrap:wrap;gap:10px}
-  .link-btn{
-    display:inline-flex;align-items:center;gap:8px;text-decoration:none;
-    font-size:13px;font-weight:600;padding:9px 16px;border-radius:999px;
-    background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--txt);
-    transition:.2s;
-  }
-  .link-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(200,255,61,.06)}
-  .link-btn .ico{opacity:.7}
+  /* flow line */
+  .flow-box{margin:6px 0 18px;background:var(--ink-deep);border-radius:12px;padding:15px 18px;overflow-x:auto;}
+  .flow-box .flabel2{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#8880B0;margin-bottom:8px;font-family:var(--mono);}
+  .flow-box code{font-family:var(--mono);font-size:12px;color:#5EEAD4;white-space:nowrap;display:block;line-height:1.9;}
+  .flow-box code .arw{color:#F5B983;}
+  .flow-box code .node{color:#E4DEFF;}
 
-  .img-frame{
-    margin-top:18px;border:1px solid var(--border);border-radius:14px;overflow:hidden;
-    background:var(--bg-soft);aspect-ratio:21/9;display:grid;place-items:center;position:relative;
-  }
-  .img-frame img{width:100%;height:100%;object-fit:cover;display:block}
-  .img-frame .placeholder{text-align:center;color:var(--txt-faint);font-size:13px;padding:20px}
-  .img-frame .placeholder .big{font-size:30px;margin-bottom:8px;opacity:.5}
+  /* bullet notes */
+  .cmd-notes{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px;}
+  .cmd-notes li{position:relative;padding:12px 16px 12px 42px;border-radius:12px;background:var(--paper-tint);font-size:13px;color:var(--text-dark);line-height:1.7;}
+  .cmd-notes li::before{content:'›';position:absolute;left:16px;top:10px;font-family:var(--mono);font-weight:700;font-size:16px;color:var(--acc-a);}
+  .cmd.local .cmd-notes li::before{color:var(--cat-local);}
+  .cmd.conn .cmd-notes li::before{color:var(--cat-conn);}
+  .cmd-notes li b{color:var(--ink);}
 
-  /* ADD SECTION */
-  .add-hint{
-    margin:24px 0 90px;padding:26px;border:1px dashed var(--border);border-radius:var(--radius);
-    text-align:center;color:var(--txt-dim);font-size:14px;position:relative;z-index:1;
-  }
-  .add-hint code{
-    background:var(--bg-soft);border:1px solid var(--border);border-radius:6px;
-    padding:2px 8px;font-family:monospace;font-size:12.5px;color:var(--accent);
-  }
-  .add-hint b{color:var(--txt)}
+  /* fit / warn / install */
+  .fit-box{margin-top:18px;background:#E9F9F3;border-left:4px solid #0EA383;border-radius:var(--radius);padding:15px 22px;}
+  .fit-box .flabel{font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#065F49;margin-bottom:7px;}
+  .fit-box p{margin:0;font-size:13px;color:#065F49;line-height:1.7;}
+  .fit-box b{color:#044c3b;}
+  .warn-box{margin-top:14px;background:#FDECEE;border-left:4px solid var(--danger);border-radius:var(--radius);padding:13px 22px;font-size:12.8px;color:#7A1F2C;}
+  .warn-box b{color:#9C2A3C;}
+  .install-box{margin-top:14px;background:var(--ink-deep);border-radius:12px;padding:12px 16px;overflow-x:auto;}
+  .install-box .ilabel{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#8880B0;margin-bottom:6px;font-family:var(--mono);}
+  .install-box code{font-family:var(--mono);font-size:12px;color:#5EEAD4;white-space:nowrap;display:block;line-height:1.9;}
 
-  footer{
-    border-top:1px solid var(--border);padding:40px 0;color:var(--txt-faint);font-size:13px;
-    position:relative;z-index:1;
-  }
-  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+  /* endpoint chip */
+  .endpoint{margin-top:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--paper-tint);border:1px solid var(--line);border-radius:12px;padding:11px 16px;}
+  .endpoint .elabel{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);font-family:var(--mono);}
+  .endpoint code{font-family:var(--mono);font-size:12px;color:var(--cat-conn);word-break:break-all;}
 
-  @media(max-width:640px){
-    .card-desc{white-space:normal}
-    .stats{gap:26px}
-    .card-head{padding:18px 18px}
-    .body-inner{padding:20px 18px 24px}
+  /* empty-state */
+  .empty-state{margin-top:32px;border:2px dashed var(--line);border-radius:var(--radius);padding:40px 32px;text-align:center;background:var(--paper);}
+  .empty-state .es-icon{font-size:30px;margin-bottom:10px;}
+  .empty-state h4{font-size:15px;color:var(--ink);margin-bottom:6px;}
+  .empty-state p{font-size:13px;color:var(--text-muted);margin:0;}
+
+  /* ===== ADD templates ===== */
+  .add-wrap{margin:56px 0 10px;}
+  .add-box{border:2px dashed var(--line);border-radius:var(--radius);padding:28px 30px;background:var(--paper-tint);}
+  .add-box h3{font-size:16px;color:var(--ink);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+  .add-box p{font-size:12.8px;color:var(--text-muted);margin:0 0 16px;line-height:1.7;}
+  .add-box p code{background:#fff;border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:11.5px;}
+  .code-block{background:var(--ink-deep);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);}
+  .code-head{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;background:var(--ink-2);}
+  .code-head .dots{display:flex;gap:6px;}
+  .code-head .dots span{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,0.2);}
+  .code-head .fname{font-family:var(--mono);font-size:11px;color:#CFC8F2;}
+  pre{margin:0;padding:18px 20px;overflow-x:auto;}
+  pre code{font-family:var(--mono);font-size:11.4px;line-height:1.7;color:#E4DEFF;white-space:pre;}
+  .cm{color:#8880B0;}
+  .tg{color:#5EEAD4;}
+  .at{color:#FCD34D;}
+  .add-note{margin-top:16px;font-size:12.5px;color:var(--text-muted);line-height:1.75;}
+  .add-note b{color:var(--ink);}
+  .add-note code{background:#fff;border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:11px;}
+
+  footer{background:var(--ink-deep);color:#8880B0;padding:34px 0;font-size:12px;margin-top:70px;}
+  footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+  .totop{border:1px solid rgba(255,255,255,0.2);padding:8px 16px;border-radius:20px;font-size:11.5px;transition:border-color .2s, color .2s;}
+  .totop:hover{border-color:var(--cat-conn);color:#9DACFF;}
+
+  @media(max-width:960px){
+    nav.links{display:none;}
+    .hamburger{display:flex;}
+    .variant-row{grid-template-columns:1fr;}
+    .cmp-table tbody th{width:34%;}
   }
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="wrap">
-    <div class="brand"><span class="dot"></span>Skill&nbsp;Reference</div>
-    <span class="nav-tag">Prompt Archive · v1</span>
-  </div>
-</nav>
+<div id="progress"></div>
 
-<header>
+<header class="nav" id="siteNav">
   <div class="wrap">
-    <span class="eyebrow">◆ Skill Engineering Archive</span>
-    <h1>유용한<br><span class="grad">스킬 정보</span>활용.</h1>
-    <p class="sub">쓰임새 높은 스킬 사용 방법을 정리한다. </p>
-    <div class="stats">
-      <div class="stat"><div class="num" id="stat-count">2</div><div class="lbl">기록된 Skill 집합</div></div>
-      <div class="stat"><div class="num">∞</div><div class="lbl">확장 가능</div></div>
-      <div class="stat"><div class="num">100%</div><div class="lbl">원본 링크 보존</div></div>
-    </div>
+    <div class="brand"><span class="dot2"><span></span><span></span><span></span></span> MCP / Connector Reference</div>
+    <nav class="links">
+      <span class="navcat o">Overview</span>
+      <a href="#overview">개요</a>
+      <span class="sep"></span>
+      <span class="navcat l">Local</span>
+      <a href="#playwright">playwright</a>
+      <a href="#firecrawl">firecrawl</a>
+      <a href="#sequential">sequential</a>
+      <a href="#postgresql">postgres</a>
+      <span class="sep"></span>
+      <span class="navcat c">Connector</span>
+      <a href="#gdrive">drive</a>
+      <a href="#github">github</a>
+      <a href="#figma">figma</a>
+      <a href="#higgsfield">higgsfield</a>
+      <a href="#gamma">gamma</a>
+      <a href="#canva">canva</a>
+      <a href="#gmail">gmail</a>
+      <a href="#calendar">calendar</a>
+      <a href="#notion">notion</a>
+      <a href="#slack">slack</a>
+    </nav>
+    <button class="hamburger" id="hamBtn" aria-label="메뉴 열기"><span></span><span></span><span></span></button>
   </div>
 </header>
 
-<div class="wrap">
-  <div class="sec-head">
-    <div class="kicker">The Log</div>
-    <h2>스킬 활용 정보</h2>
-  </div>
-
-  <div class="log" id="log">
-
-    <!-- ============ 스킬 그룹 1 ============ -->
-    <article class="card">
-      <div class="card-head" onclick="toggle(this)">
-        <div class="idx">01</div>
-        <div class="meta">
-          <div class="card-title"> Skill 정보 활용 그룹#1 </div>
-          <div class="card-desc">Embedded 및 추가 설치 통해 활용 가능한 Skill 정보/Pill UI</div>
-        </div>
-        <span class="chev">⌄</span>
-      </div>
-      <div class="card-body">
-        <div class="body-inner">
-          <div class="pills" style="margin-bottom:18px">
-            <span class="pill accent">HTML 리포트</span>
-            <span class="pill">Spotify 다크</span>
-            <span class="pill">Spotify Green</span>
-            <span class="pill">Pill UI</span>
-            <span class="pill">카드 스타일</span>
-          </div>
-
-          <div class="block-label">Prompt</div>
-          <pre class="Skill List & Description">
-[Embedded]
-1. /deep-research : 워크플로, 교차 검증을 통한 결과 제공
-2. /goal              : 목표만 걸어두고 수단은 claude가 하도록 한다
-3. /batch             : 토큰 사용량이 많을 수 있다.
-
-[별도 설치 필요]
-4. superpowers    : 질문하고 설계하면서 진행 (On/off하면서 쓰는것이 좋다)
-5. remotion         : 영상 관련 skill로 내부적으로 skill이 12개 들어있다. 
-6. gstack             : Skill이 54개 들어있다 (초보자는 쉽지 않다)
-7. Karpathy skill   : 
-8. /doctor           : 별도 설치 필요 없음.
-9. claude-code-setup : 내가 만들고 있는 것에 대한 자동화 추천
-10. skill-creator    : 
-            
-         </pre>
-          </div>
-        </div>
-      </div>
-    </article>
-
-    <!-- ============ 스킬 그룹 2 ============ -->
-    <article class="card">
-      <div class="card-head" onclick="toggle(this)">
-        <div class="idx">02</div>
-        <div class="meta">
-          <div class="card-title">Skill 정보 활용 그룹#2 </div>
-          <div class="card-desc"> 스킬그룹#2에 대한 설명</div>
-        </div>
-        <span class="chev">⌄</span>
-      </div>
-      <div class="card-body">
-        <div class="body-inner">
-          <div class="pills" style="margin-bottom:18px">
-            <span class="pill accent">이미지 생성</span>
-            <span class="pill">Higgsfield</span>
-            <span class="pill">시네마틱</span>
-            <span class="pill">아나모픽 렌즈</span>
-            <span class="pill">'Her' 톤</span>
-          </div>
-
-          <div class="block-label">Prompt</div>
-          <pre class="prompt">Higgsfield(higgsfield.ai)에 접속해서 이 컨셉으로 한 장을 만들어줘
-
-· 새벽 5시 한강 다리 위, 안개가 강을 덮는 순간
-· 첫 빛이 빌딩 유리에 닿아 부서지는 그 1초
-· 코트 깃을 세운 사람 한 명, 뒷모습으로 도시를 바라본다
-· 시네마틱 와이드샷, 아나모픽 렌즈, 영화 'Her'의 톤
-
-결과를 화면에 띄워 줘.</pre>
- 
-        </div>
-      </div>
-    </article>
-    
-    <!-- ============ 여기부터 프롬프팅 3, 4 ... 추가 ============ -->
-    <!-- 아래 TEMPLATE 카드를 복사해서 붙여넣으면 됩니다 -->
-
-  </div>
-
-  <div class="add-hint">
-    <p><b>프롬프팅 3, 4 …를 추가하려면?</b></p>
-    <p style="margin-top:8px">HTML에서 <code>&lt;!-- TEMPLATE --&gt;</code> 카드 블록을 복사해 <code>id="log"</code> 안에 붙여넣고, 번호(<code>03</code>, <code>04</code>…)·제목·프롬프트·링크만 바꾸면 됩니다.</p>
-  </div>
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mcat">개요</div>
+  <a href="#overview">MCP / Connector 개요</a>
+  <div class="mcat">Local 설치 / 설정</div>
+  <a href="#playwright">Playwright MCP</a>
+  <a href="#firecrawl">Firecrawl MCP</a>
+  <a href="#sequential">Sequential Thinking</a>
+  <a href="#postgresql">PostgreSQL MCP</a>
+  <div class="mcat">연동 MCP / Connector</div>
+  <a href="#gdrive">Google Drive MCP</a>
+  <a href="#github">GitHub MCP</a>
+  <a href="#figma">Figma MCP</a>
+  <a href="#higgsfield">Higgsfield MCP</a>
+  <a href="#gamma">Gamma Connector</a>
+  <a href="#canva">Canva Connector</a>
+  <a href="#gmail">Gmail Connector</a>
+  <a href="#calendar">Calendar Connector</a>
+  <a href="#notion">Notion MCP</a>
+  <a href="#slack">Slack MCP</a>
 </div>
+<button class="mobile-close" id="mobileClose">×</button>
 
-<footer>
+<main>
+
+<section class="hero-simple" id="top">
   <div class="wrap">
-    <span>© 2026 Skill References </span>
-    <span>Dark · Pill UI · Card layout · autokliq-style</span>
-  </div>
-</footer>
-
-<!-- ================= 복사용 TEMPLATE (렌더링 안 됨) =================
-<article class="card">
-  <div class="card-head" onclick="toggle(this)">
-    <div class="idx">03</div>
-    <div class="meta">
-      <div class="card-title">제목을 여기에</div>
-      <div class="card-desc">한 줄 요약 설명</div>
-    </div>
-    <span class="chev">⌄</span>
-  </div>
-  <div class="card-body">
-    <div class="body-inner">
-      <div class="pills" style="margin-bottom:18px">
-        <span class="pill accent">태그</span>
-        <span class="pill">태그</span>
-      </div>
-      <div class="block-label">Prompt</div>
-      <pre class="prompt">여기에 프롬프트 내용</pre>
-      <div class="block-label">Result</div>
-      <div class="result"><p>결과 설명</p></div>
-      <div class="block-label" style="margin-top:20px">원본 / 참고 링크</div>
-      <div class="links">
-        <a class="link-btn" href="URL" target="_blank" rel="noopener"><span class="ico">↗</span> 링크</a>
-      </div>
+    <div class="eyebrow">MCP / Connector Reference</div>
+    <h1>MCP · Connector 레퍼런스<br><span class="accent-word">개요 · Local · 연동 구조</span></h1>
+    <p class="sub">MCP와 Connector를 세 개의 카테고리로 나눠 정리합니다. 각 항목은 요약 · 동작 구조 · 설치/연결 방법 · 유의점으로 구성된 박스이며, 카테고리별 템플릿을 복사해 새 항목을 계속 추가할 수 있습니다.</p>
+    <div class="cat-chip-row">
+      <a class="cat-chip" href="#overview"><span class="cdot o"></span> 개요 · MCP 지도 <span class="cnum">9</span></a>
+      <a class="cat-chip" href="#local"><span class="cdot l"></span> Local 설치 / 설정 <span class="cnum">4</span></a>
+      <a class="cat-chip" href="#connector"><span class="cdot c"></span> 연동 MCP / Connector <span class="cnum">10</span></a>
     </div>
   </div>
-</article>
-==================================================================== -->
+</section>
 
-<script>
-  function toggle(el){
-    el.parentElement.classList.toggle('open');
-  }
-  // 카드 개수 자동 카운트
-  document.getElementById('stat-count').textContent =
-    document.querySelectorAll('#log .card').length;
-  // 첫 카드 기본 펼침
-  const first = document.querySelector('#log .card');
-  if(first) first.classList.add('open');
-</script>
 
-</body>
-</html>
+<!-- ============================================================ -->
+<!-- CATEGORY 1 · OVERVIEW                                         -->
+<!-- ============================================================ -->
+<section class="cat-section" id="overview">
+  <div class="wrap reveal">
+    <div class="cat-banner">
+      <span class="cat-badge over">Overview</span>
+      <span class="cat-count">MCP / Connector 개요</span>
+    </div>
+    <h2 class="cat-title">MCP / Connector 개요</h2>
+    <p class="cat-lede"><b>MCP(Model Context Protocol)</b>는 AI Agent와 외부 도구·데이터를 연결하는 표준 인터페이스입니다. 각 MCP는 <b>핵심 역할</b>이 명확히 나뉘며, 아래 지도로 전체 구성을 한눈에 파악할 수 있습니다.</p>
+
+    <div class="cmd-list">
+
+      <!-- MCP Map -->
+      <article class="cmd over" id="mcp-map">
+        <div class="cmd-head">
+          <div class="cmd-name">MCP / Connector Map</div>
+          <span class="cmd-src">Role Overview</span>
+          <span class="cmd-tag a">Map</span>
+        </div>
+        <div class="cmd-body">
+          <p class="cmd-summary">주요 MCP를 <b>핵심 역할별</b>로 정리한 지도입니다. 목적에 맞는 MCP를 빠르게 고르는 출발점으로 사용합니다.</p>
+          <table class="cmp-table">
+            <thead>
+              <tr><th>MCP</th><th>핵심 역할</th></tr>
+            </thead>
+            <tbody>
+              <tr><th>Slack MCP</th><td>Communication + Collaboration</td></tr>
+              <tr><th>Notion MCP</th><td>Knowledge + Workspace</td></tr>
+              <tr><th>Google Drive MCP</th><td>Files + Knowledge</td></tr>
+              <tr><th>Gmail MCP</th><td>Email Communication</td></tr>
+              <tr><th>Calendar MCP</th><td>Schedule</td></tr>
+              <tr><th>GitHub MCP</th><td>Development</td></tr>
+              <tr><th>PostgreSQL MCP</th><td>Structured Data</td></tr>
+              <tr><th>Firecrawl MCP</th><td>Web Research</td></tr>
+              <tr><th>Playwright MCP</th><td>Browser Action</td></tr>
+            </tbody>
+          </table>
+          <div class="fit-box">
+            <div class="flabel">고르는 기준</div>
+            <p>웹을 <b>사람처럼 조작</b>하려면 Playwright, 웹 정보를 <b>데이터로 수집</b>하려면 Firecrawl, <b>지식·업무 공간</b>이 필요하면 Notion·Drive, <b>커뮤니케이션</b>은 Slack·Gmail·Calendar, <b>개발</b>은 GitHub, <b>정형 데이터</b>는 PostgreSQL이 적합합니다.</p>
+          </div>
+        </div>
+      </article>
+
+    </div><!-- /cmd-list -->
+  </div>
+</section>
+
