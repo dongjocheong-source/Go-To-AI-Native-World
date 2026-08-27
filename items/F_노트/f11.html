@@ -275,19 +275,6 @@
     </div>
   </section>
 
-  <!-- ===== 카테고리 3: 개발·도구 사이트 ===== -->
-  <section class="cat" data-cat="dev">
-    <div class="cat-head"><span class="cat-icon">🛠️</span><h2>개발 · 도구</h2><span class="count">1</span></div>
-    <div class="rows">
-      <a class="row" data-type="dev" href="https://jaylenhan.tistory.com/entry/AILLM-%EC%95%88%EB%93%9C%EB%A0%88-%EC%B9%B4%ED%8C%8C%EC%8B%9C%EC%9D%98-LLM-Wiki-%EC%99%84%EB%B2%BD-%EC%A0%95%EB%B3%B5-Obsidian-Claude-Code%EB%A1%9C-%EB%82%98%EB%A7%8C%EC%9D%98-LLM-Wiki-%EB%A7%8C%EB%93%A4%EA%B8%B0" target="_blank" rel="noopener">
-        <span class="r-name">LLM Wiki </span>
-        <span class="r-badge b-dev">Reference</span>
-        <span class="r-desc">다크 배경 + 대형 볼드 타이포 + 그라디언트 액센트의 모던 AI 랜딩</span>
-        <span class="r-tags"><span class="tag">dark theme</span><span class="tag">landing</span><span class="tag">bold type</span></span>
-        <span class="go">↗ 열기</span>
-      </a>
-    </div>
-  </section>
 
   <!-- ===== 카테고리 4: Claude 관련 사이트 ===== -->
   <section class="cat" data-cat="site">
@@ -338,43 +325,7 @@
       </a>
     </div>
   </section>
-
-  <div class="empty" id="empty">검색 결과가 없습니다.</div>
-
-  <div class="add-hint">
-    <h3>새 사이트 추가 방법</h3>
-    <ol>
-      <li>해당 카테고리 <code>.rows</code> 안에 아래 행 템플릿을 붙여넣습니다.</li>
-      <li>이름·설명·태그·<code>href</code>를 바꾸고, <code>data-type</code>과 배지를 카테고리에 맞춰 지정합니다.</li>
-      <li>매핑 — <code>design</code>→<code>b-design</code> · <code>video</code>→<code>b-video</code> · <code>site</code>→<code>b-site</code> · <code>dev</code>→<code>b-dev</code></li>
-      <li>새 카테고리가 필요하면 <code>&lt;section class="cat"&gt;</code> 블록을 복사하고 상단 필터 pill을 하나 추가하세요.</li>
-    </ol>
-    <p style="margin-top:10px">상단 카운트와 카테고리 배지는 자동 갱신됩니다.</p>
-  </div>
-</div>
-
-<footer>
-  <div class="wrap">
-    <span>© 2026 Reference Sites</span>
-    <span>Dark · 4 Categories · Dense rows · Filter + Search · autokliq-style</span>
-  </div>
-</footer>
-
-<!-- ===== 복사용 ROW TEMPLATE =====
-<a class="row" data-type="design" href="URL" target="_blank" rel="noopener">
-  <span class="r-name">이름</span>
-  <span class="r-badge b-design">배지</span>
-  <span class="r-desc">한 줄 설명</span>
-  <span class="r-tags"><span class="tag">태그</span><span class="tag">태그</span></span>
-  <span class="go">↗ 열기</span>
-</a>
-data-type / 배지 매핑:
-  design → b-design (DESIGN.md)
-  video  → b-video  (동영상)
-  site   → b-site   (참고 사이트)
-  dev    → b-dev    (개발·도구)
-================================ -->
-
+ 
 <script>
   let curFilter='all';
   function filter(el){
