@@ -96,38 +96,41 @@ Go to AI native라는 모토로 AI World로 들어가기 위해 공부하는 각
 - C09_AI_Tool_Reference 
 ---
 
-## [D] AI 활용
-- D01_LLM-WiKi
-    - D01a - LLM-Wiki-Architecture
-    - D01b - LLM-Wiki-Approach
-    - D01c - LLM-Wiki-Introduction
-    - D01d - LLM-Wiki-with-Obsidian
-- D02_Graphify-Intro  
-- D03_LLM Wiki + Graphify
-    - D03a - Graphify-blueprint
-    - D03b - LLM-Wiki -with-Graphify
-- D04_2nd_Brain
-- D05_LLM-Wiki + NotebookLM
-- D06_바이브코딩
-    - D06a_Vibecoding-PRD-Guide
-    - D06b_Vibecoding-Trend-2026
-- D07_Gemini + Playwright
+## [D] Claude강좌
+- D01_ClaudeProduct_Claude-101
+- D02_ClaudeProduct_Claude-code-101
+- D03_ClaudeProduct_Claude-work
+- D04_ClaudeProduct_claude-platform
+- D05_claude-code-in-action
+- D06_mcp-Introduction
+- D07_mcp-advanced-topics
+- D08_subagents-introduction
+- D09_ai-native-sdlc-playbook
+- D10_agent-skills-introduction
 ---
 
-## [E] 뉴스_타임라인
-- E01_AI시대생존전략 
-- E02_Karpathy LLM
-- E03_AI로보틱스
-- E04_소형언어모델
-- E05_Langfuse 설치 및 사용 가이드
-- E06_LLM Fallback 메커니즘 완벽 가이드
-- E07_LLM 속도 파헤쳐보기
-- E08_NVIDIA GPU 모니터링 완벽 가이드
-- E09_AI서버관리꿀팁 
+## [E] AI Fluency
+- E01_AI_Fluency_Framework_Foundations
+- E02_AI Capabilities and Limitations
+- E03_Teaching-AI-fluency
 ---
 
-> **[F] 노트, [G] 프로젝트**는 자매 사이트인 **Go-To-AI-Native-Archive**로 이전되었습니다.
-> (강좌 / 프로젝트 / 노트 / 최신 뉴스 4개 카테고리로 구성된 별도 사이트)
+## [F] AI 활용
+- F01_LLM-WiKi
+    - F01a - LLM-Wiki-Architecture
+    - F01b - LLM-Wiki-Approach
+    - F01c - LLM-Wiki-Introduction
+    - F01d - LLM-Wiki-with-Obsidian
+- F02_Graphify-Intro  
+- F03_LLM Wiki + Graphify
+    - F03a - Graphify-blueprint
+    - F03b - LLM-Wiki -with-Graphify
+- F04_2nd_Brain
+- F05_LLM-Wiki + NotebookLM
+- F06_바이브코딩
+    - F06a_Vibecoding-PRD-Guide
+    - F06b_Vibecoding-Trend-2026
+- F07_Gemini + Playwright
 ---
 
 ## [H] 데이터베이스
@@ -167,9 +170,6 @@ Go to AI native라는 모토로 AI World로 들어가기 위해 공부하는 각
 - I25_[AIML&DL] 하이퍼파라미터 튜닝(Hyperparameter Tuning) 완벽 가이드
 - I26_[AIML] Python Pickle이란 무엇일까
 ---
-
-
-
 
 ## [P] IT_Tips
 - P01_[IT_Tips] AX (AI Transformation)란 무엇인가
@@ -235,14 +235,6 @@ Go to AI native라는 모토로 AI World로 들어가기 위해 공부하는 각
 - T08_[Github] 원격 저장소 연결 및 관리 (git remote)
 - T09_[GitHub] Git 브랜치(Branch) 핵심 가이드
 - T10_[AIGit] GitHub Copilot SDK 완전 정복 가이드
-
-## [U] 학습 자료
-- U01_On-Premise_LLM
-- U02_OnDeviceAI
-- U04_Inference_Reasoning
-- U05_자연어이해
-- U06_NLP 
----
 
 ## [V] 북마크/즐겨찾기
 - V01_디자인 레퍼런스 모음
