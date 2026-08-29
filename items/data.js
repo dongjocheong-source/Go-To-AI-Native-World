@@ -277,6 +277,44 @@ const CATEGORIES = [
     ],
   },
 
+  // ── D00 ────────────────────────────────────────────────────────────
+  {
+    id: "d00",
+    folder: "D_Claude_course",
+    label: "Claude_course",
+    icon: "layers",
+    description: "Claude archademy의 claude 관련 강좌 내용을 요약 정리 합니다.",
+    items: [
+      { id: "d01", title: "Claude-101", meta: "D01", hue: 160,
+        body: "Claude AI에 대해 설명하는 강좌입니다." },
+      { id: "d02", title: "Claude-code-101", meta: "D02", hue: 160,
+        body: "Claude code에 대해 설명하는 강좌입니다." },
+      { id: "d03", title: "Claude-cowork", meta: "D03", hue: 160,
+        body: "Claude cowork에 대해 설명하는 강좌입니다." },
+      { id: "d04", title: "Claude-platform", meta: "D04", hue: 160,
+        body: "Claude platform에 대해 설명하는 강좌입니다." },
+      { id: "d05", title: "_claude-code-in-action", meta: "D05", hue: 160,
+        body: "실전 Claude code에 대한 강좌 입니다." },
+      { id: "d06", title: "mcp-Introduction", meta: "D06", hue: 160,
+        body: "Graphify 청사진에 대해 소개합니다." },
+      { id: "d07", title: "mcp-advanced-topics", meta: "D07", hue: 160,
+        body: "LLM Wiki + Graphify에 대한 내용 입니다." },
+      { id: "d08", title: "subagents-introduction", meta: "D08", hue: 160,
+        body: "2nd Brain에 대한 내용 입니다." },
+      { id: "d09", title: "_ai-native-sdlc-playbook", meta: "D09", hue: 160,
+        body: "LLM-Wiki + NotebookLM에 대한 내용 입니다." },
+      { id: "d10", title: "agent-skills-introduction", meta: "D10", hue: 160,
+        body: "바이브코딩에 대한 내용을 준비 중입니다." },
+      { id: "d11", title: "바이브코딩 2026 트랜드", meta: "D11", hue: 160,
+        body: "바이브코딩에 대한 내용을 준비 중입니다." },
+      { id: "d12", title: "Gemini+Playwright", meta: "D12", hue: 160,
+        body: "Gemini + Playwright에 대한 내용 입니다." },
+      { id: "d12", title: "Gemini+Playwright", meta: "D13", hue: 160,
+        body: "Gemini + Playwright에 대한 내용 입니다." },
+    ],
+  },
+
+  
  // ── D00 ────────────────────────────────────────────────────────────
   {
     id: "d00",
