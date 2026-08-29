@@ -317,9 +317,9 @@ const CATEGORIES = [
     items: [
       { id: "e01", title: "AI_Fluency_Framework_Foundations", meta: "E01", hue: 160,
         body: "AI영량, 프레임워크 및 기초에 대한 강좌 입니다." },
-      { id: "e01", title: "AI Capabilities and Limitations", meta: "E01", hue: 160,
+      { id: "e02", title: "AI Capabilities and Limitations", meta: "E02", hue: 160,
         body: "AI의 역량과 한계 대한 강좌 입니다." },
-      { id: "e01", title: "Teaching-AI-fluency", meta: "E01", hue: 160,
+      { id: "e03", title: "Teaching-AI-fluency", meta: "E03", hue: 160,
         body: "Al Fluency 가르치기에 대한 내용 입니다." },
       ],
   },
