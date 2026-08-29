@@ -14,14 +14,7 @@ const PORTAL_TOOLS = [
   { label: "Higgsfield", icon: "icon-higgsfield.png", bg: "#1e8449" },
 ];
 
-/**
- * MODALITY_GROUPS — the 6 "modality" cards shown on the main portal, just
- * below the PORTAL_TOOLS grid. Each group bundles the best tool(s) for one
- * data modality (chat, research, image, code, video, audio).
- *
- * tools[].icon: filename inside assets/portal/ (reuses the same icon set
- * as PORTAL_TOOLS above, so bg colors are kept consistent).
- */
+
 const MODALITY_GROUPS = [
   {
     label: "대화 · 채팅",
@@ -314,6 +307,22 @@ const CATEGORIES = [
     ],
   },
 
+  // ── E00 ────────────────────────────────────────────────────────────
+  {
+    id: "e00",
+    folder: "E_AI_Fluency",
+    label: "AI Fluency",
+    icon: "rss",
+    description: "위키, 그래프, 바이브코딩 등 AI를 실제로 활용하는 방법과 서비스를 정리합니다.",
+    items: [
+      { id: "e01", title: "AI_Fluency_Framework_Foundations", meta: "E01", hue: 160,
+        body: "AI영량, 프레임워크 및 기초에 대한 강좌 입니다." },
+      { id: "e01", title: "AI Capabilities and Limitations", meta: "E01", hue: 160,
+        body: "AI의 역량과 한계 대한 강좌 입니다." },
+      { id: "e01", title: "Teaching-AI-fluency", meta: "E01", hue: 160,
+        body: "Al Fluency 가르치기에 대한 내용 입니다." },
+      ],
+  },
   
  // ── D00 ────────────────────────────────────────────────────────────
   {
@@ -349,6 +358,7 @@ const CATEGORIES = [
         body: "Gemini + Playwright에 대한 내용 입니다." },
     ],
   },
+
 
   // ── E00 ────────────────────────────────────────────────────────────
   {
