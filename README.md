@@ -126,25 +126,8 @@ Go to AI native라는 모토로 AI World로 들어가기 위해 공부하는 각
 - E09_AI서버관리꿀팁 
 ---
 
-## [F] 노트
-- F01_프롬프팅
-- F02_Skill References
-- F03_Skill Description
-- F04_MCP_Connector References
-- F05_MCP_Connector Description
-- F06_디자인노트
-- F07_영상_미디어
-- F08_Claude활용
-- F10_아이디어 스케치
-- F11_교육_강좌 사이트
-- F12_기타_참고 사이트  
----
-
-## [G] 프로젝트
-- G01_MyWiki프로젝트
-- G02_GoToAiNative
-- G03_주식프로젝트
-- G04_영상프로젝트
+> **[F] 노트, [G] 프로젝트**는 자매 사이트인 **Go-To-AI-Native-Archive**로 이전되었습니다.
+> (강좌 / 프로젝트 / 노트 / 최신 뉴스 4개 카테고리로 구성된 별도 사이트)
 ---
 
 ## [H] 데이터베이스

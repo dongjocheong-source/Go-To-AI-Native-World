@@ -129,8 +129,8 @@ const LATEST_POSTS = [
     summary: "screen, git, Postman으로 AI 서버를 운영하며 쓰는 관리 꿀팁을 정리했습니다." },
   { cat: "h00", item: "h02", date: "2026년 8월 18일",
     summary: "Supabase로 데이터베이스를 처음 붙여보는 초보 개발자용 시작 가이드." },
-  { cat: "g00", item: "g04", date: "2026년 8월 11일",
-    summary: "영상 프로젝트의 진행 상황과 다음 단계를 기록합니다." },
+  { cat: "d00", item: "d06b", date: "2026년 8월 11일",
+    summary: "2026년 바이브코딩 트렌드를 정리합니다." },
 ];
 
 
@@ -393,56 +393,6 @@ const CATEGORIES = [
         body: "NVIDIA GPU 모니터링 완벽 가이드 (정의, 구성요소, 실습)." },
       { id: "e09", title: "Server-ops-guide", meta: "E09", hue: 5,
         body: "개발자를 위한 AI 서버 관리 꿀팁 A to Z (screen, git, Postman)." },
-    ],
-  },
-
-  // ── F00 ────────────────────────────────────────────────────────────
-  {
-    id: "f00",
-    folder: "F_노트",
-    label: "노트",
-    icon: "edit-3",
-    description: "짧은 메모와 생각을 빠르게 기록합니다.",
-    items: [
-      { id: "f01", title: "프롬프팅", meta: "F01", hue: 40,
-        body: "프롬프팅 관련한 예제들을 모아 놓았습니다." },
-      { id: "f02", title: "Skill References", meta: "F02", hue: 40,
-        body: "유용한 Skill들을 모아가기 위한 용도 입니다" },
-      { id: "f03", title: "Skill Description", meta: "F03", hue: 40,
-        body: "Skill 정보들에 대해 설명을 제공하기 위한 용도 입니다." },
-      { id: "f04", title: "MCP_Connector Reference", meta: "F04", hue: 40,
-        body: "유용한 MCP_Connector들 정보를 모아가기 위한 용도 입니다." },
-      { id: "f05", title: "MCP_Connector Description", meta: "F05", hue: 40,
-        body: "MCP, Connector 정보들에 대해 설명을 제공하기 위한 용도 입니다." },
-      { id: "f06", title: "디자인 노트", meta: "F06", hue: 40,
-        body: "디자인 관련하여 정보들을 모아놓았습니다." },
-      { id: "f07", title: "영상_미디어", meta: "F07", hue: 40,
-        body: "디자인 관련하여 정보들을 모아놓았습니다." },
-      { id: "f08", title: "Claude 활용", meta: "F08", hue: 40,
-        body: "Claude의 활용 방법에 대한 정보들을 모아놓았습니다." },
-      { id: "f10", title: "아이디어 스케치", meta: "F10", hue: 40,
-        body: "떠오르는 대로 적어둔 초기 아이디어 메모입니다." },
-      { id: "f11", title: "기타 참고 사이트", meta: "F11", hue: 40,
-        body: "기타 참고할만한 사이트들에 대한 정보들을 모아놓았습니다." },
-    ],
-  },
-  
-  // ── G00 ────────────────────────────────────────────────────────────
-  {
-    id: "g00",
-    folder: "G_프로젝트",
-    label: "프로젝트",
-    icon: "folder",
-    description: "MyWiki, GoToAiNative 등 진행 중인 개인 프로젝트를 관리합니다.",
-    items: [
-      { id: "g01", title: "MyWiki프로젝트", meta: "G01", hue: 265,
-        body: "MyWiki프로젝트에 대한 내용을 준비 중입니다." },
-      { id: "g02", title: "GoToAiNative", meta: "G02", hue: 265,
-        body: "GoToAiNative에 대한 내용을 준비 중입니다." },
-      { id: "g03", title: "주식프로젝트", meta: "G03", hue: 265,
-        body: "과거 History 및 패턴 분석을 통한 주식 매매 프로그램 입니다." },
-      { id: "g04", title: "영상프로젝트", meta: "G04", hue: 265,
-        body: "영상프로젝트에 대한 내용 입니다." },
     ],
   },
 
