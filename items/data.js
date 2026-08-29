@@ -1,45 +1,4 @@
-/**
- * data.js — single source of truth for categories + items.
- *
- * This is the ONLY place you edit to add/remove/change content.
- * - index.html reads this file directly (as a <script> tag) to render
- *   the sidebar and item grid.
- * - generate_items.js reads this same object (via Node's require) to
- *   (re)generate the static detail pages under items/*.html.
- *
- * Schema:
- * {
- *   id: string            // unique category id, used as URL-safe slug
- *   label: string          // sidebar label (Korean)
- *   icon: string           // key into ICONS in icons.js
- *   description: string    // shown under the category title in the main pane
- *   items: [
- *     {
- *       id: string         // unique item id -> items/{id}.html
- *       title: string
- *       meta: string       // small caption line shown on the card (code)
- *       body: string       // paragraph(s) shown on the detail page (\n\n = new paragraph)
- *       hue: number         // 0-360, drives the placeholder "cover art" gradient
- *       skipGenerate: bool  // optional — true if items/{id}.html is hand-written
- *     }, ...
- *   ]
- * }
- *
- * NOTE ON CONTENT: most `body` fields below are short placeholders on
- * purpose — the real write-ups will be dropped in later as finished
- * items/{id}.html pages. This file's job right now is just to lock in the
- * category/item STRUCTURE (ids, labels, ordering) so the site is
- * navigable while content is filled in incrementally.
- */
-/**
- * PORTAL_TOOLS — the 12 tiles shown on the main portal (default landing view
- * and whatever appears when the "AI NATIVE WORLD" logo is clicked).
- * This is purely decorative/branding content: clicking a tile does nothing.
- * Category browsing is done exclusively through the sidebar.
- *
- * icon: filename inside assets/portal/
- * bg:   CSS background for the rounded tile
- */
+
 const PORTAL_TOOLS = [
   { label: "ChatGPT", icon: "icon-chatgpt.png", bg: "#ffffff" },
   { label: "Claude", icon: "icon-claude.png", bg: "#d97757" },
