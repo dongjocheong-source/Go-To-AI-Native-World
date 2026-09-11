@@ -78,7 +78,7 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
  ---
 
  
-## [D]  AI_Tool
+## [D]  AI_Tools
 - D01_대화채팅(ChatGPT,Claude,Gemini)
   - D01a - Full comparison - Chat AI Tools 
   - D01b - Comparison - ChatGPT vs Gemini vs Claude
