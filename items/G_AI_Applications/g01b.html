@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLM Wiki 방식 비교 — Ar9av vs kytmanov vs domleca</title>
+<meta name="description" content="LLM 활용 개인 Wiki를 만드는 3가지 오픈소스 접근법(에이전트 기반, CLI 도구, Obsidian 플러그인)의 아키텍처, 파이프라인, 설치법을 비교하고 사용 사례별 선택 가이드를 정리">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+
+  :root{
+    --ink:#150F2E;
+    --ink-2:#1E1745;
+    --ink-deep:#0B0820;
+    --paper:#FFFFFF;
+    --paper-tint:#F6F3FF;
+    --line:#E7E1FA;
+    --text-dark:#1B1730;
+    --text-muted:#655F82;
+    --acc-a:#16A34A;
+    --acc-a-ink:#166534;
+    --acc-b:#57534E;
+    --acc-b-ink:#292524;
+    --acc-c:#8880B0;
+    --acc-c-ink:#3A3560;
+    --danger:#D6455B;
+    --radius:18px;
+    --shadow:0 16px 40px rgba(21,15,46,0.12);
+    --maxw:1140px;
+    --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',Consolas,monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Noto Sans KR','Apple SD Gothic Neo',sans-serif;
+    color:var(--text-dark);
+    background:var(--paper);
+    line-height:1.68;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Noto Serif KR','Noto Sans KR',serif;margin:0;}
+  a{color:inherit;text-decoration:none;}
+  img,svg{display:block;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px;}
+  code{font-family:var(--mono);}
+
+  #progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--acc-a),var(--acc-b),var(--acc-c));z-index:9999;width:0%;transition:width .1s linear;}
+
+  header.nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:18px 0;transition:background .3s ease, padding .3s ease, box-shadow .3s ease;}
+  header.nav .wrap{display:flex;align-items:center;justify-content:space-between;}
+  header.nav.scrolled{background:rgba(21,15,46,0.92);backdrop-filter:blur(10px);padding:12px 0;box-shadow:0 4px 20px rgba(0,0,0,0.18);}
+  .brand{font-weight:900;font-size:15.5px;color:var(--paper);letter-spacing:.3px;display:flex;align-items:center;gap:9px;}
+  .brand .dot2{display:inline-flex;gap:3px;}
+  .brand .dot2 span{width:7px;height:7px;border-radius:50%;display:block;}
+  .brand .dot2 span:nth-child(1){background:var(--acc-a);}
+  .brand .dot2 span:nth-child(2){background:var(--acc-b);}
+  nav.links{display:flex;gap:20px;flex-wrap:wrap;}
+  nav.links a{font-size:13px;font-weight:500;color:#CFC8F2;opacity:.85;transition:opacity .2s,color .2s;}
+  nav.links a:hover{opacity:1;color:var(--acc-b);}
+  .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:6px;}
+  .hamburger span{width:22px;height:2px;background:var(--paper);display:block;}
+  .mobile-menu{display:none;position:fixed;top:0;right:0;bottom:0;width:74%;max-width:300px;background:var(--ink-2);z-index:1100;padding:90px 32px;flex-direction:column;gap:22px;box-shadow:-10px 0 30px rgba(0,0,0,.3);}
+  .mobile-menu.open{display:flex;}
+  .mobile-menu a{color:#DCD6F7;font-size:15px;font-weight:500;}
+  .mobile-close{position:fixed;top:22px;right:6%;z-index:1200;display:none;color:var(--paper);font-size:26px;background:none;border:none;cursor:pointer;}
+
+  section{position:relative;padding:100px 0;scroll-margin-top:84px;}
+  .kicker{font-size:12px;font-weight:700;letter-spacing:3px;color:var(--acc-a);text-transform:uppercase;margin-bottom:14px;}
+  .kicker.on-dark{color:var(--acc-b);}
+  h2.title{font-size:clamp(24px,3.1vw,34px);font-weight:700;color:var(--text-dark);line-height:1.32;}
+  h2.title.on-dark{color:var(--paper);}
+  .lede{font-size:15px;color:var(--text-muted);max-width:740px;margin-top:14px;}
+  .lede.on-dark{color:#CFC8F2;}
+
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in-view{opacity:1;transform:translateY(0);}
+
+  .tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.5px;padding:4px 11px;border-radius:20px;color:#fff;text-transform:uppercase;}
+  .tag.a{background:var(--acc-a);}
+  .tag.b{background:var(--acc-b);color:#fff;}
+  .tag.c{background:var(--acc-c);}
+  .tag.outline-a{background:rgba(0,0,0,0.03);color:var(--acc-a-ink);border:1.4px solid var(--acc-a);}
+  .tag.outline-b{background:rgba(0,0,0,0.03);color:var(--acc-b-ink);border:1.4px solid var(--acc-b);}
+
+  .badge{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:var(--ink);color:var(--paper);font-family:'Noto Serif KR',serif;font-weight:700;font-size:16px;flex-shrink:0;}
+
+  .card{background:var(--paper-tint);border-radius:var(--radius);padding:26px;box-shadow:var(--shadow);}
+  .card.dark{background:var(--ink);color:var(--paper);}
+  .card h3,.card h4{font-size:15px;font-weight:700;margin-bottom:8px;}
+  .card p{font-size:13.2px;color:var(--text-muted);margin:0;}
+  .card.dark p{color:#CFC8F2;}
+  .note-box{background:#FFF6DC;color:#6B4E00;border-radius:var(--radius);padding:18px 24px;font-size:13.8px;margin-top:26px;}
+  .note-box b{color:#8A6300;}
+
+  /* HERO — split VS panels (the signature element) */
+  .hero{color:var(--paper);min-height:100vh;display:flex;flex-direction:column;overflow:hidden;padding-top:84px;}
+  .hero-split{flex:1;display:flex;position:relative;}
+  .hero-panel{flex:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:40px 24px;}
+  .hero-panel.pa{background:linear-gradient(150deg,var(--acc-a) 0%,var(--ink-deep) 78%);}
+  .hero-panel.pb{background:linear-gradient(210deg,var(--acc-b) 0%,var(--ink-deep) 78%);}
+  .hero-panel.pc{background:linear-gradient(180deg,var(--acc-c) 0%,var(--ink-deep) 78%);}
+  .hero-panel .plabel{font-family:'Noto Serif KR',serif;font-weight:700;font-size:clamp(26px,4vw,42px);text-align:center;position:relative;z-index:2;}
+  .hero-panel .psub{font-size:12px;letter-spacing:2px;text-transform:uppercase;opacity:.8;margin-top:10px;text-align:center;position:relative;z-index:2;}
+  .hero-vs-mark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:5;width:64px;height:64px;border-radius:50%;background:var(--ink);border:3px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;font-family:'Noto Serif KR',serif;font-weight:700;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,0.4);}
+  .hero-copy{background:var(--ink-deep);padding:56px 0 60px;}
+  .hero-copy .eyebrow{font-size:12.5px;letter-spacing:4px;font-weight:700;color:var(--acc-b);text-transform:uppercase;margin-bottom:16px;}
+  .hero-copy h1{font-size:clamp(26px,4vw,40px);font-weight:900;line-height:1.32;margin-bottom:16px;}
+  .hero-copy p.sub{font-size:clamp(13.5px,1.5vw,16px);color:#CFC8F2;max-width:760px;margin-bottom:0;}
+  .chip-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px;}
+  .chip{padding:10px 18px;border-radius:30px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);font-size:12.5px;font-weight:500;color:#DCD6F7;transition:background .2s, border-color .2s, transform .2s;}
+  .chip:hover{background:rgba(255,255,255,0.1);transform:translateY(-2px);color:var(--paper);}
+  .scroll-cue{text-align:center;color:#8880B0;opacity:.7;font-size:11.5px;padding-bottom:6px;animation:bob 2s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(6px);}}
+
+  /* compare 2/3 col cards */
+  .compare-2{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:40px;}
+  .compare-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:40px;}
+  .cc-card{border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);border-top:4px solid var(--acc-a);}
+  .cc-card.b{border-top-color:var(--acc-b);}
+  .cc-card.c{border-top-color:var(--acc-c);}
+  .cc-card h4{font-size:14px;font-weight:700;margin:0 0 10px;text-transform:uppercase;letter-spacing:.6px;color:var(--text-muted);}
+  .cc-card .flow{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;margin-bottom:8px;color:var(--ink);}
+  .cc-card p.small{font-size:12.6px;color:var(--text-muted);margin:0;}
+
+  /* comparison table */
+  .cmp-table-wrap{margin-top:36px;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+  .cmp-table{width:100%;border-collapse:collapse;background:var(--paper);}
+  .cmp-table th{padding:15px 18px;font-size:11.5px;font-weight:700;text-align:left;letter-spacing:.5px;text-transform:uppercase;}
+  .cmp-table th:first-child{background:var(--ink);color:var(--paper);width:150px;}
+  .cmp-table th.col-a{background:var(--acc-a);color:#fff;}
+  .cmp-table th.col-b{background:var(--acc-b);color:#fff;}
+  .cmp-table th.col-c{background:var(--acc-c);color:#fff;}
+  .cmp-table td{padding:14px 18px;font-size:12.8px;border-bottom:1px solid var(--line);vertical-align:top;}
+  .cmp-table tr:last-child td{border-bottom:none;}
+  .cmp-table td:first-child{font-weight:700;color:var(--ink);background:var(--paper-tint);}
+
+  /* detail feature list */
+  .feat-list{margin-top:26px;display:flex;flex-direction:column;gap:14px;}
+  .feat-item{display:flex;gap:14px;align-items:flex-start;}
+  .feat-item .fi{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12.5px;color:#fff;flex-shrink:0;margin-top:1px;}
+  .feat-item b{display:block;font-size:14px;margin-bottom:2px;}
+  .feat-item span{font-size:12.8px;color:var(--text-muted);}
+
+  .trig-box{margin-top:28px;background:var(--paper-tint);border-radius:var(--radius);padding:22px 24px;}
+  .trig-box h5{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin:0 0 12px;}
+  .trig-box ol{margin:0;padding-left:20px;}
+  .trig-box li{font-size:13px;margin-bottom:10px;color:var(--text-dark);}
+  .trig-box li:last-child{margin-bottom:0;}
+  .trig-box li b{color:var(--ink);}
+
+  .usewhen{margin-top:22px;display:flex;flex-wrap:wrap;gap:9px;}
+  .usewhen span{font-size:12px;padding:7px 13px;border-radius:20px;background:var(--paper-tint);color:var(--text-dark);}
+  .usewhen span::before{content:'✓ ';font-weight:700;}
+
+  /* scenario cards */
+  .scen-grid{display:flex;flex-direction:column;gap:18px;margin-top:40px;}
+  .scen-card{border-radius:var(--radius);padding:26px 28px;box-shadow:var(--shadow);background:var(--paper);border:1.5px solid var(--line);}
+  .scen-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px;}
+  .scen-num{font-family:'Noto Serif KR',serif;font-size:13px;color:var(--text-muted);font-weight:700;}
+  .scen-title{font-size:15.5px;font-weight:700;color:var(--ink);}
+  .scen-pick{font-size:11.5px;font-weight:700;padding:6px 14px;border-radius:20px;color:#fff;letter-spacing:.3px;}
+  .scen-pick.a{background:var(--acc-a);}
+  .scen-pick.b{background:var(--acc-b);}
+  .scen-pick.c{background:var(--acc-c);}
+  .scen-situ{font-size:13px;color:var(--text-muted);margin-bottom:14px;}
+  .scen-why{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+  .scen-why span{font-size:11.8px;background:var(--paper-tint);color:var(--text-dark);padding:6px 12px;border-radius:16px;}
+  .scen-code{background:var(--ink-deep);border-radius:12px;padding:16px 18px;font-family:var(--mono);font-size:12px;color:#CFC8F2;line-height:1.7;white-space:pre-wrap;}
+
+  /* decision tree */
+  .tree-box{margin-top:40px;background:var(--ink);color:var(--paper);border-radius:var(--radius);padding:32px 34px;box-shadow:var(--shadow);}
+  .tree-box .tq{font-size:14.5px;font-weight:700;margin-bottom:18px;color:var(--paper);}
+  .tree-row{display:flex;gap:16px;align-items:flex-start;margin-bottom:14px;padding-left:8px;}
+  .tree-row:last-child{margin-bottom:0;}
+  .tree-row .tlabel{font-size:11.5px;font-weight:700;padding:5px 12px;border-radius:14px;flex-shrink:0;margin-top:1px;}
+  .tree-row .tlabel.yes{background:rgba(14,163,131,0.2);color:#5EE0BC;}
+  .tree-row .tlabel.no{background:rgba(214,69,91,0.2);color:#F09AA6;}
+  .tree-row .ttext{font-size:13.3px;color:#CFC8F2;}
+  .tree-row .ttext b{color:var(--paper);}
+  .tree-indent{margin-left:44px;}
+
+  .check-2{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:32px;}
+  .check-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:32px;}
+  .check-card{border-radius:var(--radius);padding:24px;background:var(--paper-tint);}
+  .check-card h5{font-size:13.5px;font-weight:700;margin:0 0 14px;display:flex;align-items:center;gap:8px;}
+  .check-card ul{list-style:none;margin:0;padding:0;}
+  .check-card li{font-size:12.8px;color:var(--text-dark);padding:7px 0 7px 26px;position:relative;border-bottom:1px solid var(--line);}
+  .check-card li:last-child{border-bottom:none;}
+  .check-card li::before{content:'☐';position:absolute;left:0;top:6px;color:var(--text-muted);}
+  .check-card .verdict{margin-top:14px;font-size:12px;font-weight:700;color:var(--ink);}
+
+  /* code blocks */
+  .code-block{background:var(--ink-deep);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);margin-top:20px;}
+  .code-head{display:flex;align-items:center;justify-content:space-between;padding:11px 20px;background:var(--ink-2);}
+  .code-head .dots{display:flex;gap:6px;}
+  .code-head .dots span{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,0.2);}
+  .code-head .fname{font-family:var(--mono);font-size:11px;color:#CFC8F2;}
+  pre{margin:0;padding:20px 22px;overflow-x:auto;}
+  pre code{font-family:var(--mono);font-size:12.3px;line-height:1.75;color:#E4DEFF;white-space:pre;}
+  .cm{color:#8880B0;}
+  .kw{color:var(--acc-a);}
+  .st{color:var(--acc-b);}
+  .fn{color:#F2B705;}
+  .example-block{margin-top:36px;}
+  .example-block h4{font-size:14.5px;font-weight:700;display:flex;align-items:center;gap:10px;}
+
+  /* best practices */
+  .bp-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:40px;}
+  .bp-grid.cols-3{grid-template-columns:repeat(3,1fr);}
+  .bp-card{border-radius:var(--radius);padding:26px;box-shadow:var(--shadow);}
+  .bp-card.a{background:rgba(0,0,0,0.02);border-top:4px solid var(--acc-a);}
+  .bp-card.b{background:rgba(0,0,0,0.02);border-top:4px solid var(--acc-b);}
+  .bp-card.c{background:rgba(0,0,0,0.02);border-top:4px solid var(--acc-c);}
+  .bp-card h4{font-size:14.5px;font-weight:700;margin-bottom:16px;}
+  .bp-item{display:flex;gap:12px;margin-bottom:14px;}
+  .bp-item:last-child{margin-bottom:0;}
+  .bp-item .n{font-family:'Noto Serif KR',serif;font-weight:700;font-size:13px;color:var(--text-muted);flex-shrink:0;}
+  .bp-item b{display:block;font-size:13.3px;margin-bottom:2px;}
+  .bp-item span{font-size:12.4px;color:var(--text-muted);}
+
+  /* summary */
+  .summary{background:linear-gradient(180deg,var(--ink-2) 0%, var(--ink-deep) 100%);color:var(--paper);}
+  .recap-list{margin-top:34px;display:flex;flex-direction:column;gap:0;}
+  .recap-item{display:flex;align-items:flex-start;gap:18px;padding:18px 0;border-bottom:1px solid rgba(255,255,255,0.1);}
+  .recap-item:last-child{border-bottom:none;}
+  .recap-item .num{font-family:'Noto Serif KR',serif;font-size:14px;color:var(--acc-b);font-weight:700;width:28px;flex-shrink:0;}
+  .recap-item .rt{font-size:14px;line-height:1.65;color:#E4DEFF;}
+  .final-line{margin-top:30px;padding:20px 24px;border-radius:var(--radius);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);font-size:13.5px;color:#CFC8F2;}
+  .final-line b{color:var(--paper);}
+
+  footer{background:var(--ink-deep);color:#8880B0;padding:34px 0;font-size:12px;}
+  footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+  .totop{border:1px solid rgba(255,255,255,0.2);padding:8px 16px;border-radius:20px;font-size:11.5px;transition:border-color .2s, color .2s;}
+  .totop:hover{border-color:var(--acc-b);color:var(--acc-b);}
+
+  @media(max-width:900px){
+    nav.links{display:none;}
+    .hamburger{display:flex;}
+    .compare-2,.compare-3{grid-template-columns:1fr;}
+    .check-2,.check-3{grid-template-columns:1fr;}
+    .bp-grid{grid-template-columns:1fr;}
+    .hero-split{flex-direction:column;}
+    .hero-vs-mark{position:relative;top:auto;left:auto;transform:none;margin:-32px auto;}
+    section{padding:72px 0;}
+  }
+  @media(max-width:560px){
+    .cmp-table{font-size:11.5px;}
+    .cmp-table th,.cmp-table td{padding:11px 12px;}
+  }
+
+  /* ===== series badge (for the 5-part prompt engineering series) ===== */
+  .series-badge{
+    display:inline-flex;align-items:center;gap:8px;margin-top:22px;padding:9px 18px;border-radius:30px;
+    background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.16);font-size:12.5px;color:#DCD6F7;
+  }
+  .series-badge b{color:var(--paper);}
+  .series-dots{display:flex;gap:5px;}
+  .series-dots span{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.25);}
+  .series-dots span.on{background:var(--acc-b);}
+
+  .series-toc{margin-top:32px;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+  .series-toc-row{display:flex;align-items:center;gap:16px;padding:14px 22px;background:var(--paper);border-bottom:1px solid var(--line);}
+  .series-toc-row:last-child{border-bottom:none;}
+  .series-toc-row.current{background:var(--paper-tint);}
+  .series-toc-row .stn{font-family:'Noto Serif KR',serif;font-weight:700;font-size:12px;color:var(--text-muted);width:26px;flex-shrink:0;}
+  .series-toc-row.current .stn{color:var(--acc-b-ink);}
+  .series-toc-row .stt{font-size:13px;color:var(--text-dark);}
+  .series-toc-row.current .stt{font-weight:700;color:var(--ink);}
+  .series-toc-row .stbadge{margin-left:auto;font-size:10px;font-weight:700;padding:3px 10px;border-radius:12px;background:var(--acc-b);color:#fff;flex-shrink:0;}
+
+  /* danger-toned note box (security warnings) */
+  .danger-box{background:#FDECEE;color:#7A1F2C;border-radius:var(--radius);padding:18px 24px;font-size:13.8px;margin-top:26px;border-left:4px solid var(--danger);}
+  .danger-box b{color:#9C2A3C;}
+  .safe-box{background:#E9F9F3;color:#065F49;border-radius:var(--radius);padding:18px 24px;font-size:13.8px;margin-top:26px;border-left:4px solid #0EA383;}
+  .safe-box b{color:#065F49;}
+
+  /* ===== RLHF guide additions ===== */
+
+  .flow-pair{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:36px;}
+  .flow-col h4{font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;}
+  .flow-vert{display:flex;flex-direction:column;align-items:stretch;}
+  .flow-step{background:var(--paper-tint);border-radius:12px;padding:13px 18px;font-size:13px;font-weight:600;color:var(--ink);text-align:center;}
+  .flow-step.on-a{background:var(--acc-a);color:#fff;}
+  .flow-step.on-b{background:var(--acc-b);color:#fff;}
+  .flow-arrow-v{text-align:center;font-size:15px;color:var(--text-muted);padding:5px 0;}
+
+  .org-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:36px;}
+  .org-card{border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);background:var(--paper-tint);}
+  .org-card h4{font-size:14px;font-weight:700;margin-bottom:8px;}
+  .org-card .org-tool{font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px;}
+  .org-card .org-tool.a{color:var(--acc-a-ink);}
+  .org-card .org-tool.b{color:var(--acc-b-ink);}
+  .org-card ul{list-style:none;margin:0;padding:0;}
+  .org-card li{font-size:12.3px;color:var(--text-dark);padding:3px 0 3px 16px;position:relative;}
+  .org-card li::before{content:'·';position:absolute;left:0;font-weight:900;color:var(--text-muted);}
+
+  .pc-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px;align-items:start;}
+  .pc-card{border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);}
+  .pc-card.pro{background:rgba(14,163,131,0.06);border:1.5px solid rgba(14,163,131,0.25);}
+  .pc-card.con{background:rgba(214,69,91,0.05);border:1.5px solid rgba(214,69,91,0.2);}
+  .pc-card h4{font-size:15px;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+  .pc-item{display:flex;gap:12px;margin-bottom:14px;}
+  .pc-item:last-child{margin-bottom:0;}
+  .pc-item .n{font-family:'Noto Serif KR',serif;font-weight:700;font-size:13px;color:var(--text-muted);flex-shrink:0;}
+  .pc-item b{display:block;font-size:13.3px;margin-bottom:2px;}
+  .pc-item span{font-size:12.4px;color:var(--text-muted);}
+
+  .path-chip-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:22px;}
+  .path-chip{font-size:12px;font-weight:600;background:var(--paper);border:1.4px solid var(--line);color:var(--ink);padding:7px 13px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.04);}
+  .path-arrow{color:var(--text-muted);font-size:13px;}
+
+  .ref-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:20px;}
+  .ref-card{display:flex;align-items:center;justify-content:space-between;gap:12px;border-radius:14px;padding:16px 20px;background:var(--paper-tint);transition:background .2s, transform .2s;}
+  .ref-card:hover{background:#EFEAFF;transform:translateX(2px);}
+  .ref-card .rc-text{font-size:13px;color:var(--text-dark);}
+  .ref-card .rc-text b{display:block;font-size:13.5px;color:var(--ink);margin-bottom:2px;}
+  .ref-card .rc-arrow{color:var(--acc-b);font-size:16px;flex-shrink:0;}
+
+  .hero-panel .ptag{
+    display:inline-block;margin-top:14px;padding:5px 14px;border-radius:14px;
+    background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.22);
+    font-size:11px;font-weight:700;letter-spacing:.5px;position:relative;z-index:2;
+  }
+
+  /* ===== Career guide additions: dual-bar, venn-row, pillar tag ===== */
+  .dualbar{margin-bottom:18px;}
+  .dualbar .dl{display:flex;justify-content:space-between;font-size:12.8px;margin-bottom:6px;font-weight:600;color:var(--ink);}
+  .dualbar .dtrack{height:9px;background:var(--paper-tint);border-radius:5px;overflow:hidden;margin-bottom:4px;position:relative;}
+  .dualbar .dfill{height:100%;border-radius:5px;}
+  .dualbar .dfill.hi{background:linear-gradient(90deg,#0EA383,#5EEAD4);}
+  .dualbar .dfill.lo{background:linear-gradient(90deg,var(--danger),#F2A5A5);}
+  .dualbar .dvals{display:flex;justify-content:space-between;font-size:10.5px;color:var(--text-muted);font-family:var(--mono);}
+
+  .venn-row{display:grid;grid-template-columns:1fr 0.8fr 1fr;gap:0;margin-top:28px;align-items:stretch;}
+  .venn-col{padding:22px 18px;text-align:center;border-radius:var(--radius);}
+  .venn-col.va{background:rgba(54,62,140,0.08);border:1.5px solid rgba(54,62,140,0.2);border-radius:var(--radius) 0 0 var(--radius);}
+  .venn-col.vb{background:linear-gradient(135deg,rgba(184,134,11,0.16),rgba(194,65,12,0.14));border:1.5px solid rgba(184,134,11,0.35);margin:0 -14px;z-index:2;}
+  .venn-col.vc{background:rgba(194,65,12,0.07);border:1.5px solid rgba(194,65,12,0.2);border-radius:0 var(--radius) var(--radius) 0;}
+  .venn-col h5{font-size:13px;font-weight:700;margin-bottom:8px;}
+  .venn-col p{font-size:11.5px;color:var(--text-muted);margin:0;line-height:1.5;}
+
+  .pillar-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 13px;border-radius:14px;margin-bottom:14px;}
+
+  @media(max-width:760px){
+    .venn-row{grid-template-columns:1fr;}
+    .venn-col.vb{margin:8px 0;border-radius:var(--radius);}
+    .venn-col.va{border-radius:var(--radius);}
+    .venn-col.vc{border-radius:var(--radius);}
+  }
+
+  /* ===== LLM 동작원리 — token demo, vector space, transformer stack, heatmap, prob bars ===== */
+
+  .tok-demo{background:var(--ink-deep);border-radius:var(--radius);padding:26px 28px;margin-top:28px;}
+  .tok-line{font-family:var(--mono);font-size:13px;color:#B8B0DE;margin-bottom:10px;}
+  .tok-line .hi{color:#E4DEFF;}
+  .tok-row{display:flex;flex-wrap:wrap;gap:9px;margin:16px 0;}
+  .tok-chip{padding:7px 14px;border-radius:8px;font-family:var(--mono);font-weight:600;font-size:13px;border:1px solid;}
+  .tok-chip.c0{background:rgba(13,148,136,0.16);color:#5EEAD4;border-color:rgba(13,148,136,0.4);}
+  .tok-chip.c1{background:rgba(217,119,6,0.16);color:#FCD34D;border-color:rgba(217,119,6,0.4);}
+  .tok-chip.c2{background:rgba(217,119,6,0.16);color:#FCD34D;border-color:rgba(217,119,6,0.4);}
+  .tok-chip.c3{background:rgba(13,148,136,0.16);color:#5EEAD4;border-color:rgba(13,148,136,0.4);}
+  .tok-chip.c4{background:rgba(217,119,6,0.16);color:#FCD34D;border-color:rgba(217,119,6,0.4);}
+  .tok-ids{font-family:var(--mono);font-size:13px;color:#E4DEFF;background:var(--ink-2);border-radius:8px;padding:11px 16px;display:inline-block;}
+
+  .embed-wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:24px;align-items:stretch;margin-top:28px;}
+  .vecspace{background:var(--paper-tint);border:1px solid var(--line);border-radius:var(--radius);position:relative;min-height:320px;overflow:hidden;}
+  .vecspace .axis{position:absolute;background:var(--line);}
+  .word-dot{position:absolute;transform:translate(-50%,-50%);font-family:var(--mono);font-size:12px;padding:6px 12px;border-radius:20px;border:1.4px solid;white-space:nowrap;font-weight:600;}
+  .word-dot.wa{background:rgba(13,148,136,0.1);color:var(--acc-a-ink);border-color:var(--acc-a);}
+  .word-dot.wb{background:rgba(217,119,6,0.1);color:var(--acc-b-ink);border-color:var(--acc-b);}
+  .word-dot.wc{background:rgba(124,58,237,0.1);color:#5B21B6;border-color:#8B5CF6;}
+  .embed-notes{display:flex;flex-direction:column;gap:16px;justify-content:center;}
+  .embed-notes .n{border-left:3px solid var(--acc-a);padding-left:16px;}
+  .embed-notes .n b{display:block;font-size:13.5px;margin-bottom:3px;color:var(--ink);}
+  .embed-notes .n span{font-size:12.6px;color:var(--text-muted);}
+
+  .tf-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:28px;max-width:420px;margin-left:auto;margin-right:auto;}
+  .tf-cap{font-family:var(--mono);font-size:11.5px;color:var(--text-muted);text-align:center;}
+  .tf-block{width:100%;border:1px solid var(--line);border-radius:10px;background:var(--paper-tint);padding:13px;text-align:center;}
+  .tf-block .l1{font-size:13px;font-weight:700;color:var(--acc-a-ink);}
+  .tf-block .l2{font-size:11.5px;color:var(--text-muted);margin-top:3px;}
+  .tf-repeat{font-family:var(--mono);font-size:11.5px;color:var(--acc-b-ink);font-weight:700;text-align:center;padding:2px 0;}
+  .tf-notes{margin-top:32px;display:flex;flex-direction:column;gap:16px;max-width:640px;margin-left:auto;margin-right:auto;}
+  .tf-notes .n b{display:block;color:var(--ink);font-weight:700;font-size:13.5px;margin-bottom:3px;}
+  .tf-notes .n p{margin:0;color:var(--text-muted);font-size:12.6px;}
+
+  .attn-wrap{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:28px;align-items:start;}
+  .qkv .row{display:flex;gap:14px;margin-bottom:14px;align-items:baseline;}
+  .qkv .k{font-family:var(--mono);font-size:12.5px;width:58px;flex-shrink:0;font-weight:700;}
+  .qkv .row:nth-child(1) .k{color:var(--acc-a-ink);}
+  .qkv .row:nth-child(2) .k{color:#8B5CF6;}
+  .qkv .row:nth-child(3) .k{color:var(--acc-b-ink);}
+  .qkv .v{font-size:12.8px;color:var(--text-muted);}
+  table.heat{border-collapse:collapse;width:100%;font-family:var(--mono);}
+  table.heat th{font-size:11px;color:var(--text-muted);font-weight:500;padding:6px;text-align:center;}
+  table.heat td.lab{font-size:11.5px;color:var(--text-muted);text-align:right;padding-right:10px;white-space:nowrap;}
+  table.heat td.cell{width:48px;height:40px;text-align:center;font-size:12px;font-weight:700;border-radius:6px;border:2px solid var(--paper);}
+  .heat-cap{font-family:var(--mono);font-size:11px;color:var(--text-muted);margin-top:12px;}
+
+  .prob-wrap{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:28px;align-items:center;}
+  .prompt-box{font-family:var(--mono);font-size:15px;background:var(--paper-tint);border:1px solid var(--line);border-radius:10px;padding:15px 18px;margin-bottom:22px;}
+  .prompt-box .blank{color:var(--acc-a-ink);border-bottom:2px solid var(--acc-a);padding:0 16px;font-weight:700;}
+  .bar{margin-bottom:12px;}
+  .bar .bl{display:flex;justify-content:space-between;font-size:12.8px;margin-bottom:5px;}
+  .bar .bl .pct{font-family:var(--mono);color:var(--text-muted);}
+  .bar .track{height:11px;background:var(--paper-tint);border-radius:6px;overflow:hidden;}
+  .bar .fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--acc-a-ink),var(--acc-a));}
+  ol.steps{counter-reset:s;list-style:none;padding:0;margin:0;}
+  ol.steps li{counter-increment:s;position:relative;padding:11px 0 11px 46px;border-bottom:1px solid var(--line);font-size:13.3px;color:var(--text-muted);}
+  ol.steps li:last-child{border-bottom:none;}
+  ol.steps li::before{content:counter(s,decimal-leading-zero);position:absolute;left:0;top:11px;font-family:var(--mono);font-size:11px;color:var(--acc-a-ink);border:1px solid var(--acc-a);border-radius:6px;padding:2px 7px;}
+  ol.steps li b{color:var(--ink);font-weight:700;}
+
+  @media(max-width:900px){
+    .embed-wrap,.attn-wrap,.prob-wrap{grid-template-columns:1fr;}
+  }
+
+  /* ===== RLHF guide additions ===== */
+
+
+
+  .hero-simple{
+    background:radial-gradient(circle at 18% 22%, rgba(22,163,74,0.22), transparent 45%),
+               radial-gradient(circle at 84% 18%, rgba(87,83,78,0.2), transparent 45%),
+               linear-gradient(180deg,var(--ink) 0%, var(--ink-deep) 100%);
+    color:var(--paper);min-height:92vh;display:flex;align-items:center;overflow:hidden;padding:120px 0 64px;
+  }
+  .hero-simple .wrap{position:relative;z-index:2;}
+  .hero-simple .eyebrow{font-size:12.5px;letter-spacing:4px;font-weight:700;color:var(--acc-b);text-transform:uppercase;margin-bottom:18px;}
+  .hero-simple h1{font-size:clamp(28px,4.4vw,46px);font-weight:900;line-height:1.24;margin-bottom:18px;}
+  .hero-simple h1 .accent-word{background:linear-gradient(90deg,var(--acc-a),var(--acc-b));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .hero-simple p.sub{font-size:clamp(14px,1.6vw,17px);color:#CFC8F2;max-width:720px;margin-bottom:0;}
+
+  /* quote / key-insight callout (replaces the source's <cite> wrapper) */
+  .quote-box{margin-top:28px;padding:20px 26px;border-left:4px solid var(--acc-b);background:var(--paper-tint);border-radius:0 var(--radius) var(--radius) 0;}
+  .quote-box p{font-size:13.6px;font-style:italic;color:var(--text-dark);margin:0;line-height:1.7;}
+  .quote-box .qsrc{display:block;margin-top:10px;font-size:11.5px;font-style:normal;font-weight:700;color:var(--acc-b-ink);}
+
+  /* formula block */
+  .formula-block{margin-top:24px;background:var(--ink-deep);border-radius:var(--radius);padding:24px 28px;text-align:center;overflow-x:auto;}
+  .formula-block code{font-family:var(--mono);font-size:14px;color:#E4DEFF;white-space:pre;}
+  .formula-legend{margin-top:16px;display:flex;flex-direction:column;gap:6px;}
+  .formula-legend .flrow{font-size:12.6px;color:var(--text-muted);}
+  .formula-legend .flrow b{color:var(--ink);font-family:var(--mono);}
+
+  /* pipeline diagram — the signature element */
+  .pipeline{display:flex;align-items:stretch;gap:0;margin-top:44px;flex-wrap:wrap;}
+  .pl-stage{flex:1;min-width:200px;border-radius:var(--radius);padding:22px 20px;box-shadow:var(--shadow);position:relative;}
+  .pl-stage .plnum{font-family:'Noto Serif KR',serif;font-weight:700;font-size:12px;color:var(--text-muted);margin-bottom:8px;}
+  .pl-stage .plname{font-size:14.5px;font-weight:700;color:var(--ink);margin-bottom:8px;}
+  .pl-stage .pldesc{font-size:11.8px;color:var(--text-muted);line-height:1.6;}
+  .pl-stage.s0{background:var(--paper-tint);}
+  .pl-stage.s1{background:rgba(232,131,74,0.08);border:1.5px solid rgba(232,131,74,0.25);}
+  .pl-stage.s2{background:rgba(76,99,224,0.07);border:1.5px solid rgba(76,99,224,0.22);}
+  .pl-stage.s3{background:var(--ink);color:var(--paper);}
+  .pl-stage.s3 .plname{color:var(--paper);}
+  .pl-stage.s3 .pldesc{color:#CFC8F2;}
+  .pl-stage.s3 .plnum{color:var(--acc-b);}
+  .pl-connector{display:flex;align-items:center;justify-content:center;width:36px;flex-shrink:0;color:#B8B0DE;font-size:18px;}
+
+  /* problem/solution split */
+  .ps-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:32px;}
+  .ps-card{border-radius:var(--radius);padding:24px;}
+  .ps-card.problem{background:rgba(214,69,91,0.05);border:1.5px solid rgba(214,69,91,0.2);}
+  .ps-card.solution{background:rgba(14,163,131,0.06);border:1.5px solid rgba(14,163,131,0.25);}
+  .ps-card h4{font-size:13.5px;font-weight:700;margin-bottom:12px;}
+  .ps-card ul{list-style:none;margin:0;padding:0;}
+  .ps-card li{font-size:12.8px;padding:6px 0 6px 22px;position:relative;color:var(--text-dark);}
+  .ps-card.problem li::before{content:'✕';position:absolute;left:0;color:var(--danger);font-weight:700;}
+  .ps-card.solution li::before{content:'✓';position:absolute;left:0;color:#0EA383;font-weight:700;}
+
+  /* cost receipt */
+  .receipt-row{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:32px;}
+  .receipt{background:var(--paper-tint);border-radius:var(--radius);padding:22px 24px;}
+  .receipt.hi{background:var(--ink);color:var(--paper);}
+  .receipt h5{font-size:13px;font-weight:700;margin-bottom:14px;}
+  .receipt.hi h5{color:var(--acc-b);}
+  .rline{display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px dashed var(--line);color:var(--text-muted);}
+  .receipt.hi .rline{border-bottom-color:rgba(255,255,255,0.15);color:#CFC8F2;}
+  .rline:last-of-type{border-bottom:none;}
+  .rtotal{display:flex;justify-content:space-between;font-size:13.5px;font-weight:700;margin-top:10px;padding-top:10px;border-top:1.5px solid var(--line);color:var(--ink);}
+  .receipt.hi .rtotal{border-top-color:rgba(255,255,255,0.25);color:var(--paper);}
+
+  /* alignment-tax chart (simple css bars) */
+  .tax-chart{display:flex;align-items:flex-end;gap:28px;margin-top:32px;padding:24px 28px;background:var(--paper-tint);border-radius:var(--radius);height:160px;}
+  .tax-bar-group{display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;height:100%;justify-content:flex-end;}
+  .tax-bars{display:flex;gap:6px;align-items:flex-end;height:100%;}
+  .tax-bars .tb{width:26px;border-radius:5px 5px 0 0;}
+  .tax-bars .tb.before{background:var(--acc-a);}
+  .tax-bars .tb.after{background:var(--acc-b);}
+  .tax-bar-group .tblabel{font-size:11px;color:var(--text-muted);text-align:center;}
+
+  /* alt-method deep dive card */
+  .alt-card{border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);margin-top:20px;}
+  .alt-card .alt-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 13px;border-radius:14px;margin-bottom:14px;}
+  .alt-card h3{font-size:18px;font-weight:700;margin-bottom:10px;}
+
+  /* decision flow (implementation) */
+  .impl-tree{margin-top:32px;background:var(--ink);color:var(--paper);border-radius:var(--radius);padding:28px 30px;}
+  .impl-row{display:flex;gap:14px;align-items:baseline;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.08);font-size:13px;}
+  .impl-row:last-child{border-bottom:none;}
+  .impl-row .iq{color:#CFC8F2;flex-shrink:0;min-width:170px;font-weight:600;}
+  .impl-row .ia{color:var(--acc-b);font-weight:700;}
+
+  /* timeline table (reuse cmp-table look but horizontal era markers) */
+  .era-row{display:flex;gap:0;margin-top:32px;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+  .era-col{flex:1;padding:20px 18px;background:var(--paper-tint);border-right:1px solid var(--paper);}
+  .era-col:last-child{border-right:none;background:var(--ink);color:var(--paper);}
+  .era-col .eyear{font-family:'Noto Serif KR',serif;font-weight:700;font-size:13px;color:var(--acc-a-ink);margin-bottom:8px;}
+  .era-col:last-child .eyear{color:var(--acc-b);}
+  .era-col .esitu{font-size:11.5px;color:var(--text-muted);margin-bottom:6px;}
+  .era-col:last-child .esitu{color:#CFC8F2;}
+  .era-col .etech{font-size:12.8px;font-weight:700;color:var(--ink);}
+  .era-col:last-child .etech{color:var(--paper);}
+
+  @media(max-width:900px){
+    .pipeline{flex-direction:column;}
+    .pl-connector{width:100%;height:30px;transform:rotate(90deg);}
+    .ps-grid{grid-template-columns:1fr;}
+    .receipt-row{grid-template-columns:1fr;}
+    .era-row{flex-direction:column;}
+    .era-col{border-right:none;border-bottom:1px solid var(--paper);}
+    .flow-pair{grid-template-columns:1fr;}
+    .org-grid{grid-template-columns:1fr;}
+    .pc-grid{grid-template-columns:1fr;}
+    .ref-grid{grid-template-columns:1fr;}
+    .compare-2{grid-template-columns:1fr;}
+    .bp-grid{grid-template-columns:1fr;}
+  }
+
+</style>
+<body>
+
+<div id="progress"></div>
+
+<header class="nav" id="siteNav">
+  <div class="wrap">
+    <div class="brand"><span class="dot2"><span></span><span></span></span> LLM Wiki 방식 비교 · C01</div>
+    <nav class="links">
+      <a href="#overview">개요</a>
+      <a href="#projects">3가지 프로젝트</a>
+      <a href="#pipeline">파이프라인</a>
+      <a href="#install">설치</a>
+      <a href="#decision">선택 가이드</a>
+      <a href="#usecase">사용 사례</a>
+    </nav>
+    <button class="hamburger" id="hamBtn" aria-label="메뉴 열기"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#overview">개요</a>
+  <a href="#projects">3가지 오픈소스 프로젝트</a>
+  <a href="#pipeline">파이프라인 비교</a>
+  <a href="#install">설치 및 실행</a>
+  <a href="#compare-table">특징별 비교</a>
+  <a href="#decision">의사결정 트리</a>
+  <a href="#usecase">사용 사례별 추천</a>
+  <a href="#checklist">빠른 선택 체크리스트</a>
+  <a href="#conclusion">최종 권장사항</a>
+</div>
+<button class="mobile-close" id="mobileClose">×</button>
+
+<main>
+
+<section class="hero-simple" id="top">
+  <div class="wrap">
+    <div class="eyebrow">C01 · LLM-Wiki · AI 활용</div>
+    <h1>내 지식을 Wiki로,<br><span class="accent-word">어떤 방식으로 만들까</span></h1>
+    <p class="sub">LLM을 활용해 개인 Wiki를 구축하는 3가지 오픈소스 접근법 — 에이전트 기반(Ar9av), CLI 도구(kytmanov), Obsidian 플러그인(domleca) — 을 아키텍처, 파이프라인, 사용성 기준으로 비교했습니다.</p>
+    <div class="chip-row">
+      <a class="chip" href="#projects">3가지 프로젝트</a>
+      <a class="chip" href="#decision">의사결정 트리</a>
+      <a class="chip" href="#usecase">사용 사례별 추천</a>
+    </div>
+  </div>
+</section>
+
+<section id="overview">
+  <div class="wrap reveal">
+    <div class="kicker">Overview</div>
+    <h2 class="title">LLM Wiki란?</h2>
+    <p class="lede">LLM을 활용한 개인 Wiki 시스템입니다. 문서를 자동으로 분석하고, 지식을 구조화하며, AI와 함께 검색할 수 있습니다. 이 비교에서는 철학이 완전히 다른 3가지 오픈소스 프로젝트를 다룹니다.</p>
+    <div class="usewhen">
+      <span>Ar9av / obsidian-wiki — 에이전트 기반</span>
+      <span>kytmanov / obsidian-llm-wiki-local — CLI 도구 기반</span>
+      <span>domleca / llm-wiki — Obsidian 플러그인 기반</span>
+    </div>
+  </div>
+</section>
+
+<section id="projects" style="background:var(--paper-tint);">
+  <div class="wrap reveal">
+    <div class="kicker">3 Projects</div>
+    <h2 class="title">3가지 오픈소스 프로젝트 분석</h2>
+
+    <div class="org-grid">
+      <div class="org-card">
+        <h4>1️⃣ Ar9av / obsidian-wiki</h4>
+        <div class="org-tool a">STATS</div>
+        <ul>
+          <li>⭐ 8 · 🔄 0 · 📝 7 commits · 🐛 0 issues</li>
+          <li>언어: Python, HTML</li>
+        </ul>
+        <div class="org-tool b">PHILOSOPHY</div>
+        <ul>
+          <li>에이전트(Claude Code 등)가 직접 스킬 파일을 읽고 실행</li>
+        </ul>
+        <div class="org-tool b">LLM 백엔드</div>
+        <ul><li>에이전트 지원 모델 (API 키는 에이전트가 관리)</li></ul>
+      </div>
+
+      <div class="org-card">
+        <h4>2️⃣ kytmanov / obsidian-llm-wiki-local</h4>
+        <div class="org-tool a">STATS</div>
+        <ul>
+          <li>⭐ 2 · 🔄 0 · 📝 1 commit · PR 17개</li>
+          <li>언어: Python, Shell</li>
+        </ul>
+        <div class="org-tool b">PHILOSOPHY</div>
+        <ul>
+          <li>전통적 CLI 도구 — Python 패키지 설치 후 명령어로 실행</li>
+        </ul>
+        <div class="org-tool b">LLM 백엔드</div>
+        <ul><li>Ollama 지원 (100% 오픈, 클라우드 없음)</li></ul>
+      </div>
+
+      <div class="org-card">
+        <h4>3️⃣ domleca / llm-wiki</h4>
+        <div class="org-tool a">STATS</div>
+        <ul>
+          <li>⭐ 13 · 🔄 1 · 📝 188 commits · 🐛 2 issues</li>
+          <li>언어: TypeScript, CSS</li>
+        </ul>
+        <div class="org-tool b">PHILOSOPHY</div>
+        <ul>
+          <li>Obsidian 플러그인 — 노트 생성·제거 모달 제공</li>
+        </ul>
+        <div class="org-tool b">LLM 백엔드</div>
+        <ul><li>Ollama 기본 + OpenAI · Anthropic · Google 선택 가능</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pipeline">
+  <div class="wrap reveal">
+    <div class="kicker">Architecture & Pipeline</div>
+    <h2 class="title">파이프라인 비교</h2>
+
+    <h3 style="font-size:14.5px;font-weight:700;margin:8px 0 4px;color:var(--text-muted);">Ar9av — 4단계 파이프라인</h3>
+    <div class="pipeline">
+      <div class="pl-stage s0"><div class="plnum">1</div><div class="plname">Ingest</div><div class="pldesc">소스 파일 읽기 (PDF, MD, 대화 내보내기)</div></div>
+      <div class="pl-connector">→</div>
+      <div class="pl-stage s1"><div class="plnum">2</div><div class="plname">Extract</div><div class="pldesc">LLM으로 개념·엔티티 추출</div></div>
+      <div class="pl-connector">→</div>
+      <div class="pl-stage s1"><div class="plnum">3</div><div class="plname">Resolve</div><div class="pldesc">기존 Wiki와 중복 제거·병합</div></div>
+      <div class="pl-connector">→</div>
+      <div class="pl-stage s3"><div class="plnum">4</div><div class="plname">Schema</div><div class="pldesc">링크·태그 정리, 분류 체계 구축</div></div>
+    </div>
+
+    <h3 style="font-size:14.5px;font-weight:700;margin:36px 0 4px;color:var(--text-muted);">kytmanov — 3단계 파이프라인</h3>
+    <div class="pipeline">
+      <div class="pl-stage s0"><div class="plnum">1</div><div class="plname">Ingest</div><div class="pldesc">소스 파일 읽기</div></div>
+      <div class="pl-connector">→</div>
+      <div class="pl-stage s1"><div class="plnum">2</div><div class="plname">Compile</div><div class="pldesc">처리 실행</div></div>
+      <div class="pl-connector">→</div>
+      <div class="pl-stage s3"><div class="plnum">3</div><div class="plname">CLI 실행</div><div class="pldesc">명령어로 결과 확인</div></div>
+    </div>
+
+    <h3 style="font-size:14.5px;font-weight:700;margin:36px 0 4px;color:var(--text-muted);">domleca — 완전 자동 파이프라인</h3>
+    <div class="pipeline">
+      <div class="pl-stage s0"><div class="plnum">1</div><div class="plname">파일 저장</div><div class="pldesc">사용자가 노트 편집·저장</div></div>
+      <div class="pl-connector">→</div>
+      <div class="pl-stage s1"><div class="plnum">2</div><div class="plname">자동 감지</div><div class="pldesc">변경 사항 즉시 인식</div></div>
+      <div class="pl-connector">→</div>
+      <div class="pl-stage s3"><div class="plnum">3</div><div class="plname">백그라운드 재인덱싱</div><div class="pldesc">사용자 개입 없이 처리</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="install" style="background:var(--paper-tint);">
+  <div class="wrap reveal">
+    <div class="kicker">Getting Started</div>
+    <h2 class="title">설치 및 실행 방법</h2>
+
+    <div class="code-block">
+      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">Ar9av / obsidian-wiki</div></div>
+      <pre><code><span class="cm"># 저장소 클론 후 환경설정</span>
+git clone &lt;repo-url&gt;
+<span class="kw">cp</span> .env.example .env
+<span class="cm"># .env에 API 키 등 입력 → 이후 에이전트가 스킬 파일을 직접 읽고 실행</span></code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">kytmanov / obsidian-llm-wiki-local</div></div>
+      <pre><code><span class="cm"># pip 또는 uv tool로 설치</span>
+pip install obsidian-llm-wiki
+<span class="cm"># 또는: uv tool install obsidian-llm-wiki</span>
+
+<span class="cm"># Ollama 기반으로 CLI 명령어 실행</span>
+obsidian-llm-wiki &lt;명령어&gt;</code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">domleca / llm-wiki</div></div>
+      <pre><code><span class="cm"># Obsidian 안에서 설치 (가장 쉬움)</span>
+1. Obsidian 열기
+2. 설정 → 커뮤니티 플러그인
+3. <span class="st">"llm-wiki"</span> 검색 후 설치
+<span class="cm"># 이후 파일 저장 시 자동으로 백그라운드 재인덱싱</span></code></pre>
+    </div>
+  </div>
+</section>
+
+<section id="compare-table">
+  <div class="wrap reveal">
+    <div class="kicker">At a Glance</div>
+    <h2 class="title">특징별 비교</h2>
+    <div class="cmp-table-wrap">
+      <table class="cmp-table">
+        <tr><th>비교 항목</th><th>domleca / llm-wiki</th><th>Ar9av / obsidian-wiki</th><th class="col-a">kytmanov</th></tr>
+        <tr><td>사용 난이도</td><td>⭐ 가장 쉬움 (플러그인 설치만)</td><td>⭐⭐⭐ 에이전트 설정 필요</td><td>⭐⭐ CLI 명령어 학습 필요</td></tr>
+        <tr><td>LLM 백엔드</td><td>Ollama + OpenAI + Anthropic + Google</td><td>에이전트 지원 모델 전반</td><td>Ollama 중심</td></tr>
+        <tr><td>백엔드 유연성</td><td>높음</td><td>매우 높음</td><td>낮음</td></tr>
+        <tr><td>성숙도 (Commits)</td><td>188 · v1.0.0 (높음)</td><td>7 (신규)</td><td>1 (매우 낮음)</td></tr>
+        <tr><td>커뮤니티 (Stars/Forks)</td><td>13 / 1 · 활발</td><td>8 / 0 · 신규</td><td>2 / 0 · 미미</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="decision" style="background:var(--paper-tint);">
+  <div class="wrap reveal">
+    <div class="kicker">Decision Tree</div>
+    <h2 class="title">선택 가이드 — 어떤 방식을 고를까</h2>
+    <div class="tree-box">
+      <div class="tq">Q. 어떤 방식을 선택할 것인가?</div>
+      <div class="tree-row"><span class="tlabel yes">Q1</span><span class="ttext">Obsidian을 주로 사용하는가?</span></div>
+      <div class="tree-indent">
+        <div class="tree-row"><span class="tlabel yes">YES</span><span class="ttext">→ <b>domleca / llm-wiki</b> (가장 통합도 높고 사용하기 쉬움)</span></div>
+        <div class="tree-row"><span class="tlabel no">NO</span><span class="ttext">아래 Q2로</span></div>
+      </div>
+      <div class="tree-row" style="margin-top:18px;"><span class="tlabel yes">Q2</span><span class="ttext">에이전트(Claude Code 등)를 사용하는가?</span></div>
+      <div class="tree-indent">
+        <div class="tree-row"><span class="tlabel yes">YES</span><span class="ttext">→ <b>Ar9av / obsidian-wiki</b> (에이전트 기반 설계)</span></div>
+        <div class="tree-row"><span class="tlabel no">NO</span><span class="ttext">→ <b>kytmanov / obsidian-llm-wiki-local</b> (완전 로컬, 오픈소스, CLI 선호)</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="usecase">
+  <div class="wrap reveal">
+    <div class="kicker">Use Cases</div>
+    <h2 class="title">사용 사례별 추천</h2>
+
+    <div class="scen-grid">
+      <div class="scen-card">
+        <div class="scen-head">
+          <span class="scen-num">사용 사례 1</span>
+          <span class="scen-title">Obsidian 기반 개인 Wiki</span>
+          <span class="scen-pick a">domleca / llm-wiki</span>
+        </div>
+        <div class="scen-situ">Obsidian을 이미 쓰고 있고, 설정 없이 바로 자동화된 지식 정리를 원하는 경우.</div>
+        <div class="scen-why"><span>Obsidian과 완전 통합</span><span>가장 쉬운 사용성</span><span>최고 수준 자동화</span><span>활발한 커뮤니티</span></div>
+        <div class="scen-code">1. Obsidian 플러그인 설치
+2. LLM 백엔드 선택
+3. 파일 저장 → 자동 처리</div>
+      </div>
+
+      <div class="scen-card">
+        <div class="scen-head">
+          <span class="scen-num">사용 사례 2</span>
+          <span class="scen-title">AI 에이전트 기반 시스템</span>
+          <span class="scen-pick b">Ar9av / obsidian-wiki</span>
+        </div>
+        <div class="scen-situ">Claude Code 같은 코딩 에이전트를 이미 활용 중이고, 강력한 자동화·확장성을 원하는 경우.</div>
+        <div class="scen-why"><span>에이전트 중심 설계</span><span>Claude Code 완벽 통합</span><span>확장성 높음</span><span>미래 지향적</span></div>
+        <div class="scen-code">1. 에이전트 설정 (Claude Code 등)
+2. .env 파일 구성
+3. 에이전트가 자동 처리</div>
+      </div>
+
+      <div class="scen-card">
+        <div class="scen-head">
+          <span class="scen-num">사용 사례 3</span>
+          <span class="scen-title">완전 로컬, 오픈소스 중심</span>
+          <span class="scen-pick c">kytmanov / obsidian-llm-wiki-local</span>
+        </div>
+        <div class="scen-situ">개인정보 보호가 최우선이고, 클라우드 API를 전혀 쓰고 싶지 않은 경우.</div>
+        <div class="scen-why"><span>100% 오픈소스</span><span>클라우드 불필요</span><span>API 비용 없음</span><span>완전 로컬 실행</span></div>
+        <div class="scen-code">1. pip install
+2. Ollama 설치
+3. CLI 명령어 실행</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="checklist" style="background:var(--paper-tint);">
+  <div class="wrap reveal">
+    <div class="kicker">Quick Checklist</div>
+    <h2 class="title">빠른 선택 체크리스트</h2>
+    <div class="check-3">
+      <div class="check-card">
+        <h5>📓 Obsidian 사용자?</h5>
+        <ul>
+          <li>Obsidian에서 바로 사용하고 싶은가?</li>
+          <li>자동화 중심인가?</li>
+          <li>여러 LLM 옵션이 필요한가?</li>
+        </ul>
+        <div class="verdict">모두 YES → domleca / llm-wiki ✓</div>
+      </div>
+      <div class="check-card">
+        <h5>🤖 에이전트 사용자?</h5>
+        <ul>
+          <li>Claude Code / Cursor 등을 사용하는가?</li>
+          <li>에이전트 기반 설계를 원하는가?</li>
+          <li>완전 자동화를 원하는가?</li>
+        </ul>
+        <div class="verdict">모두 YES → Ar9av / obsidian-wiki ✓</div>
+      </div>
+      <div class="check-card">
+        <h5>🔒 로컬 중심?</h5>
+        <ul>
+          <li>완전 로컬 실행만 원하는가?</li>
+          <li>클라우드를 쓰지 않을 것인가?</li>
+          <li>CLI 도구 사용이 편한가?</li>
+        </ul>
+        <div class="verdict">모두 YES → kytmanov / obsidian-llm-wiki-local ✓</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="summary" id="conclusion">
+  <div class="wrap reveal">
+    <div class="kicker on-dark">Conclusion</div>
+    <h2 class="title on-dark">최종 권장사항</h2>
+    <p class="lede on-dark">2026년 8월 기준, 목적에 따라 세 프로젝트의 우열이 완전히 갈립니다.</p>
+
+    <div class="recap-list">
+      <div class="recap-item"><span class="num">01</span><span class="rt"><b>일반 사용자</b> — domleca / llm-wiki (가장 성숙하고 사용하기 쉬움, 188 commits · v1.0.0)</span></div>
+      <div class="recap-item"><span class="num">02</span><span class="rt"><b>AI 에이전트 개발자</b> — Ar9av / obsidian-wiki (미래 지향적, 에이전트 중심 설계)</span></div>
+      <div class="recap-item"><span class="num">03</span><span class="rt"><b>프라이버시 중심</b> — kytmanov / obsidian-llm-wiki-local (완전 로컬, 클라우드 불필요)</span></div>
+    </div>
+
+    <div class="final-line"><b>기억할 것 한 줄</b> — Obsidian을 이미 쓰고 있다면 고민할 필요 없이 domleca부터 설치해보세요.</div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>LLM Wiki 방식 비교 · C01 · 작성일 2026.08.12</span>
+    <a class="totop" href="#top">맨 위로 ↑</a>
+  </div>
+</footer>
+
+<script>
+
+  var progress = document.getElementById('progress');
+  var nav = document.getElementById('siteNav');
+  window.addEventListener('scroll', function(){
+    var h = document.documentElement;
+    var scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    progress.style.width = scrolled + '%';
+    if(h.scrollTop > 40){ nav.classList.add('scrolled'); } else { nav.classList.remove('scrolled'); }
+  });
+
+  var hamBtn = document.getElementById('hamBtn');
+  var mobileMenu = document.getElementById('mobileMenu');
+  var mobileClose = document.getElementById('mobileClose');
+  function openMenu(){ mobileMenu.classList.add('open'); mobileClose.style.display='block'; }
+  function closeMenu(){ mobileMenu.classList.remove('open'); mobileClose.style.display='none'; }
+  hamBtn.addEventListener('click', openMenu);
+  mobileClose.addEventListener('click', closeMenu);
+  mobileMenu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeMenu); });
+
+  var revealObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){ entry.target.classList.add('in-view'); }
+    });
+  }, {threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(function(el){ revealObserver.observe(el); });
+
+</script>
+
+</body>
+</html>
