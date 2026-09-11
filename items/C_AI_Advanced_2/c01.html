@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Agent의 핵심 무기 Tool Calling(도구 호출) 완벽 가이드 — 정의, 구성요소, 장단점, 실습</title>
-<meta name="description" content="Tool Calling의 정의, Function Calling과의 차이, 핵심 구성요소, ReAct 기반 작동 원리, 장단점, 활용 분야, OpenAI API 실습 코드, Tool Calling vs RAG vs 파인튜닝 비교, MCP와의 관계까지 정리한 완벽 가이드">
+<title>이미지 와핑(Image Warping)에 대해 자세히 알아보자! — 정의, 구성요소, 장단점, 실습</title>
+<meta name="description" content="이미지 와핑의 정의(필터링과의 차이), 아핀/원근 변환 유형, Forward/Backward Warping 원리와 Hole·Overlap 문제, 보간법, 장단점, 활용 분야(OCR·자율주행·얼굴인식·의료영상), Python OpenCV 문서 스캐너 실습, Forward vs Backward 비교까지 정리한 완벽 가이드">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -19,10 +19,10 @@
     --line:#E7E1FA;
     --text-dark:#1B1730;
     --text-muted:#655F82;
-    --acc-a:#2563EB;
-    --acc-a-ink:#173E99;
-    --acc-b:#059669;
-    --acc-b-ink:#054F35;
+    --acc-a:#3554D1;
+    --acc-a-ink:#1D2E85;
+    --acc-b:#D6336C;
+    --acc-b-ink:#7A1D40;
     --acc-c:#8880B0;
     --acc-c-ink:#3A3560;
     --danger:#D6455B;
@@ -319,12 +319,85 @@
   .ref-card .rc-text b{display:block;font-size:13.5px;color:var(--ink);margin-bottom:2px;}
   .ref-card .rc-arrow{color:var(--acc-b);font-size:16px;flex-shrink:0;}
 
+  .hero-panel .ptag{
+    display:inline-block;margin-top:14px;padding:5px 14px;border-radius:14px;
+    background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.22);
+    font-size:11px;font-weight:700;letter-spacing:.5px;position:relative;z-index:2;
+  }
+
+  /* ===== LLM 동작원리 — token demo, vector space, transformer stack, heatmap, prob bars ===== */
+  .tok-demo{background:var(--ink-deep);border-radius:var(--radius);padding:26px 28px;margin-top:28px;}
+  .tok-line{font-family:var(--mono);font-size:13px;color:#B8B0DE;margin-bottom:10px;}
+  .tok-line .hi{color:#E4DEFF;}
+  .tok-row{display:flex;flex-wrap:wrap;gap:9px;margin:16px 0;}
+  .tok-chip{padding:7px 14px;border-radius:8px;font-family:var(--mono);font-weight:600;font-size:13px;border:1px solid;}
+  .tok-chip.c0{background:rgba(13,148,136,0.16);color:#5EEAD4;border-color:rgba(13,148,136,0.4);}
+  .tok-chip.c1{background:rgba(217,119,6,0.16);color:#FCD34D;border-color:rgba(217,119,6,0.4);}
+  .tok-chip.c2{background:rgba(217,119,6,0.16);color:#FCD34D;border-color:rgba(217,119,6,0.4);}
+  .tok-chip.c3{background:rgba(13,148,136,0.16);color:#5EEAD4;border-color:rgba(13,148,136,0.4);}
+  .tok-chip.c4{background:rgba(217,119,6,0.16);color:#FCD34D;border-color:rgba(217,119,6,0.4);}
+  .tok-ids{font-family:var(--mono);font-size:13px;color:#E4DEFF;background:var(--ink-2);border-radius:8px;padding:11px 16px;display:inline-block;}
+
+  .embed-wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:24px;align-items:stretch;margin-top:28px;}
+  .vecspace{background:var(--paper-tint);border:1px solid var(--line);border-radius:var(--radius);position:relative;min-height:320px;overflow:hidden;}
+  .vecspace .axis{position:absolute;background:var(--line);}
+  .word-dot{position:absolute;transform:translate(-50%,-50%);font-family:var(--mono);font-size:12px;padding:6px 12px;border-radius:20px;border:1.4px solid;white-space:nowrap;font-weight:600;}
+  .word-dot.wa{background:rgba(13,148,136,0.1);color:var(--acc-a-ink);border-color:var(--acc-a);}
+  .word-dot.wb{background:rgba(217,119,6,0.1);color:var(--acc-b-ink);border-color:var(--acc-b);}
+  .word-dot.wc{background:rgba(124,58,237,0.1);color:#5B21B6;border-color:#8B5CF6;}
+  .embed-notes{display:flex;flex-direction:column;gap:16px;justify-content:center;}
+  .embed-notes .n{border-left:3px solid var(--acc-a);padding-left:16px;}
+  .embed-notes .n b{display:block;font-size:13.5px;margin-bottom:3px;color:var(--ink);}
+  .embed-notes .n span{font-size:12.6px;color:var(--text-muted);}
+
+  .tf-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:28px;max-width:420px;margin-left:auto;margin-right:auto;}
+  .tf-cap{font-family:var(--mono);font-size:11.5px;color:var(--text-muted);text-align:center;}
+  .tf-block{width:100%;border:1px solid var(--line);border-radius:10px;background:var(--paper-tint);padding:13px;text-align:center;}
+  .tf-block .l1{font-size:13px;font-weight:700;color:var(--acc-a-ink);}
+  .tf-block .l2{font-size:11.5px;color:var(--text-muted);margin-top:3px;}
+  .tf-repeat{font-family:var(--mono);font-size:11.5px;color:var(--acc-b-ink);font-weight:700;text-align:center;padding:2px 0;}
+  .tf-notes{margin-top:32px;display:flex;flex-direction:column;gap:16px;max-width:640px;margin-left:auto;margin-right:auto;}
+  .tf-notes .n b{display:block;color:var(--ink);font-weight:700;font-size:13.5px;margin-bottom:3px;}
+  .tf-notes .n p{margin:0;color:var(--text-muted);font-size:12.6px;}
+
+  .attn-wrap{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:28px;align-items:start;}
+  .qkv .row{display:flex;gap:14px;margin-bottom:14px;align-items:baseline;}
+  .qkv .k{font-family:var(--mono);font-size:12.5px;width:58px;flex-shrink:0;font-weight:700;}
+  .qkv .row:nth-child(1) .k{color:var(--acc-a-ink);}
+  .qkv .row:nth-child(2) .k{color:#8B5CF6;}
+  .qkv .row:nth-child(3) .k{color:var(--acc-b-ink);}
+  .qkv .v{font-size:12.8px;color:var(--text-muted);}
+  table.heat{border-collapse:collapse;width:100%;font-family:var(--mono);}
+  table.heat th{font-size:11px;color:var(--text-muted);font-weight:500;padding:6px;text-align:center;}
+  table.heat td.lab{font-size:11.5px;color:var(--text-muted);text-align:right;padding-right:10px;white-space:nowrap;}
+  table.heat td.cell{width:48px;height:40px;text-align:center;font-size:12px;font-weight:700;border-radius:6px;border:2px solid var(--paper);}
+  .heat-cap{font-family:var(--mono);font-size:11px;color:var(--text-muted);margin-top:12px;}
+
+  .prob-wrap{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:28px;align-items:center;}
+  .prompt-box{font-family:var(--mono);font-size:15px;background:var(--paper-tint);border:1px solid var(--line);border-radius:10px;padding:15px 18px;margin-bottom:22px;}
+  .prompt-box .blank{color:var(--acc-a-ink);border-bottom:2px solid var(--acc-a);padding:0 16px;font-weight:700;}
+  .bar{margin-bottom:12px;}
+  .bar .bl{display:flex;justify-content:space-between;font-size:12.8px;margin-bottom:5px;}
+  .bar .bl .pct{font-family:var(--mono);color:var(--text-muted);}
+  .bar .track{height:11px;background:var(--paper-tint);border-radius:6px;overflow:hidden;}
+  .bar .fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--acc-a-ink),var(--acc-a));}
+  ol.steps{counter-reset:s;list-style:none;padding:0;margin:0;}
+  ol.steps li{counter-increment:s;position:relative;padding:11px 0 11px 46px;border-bottom:1px solid var(--line);font-size:13.3px;color:var(--text-muted);}
+  ol.steps li:last-child{border-bottom:none;}
+  ol.steps li::before{content:counter(s,decimal-leading-zero);position:absolute;left:0;top:11px;font-family:var(--mono);font-size:11px;color:var(--acc-a-ink);border:1px solid var(--acc-a);border-radius:6px;padding:2px 7px;}
+  ol.steps li b{color:var(--ink);font-weight:700;}
+
+  @media(max-width:900px){
+    .embed-wrap,.attn-wrap,.prob-wrap{grid-template-columns:1fr;}
+  }
+
   /* ===== RLHF guide additions ===== */
 
 
+
   .hero-simple{
-    background:radial-gradient(circle at 18% 22%, rgba(37,99,235,0.22), transparent 45%),
-               radial-gradient(circle at 84% 18%, rgba(5,150,105,0.18), transparent 45%),
+    background:radial-gradient(circle at 18% 22%, rgba(53,84,209,0.22), transparent 45%),
+               radial-gradient(circle at 84% 18%, rgba(214,51,108,0.18), transparent 45%),
                linear-gradient(180deg,var(--ink) 0%, var(--ink-deep) 100%);
     color:var(--paper);min-height:92vh;display:flex;align-items:center;overflow:hidden;padding:120px 0 64px;
   }
@@ -439,10 +512,10 @@
 
 <header class="nav" id="siteNav">
   <div class="wrap">
-    <div class="brand"><span class="dot2"><span></span><span></span></span> Tool Calling 완벽 가이드 · A10 · AI 에이전트</div>
+    <div class="brand"><span class="dot2"><span></span><span></span></span> 이미지 와핑 완벽 가이드 · B09 · ML/DL</div>
     <nav class="links">
       <a href="#overview">개요</a>
-      <a href="#components">구성요소</a>
+      <a href="#types">변환유형</a>
       <a href="#howitworks">작동원리</a>
       <a href="#proscons">장단점</a>
       <a href="#usecases">활용분야</a>
@@ -454,14 +527,14 @@
 </header>
 
 <div class="mobile-menu" id="mobileMenu">
-  <a href="#overview">Tool Calling이란</a>
-  <a href="#components">핵심 구성요소</a>
-  <a href="#howitworks">작동 원리 (Step-by-Step)</a>
+  <a href="#overview">이미지 와핑이란</a>
+  <a href="#types">주요 변환 유형</a>
+  <a href="#howitworks">핵심 구성요소 및 작동 원리</a>
   <a href="#proscons">특징 및 장단점</a>
   <a href="#usecases">주요 활용 분야</a>
-  <a href="#implementation">[실습] 날씨 에이전트 구축</a>
-  <a href="#comparison">Tool Calling vs RAG vs 파인튜닝</a>
-  <a href="#conclusion">마치며 · MCP</a>
+  <a href="#implementation">[실습] Python OpenCV 문서 스캐너</a>
+  <a href="#comparison">Forward vs Backward 비교</a>
+  <a href="#conclusion">마치며</a>
 </div>
 <button class="mobile-close" id="mobileClose">×</button>
 
@@ -469,13 +542,13 @@
 
 <section class="hero-simple" id="top">
   <div class="wrap">
-    <div class="eyebrow">A10 · AI Basic · AI 에이전트의 핵심 무기</div>
-    <h1>AI Agent의 핵심 무기<br><span class="accent-word">Tool Calling(도구 호출)</span> 완벽 가이드</h1>
-    <p class="sub">"오늘 서울 날씨 어때?", "이메일 좀 보내줘" — LLM은 텍스트 창에 갇혀 실시간 데이터를 모르고, 실제로 메일을 보낼 수도 없습니다. 두뇌(AI)가 외부 세계와 상호작용할 수 있도록 '손과 발'을 달아주는 핵심 기술, Tool Calling을 정리합니다.</p>
+    <div class="eyebrow">B09 · ML/DL · Computer Vision</div>
+    <h1>이미지 와핑<br><span class="accent-word">(Image Warping)</span>이란 무엇인가</h1>
+    <p class="sub">비스듬하게 찍힌 문서를 CamScanner가 반듯하게 펴주는 것, 자율주행차가 도로 영상을 하늘에서 본 것처럼(Top View) 바꾸는 것 — 이 모든 마법 뒤에는 이미지 와핑이 있습니다. 픽셀의 값이 아니라 <b>위치</b>를 재배치하는 이 기술의 정의, Forward/Backward 원리, OpenCV 실습까지 정리합니다.</p>
     <div class="chip-row">
-      <a class="chip" href="#howitworks">6단계 작동원리</a>
-      <a class="chip" href="#implementation">날씨 에이전트 실습</a>
-      <a class="chip" href="#comparison">RAG·파인튜닝과 비교</a>
+      <a class="chip" href="#howitworks">Forward vs Backward Warping</a>
+      <a class="chip" href="#implementation">OpenCV 문서 스캐너 실습</a>
+      <a class="chip" href="#comparison">비교표</a>
     </div>
   </div>
 </section>
@@ -484,53 +557,96 @@
 <section id="overview">
   <div class="wrap reveal">
     <div class="kicker">Overview</div>
-    <h2 class="title">Tool Calling이란?</h2>
-    <p class="lede">LLM이 사용자의 자연어 입력을 분석해, 목적 달성을 위해 <b>미리 정의된 외부 도구(API, 함수, DB 검색 등)를 자율적으로 선택하고 실행할 수 있도록 하는 메커니즘</b>입니다. LLM이 "어떤 도구를, 어떤 파라미터로 실행해야 하는지"를 JSON 형태의 구조화된 데이터로 출력합니다.</p>
+    <h2 class="title">이미지 와핑이란?</h2>
+    <p class="lede">이미지의 <b>도메인(Domain, x, y 좌표)</b>을 변형하는 기하학적 변환(Geometric Transformation) 기술입니다.</p>
 
-    <h3 style="font-size:15px;font-weight:700;margin-top:44px;margin-bottom:14px;">Function Calling과의 차이점</h3>
     <div class="compare-2">
       <div class="cc-card">
-        <h4>Function Calling</h4>
-        <p class="small">2023년 OpenAI가 처음 도입한 개념. 개발자가 정의한 '특정 함수'를 호출하도록 LLM이 인자값을 만들어주는 기능입니다.</p>
+        <h4>이미지 필터링 (Filtering)</h4>
+        <div class="flow">Range 변환</div>
+        <p class="small">픽셀의 <b>값</b>(색상, 밝기)을 변경합니다. 위치는 그대로 두고 색만 바꿉니다.</p>
       </div>
       <div class="cc-card b">
-        <h4>Tool Calling (상위 개념)</h4>
-        <p class="small">Function Calling을 포함하는 상위 개념. 사용자 정의 함수뿐 아니라 웹 브라우징, 코드 실행기, 파일 시스템 접근 등 다양한 형태의 '도구'를 호출하는 현대적·확장된 개념입니다.</p>
+        <h4>이미지 와핑 (Warping)</h4>
+        <div class="flow">Domain 변환</div>
+        <p class="small">픽셀의 <b>위치</b>(좌표)를 변경합니다. (x, y)에 있던 픽셀을 변환 행렬을 통해 (x', y')로 대응(Mapping)시킵니다.</p>
       </div>
     </div>
+
+    <div class="formula-block"><code>(x, y) —— 변환 행렬 M ——→ (x', y')</code></div>
   </div>
 </section>
 
-<section id="components" style="background:var(--paper-tint);">
+<section id="types" style="background:var(--paper-tint);">
   <div class="wrap reveal">
-    <div class="kicker">Architecture</div>
-    <h2 class="title">핵심 구성요소</h2>
-    <p class="lede">Tool Calling이 포함된 시스템은 다음 요소들이 유기적으로 맞물려 루프(Loop)를 형성합니다.</p>
+    <div class="kicker">Transformation Types</div>
+    <h2 class="title">주요 변환 유형</h2>
 
-    <div class="feat-list">
-      <div class="feat-item"><div class="fi" style="background:var(--acc-a);">1</div><div><b>Tool Definition (도구 정의 스키마)</b><span>"내가 가진 도구는 이런 것들이고, 이런 규칙으로 써야 해"를 알려주는 설명서. JSON Schema로 이름·설명·필수 입력값 등을 정의합니다.</span></div></div>
-      <div class="feat-item"><div class="fi" style="background:var(--acc-a);">2</div><div><b>LLM (추론 엔진)</b><span>사용자 요청과 도구 정의서를 비교 분석해, 도구가 필요한지 판단하고 실행 파라미터를 생성합니다.</span></div></div>
-      <div class="feat-item"><div class="fi" style="background:var(--acc-b);">3</div><div><b>Tool Executor (도구 실행기)</b><span>LLM이 반환한 JSON을 받아 실제로 코드를 실행하거나 외부 API를 호출하는 애플리케이션 백엔드 계층</span></div></div>
-      <div class="feat-item"><div class="fi" style="background:var(--acc-b);">4</div><div><b>Orchestrator (에이전트 루프)</b><span>사용자 입력 → LLM의 도구 호출 판단 → 도구 실행 → 결과를 다시 LLM에 전달 → 최종 답변 생성의 전체 흐름을 제어</span></div></div>
+    <div class="compare-2">
+      <div class="cc-card">
+        <h4>아핀 변환 (Affine)</h4>
+        <p class="small">회전, 이동, 크기 조절, 전단(Shear) 등을 포함하며 <b>평행선이 유지</b>됩니다.</p>
+        <div class="usewhen" style="margin-top:14px;"><span>2×3 행렬</span><span>자유도 6</span></div>
+      </div>
+      <div class="cc-card b">
+        <h4>원근 변환 (Perspective / Homography)</h4>
+        <p class="small">3차원 공간에서 투영된 효과를 냅니다. <b>평행선이 유지되지 않고 한 점(소실점)에서 만납니다.</b></p>
+        <div class="usewhen" style="margin-top:14px;"><span>3×3 행렬</span><span>자유도 8</span><span>문서 스캔에 주로 사용</span></div>
+      </div>
     </div>
   </div>
 </section>
 
 <section id="howitworks">
   <div class="wrap reveal">
-    <div class="kicker">ReAct-based</div>
-    <h2 class="title">작동 원리 (Step-by-Step)</h2>
-    <p class="lede">ReAct(Reasoning + Acting) 패턴을 기반으로 한 Tool Calling의 흐름입니다.</p>
+    <div class="kicker">Core Mechanism</div>
+    <h2 class="title">핵심 구성요소 및 작동 원리</h2>
+    <p class="lede">와핑을 구현할 때 가장 중요한 것은 <b>"픽셀을 어떻게 옮길 것인가?"</b>입니다. 여기에는 두 가지 방식이 있습니다.</p>
 
-    <div class="trig-box">
-      <ol>
-        <li><b>사용자 요청</b> — "현재 애플(AAPL) 주가가 얼마야?"</li>
-        <li><b>LLM의 추론(Thought)</b> — "내 학습 데이터에는 실시간 주가 정보가 없네. get_stock_price 도구를 써야겠다. ticker: 'AAPL'로 설정하자."</li>
-        <li><b>도구 호출 요청(Action)</b> — LLM이 텍스트 대신 <code>{"name":"get_stock_price","arguments":{"ticker":"AAPL"}}</code> JSON을 출력</li>
-        <li><b>도구 실행</b> — 오케스트레이터가 JSON을 가로채 실제 주가 조회 API를 실행</li>
-        <li><b>결과 관찰(Observation)</b> — API 실행 결과(예: <code>{"price":150.25}</code>)를 다시 LLM에 전달</li>
-        <li><b>최종 응답 생성</b> — "현재 애플의 주가는 $150.25입니다."</li>
-      </ol>
+    <div class="alt-card" style="border-top:4px solid var(--acc-a);">
+      <span class="alt-tag" style="background:rgba(53,84,209,0.12);color:var(--acc-a-ink);">거의 사용 안 함</span>
+      <h3>Forward Warping (순방향 와핑)</h3>
+      <div class="flow-vert" style="max-width:420px;margin-top:20px;">
+        <div class="flow-step on-a">원본 이미지 Source (x, y)</div>
+        <div class="flow-arrow-v">↓ × 변환 행렬 M</div>
+        <div class="flow-step">결과 이미지 Target (x', y')</div>
+      </div>
+      <div class="danger-box">
+        <b>문제점</b>
+        <ol style="margin:10px 0 0;padding-left:20px;">
+          <li><b>Hole(구멍)</b> — 변환된 좌표 (x', y')가 정수가 아닌 실수(소수점)일 경우, 픽셀 사이사이로 퍼지면서 빈 공간이 생깁니다.</li>
+          <li><b>Overlap(겹침)</b> — 여러 픽셀이 같은 위치로 매핑되어 뭉개질 수 있습니다.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="alt-card" style="border-top:4px solid var(--acc-b);">
+      <span class="alt-tag" style="background:rgba(214,51,108,0.12);color:var(--acc-b-ink);">대부분의 라이브러리 표준</span>
+      <h3>Backward Warping (역방향 와핑)</h3>
+      <div class="flow-vert" style="max-width:420px;margin-top:20px;">
+        <div class="flow-step on-b">결과 이미지 Target (x', y')</div>
+        <div class="flow-arrow-v">↓ × 역행렬 M⁻¹</div>
+        <div class="flow-step">원본 이미지 Source (x, y) 역추적</div>
+      </div>
+      <div class="safe-box">
+        <b>장점</b> — 모든 결과 픽셀을 순회하며 값을 채우므로 <b>빈 공간(Hole)이 발생하지 않습니다.</b>
+      </div>
+      <div class="note-box"><b>필수 기술</b> — 역추적한 좌표 (x, y)가 실수(예: 1.5, 2.7)로 나올 경우, <b>보간법(Interpolation)</b>을 사용해 픽셀 값을 결정합니다.</div>
+    </div>
+
+    <h3 style="font-size:15px;font-weight:700;margin-top:44px;margin-bottom:14px;">보간법 (Interpolation)</h3>
+    <p class="lede" style="margin-top:0;">Backward Warping 시 실수 좌표의 색상 값을 결정하는 방법입니다.</p>
+    <div class="compare-2">
+      <div class="cc-card">
+        <h4>최근접 이웃 (Nearest Neighbor)</h4>
+        <p class="small">가장 가까운 정수 좌표의 픽셀 값을 가져옵니다.</p>
+        <div class="usewhen" style="margin-top:14px;"><span>계산 빠름</span><span>계단 현상 발생</span></div>
+      </div>
+      <div class="cc-card b">
+        <h4>쌍선형 보간 (Bilinear Interpolation)</h4>
+        <p class="small">주변 4개 픽셀의 거리에 따른 가중 평균을 구합니다.</p>
+        <div class="usewhen" style="margin-top:14px;"><span>가장 많이 사용</span><span>부드러운 결과</span></div>
+      </div>
     </div>
   </div>
 </section>
@@ -542,14 +658,15 @@
     <div class="pc-grid">
       <div class="pc-card pro">
         <h4>✅ 장점</h4>
-        <div class="pc-item"><span class="n">·</span><div><b>LLM 능력의 무한한 확장</b><span>실시간 검색, 복잡한 수학 연산, 파일 조작, 이메일·슬랙 연동이 가능해짐</span></div></div>
-        <div class="pc-item"><span class="n">·</span><div><b>환각 방지</b><span>모르는 사실을 지어내는 대신 외부 도구(검색, RAG)로 검증된 팩트 기반 답변</span></div></div>
-        <div class="pc-item"><span class="n">·</span><div><b>모듈식 확장성</b><span>재학습 없이 새 도구(API) 등록만으로 능력이 계속 늘어남</span></div></div>
+        <div class="pc-item"><span class="n">·</span><div><b>데이터 정규화</b><span>비스듬하게 찍힌 이미지를 정면으로 펴서 AI 모델이 학습하기 좋은 형태로 (인식률 향상)</span></div></div>
+        <div class="pc-item"><span class="n">·</span><div><b>데이터 증강</b><span>이미지를 인위적으로 비틀거나 회전시켜 학습 데이터를 늘릴 수 있음</span></div></div>
+        <div class="pc-item"><span class="n">·</span><div><b>시각적 보정</b><span>광각 렌즈의 왜곡 보정, 영상 흔들림 보정(Video Stabilization)</span></div></div>
       </div>
       <div class="pc-card con">
         <h4>❌ 단점</h4>
-        <div class="pc-item"><span class="n">·</span><div><b>비용 및 지연 시간 증가</b><span>LLM→도구 실행→LLM의 여러 번 핑퐁(Round-trip)으로 응답 속도 저하, 토큰 비용 증가</span></div></div>
-        <div class="pc-item"><span class="n">·</span><div><b>보안 위험</b><span>LLM이 생성한 파라미터로 실제 코드가 실행되므로, 프롬프트 인젝션으로 <code>delete_all_data()</code> 같은 도구가 실행될 위험. 철저한 입력 검증·샌드박싱 필수</span></div></div>
+        <div class="pc-item"><span class="n">·</span><div><b>연산 비용</b><span>고품질 보간법(Bicubic 등) 사용 시 연산량 증가</span></div></div>
+        <div class="pc-item"><span class="n">·</span><div><b>정보 손실</b><span>이미지를 축소·과도하게 늘릴 경우 디테일이 뭉개질 수 있음 (Aliasing)</span></div></div>
+        <div class="pc-item"><span class="n">·</span><div><b>아티팩트</b><span>보간 과정에서 이미지가 흐릿해지거나(Blurring) 부자연스러운 패턴 발생 가능</span></div></div>
       </div>
     </div>
   </div>
@@ -561,16 +678,20 @@
     <h2 class="title">주요 활용 분야</h2>
     <div class="org-grid">
       <div class="org-card">
-        <h4>대화형 커머스 · CS 챗봇</h4>
-        <ul><li>"배송 언제 와?" → 내부 DB 조회 도구</li><li>반품 처리 API 호출로 환불 자동화</li></ul>
+        <h4>문서 스캔 (OCR 전처리)</h4>
+        <p style="font-size:12.3px;color:var(--text-muted);margin:0;">명함, 문서 인식 시 기울어진 글자를 바로잡아 인식률을 높입니다.</p>
       </div>
       <div class="org-card">
-        <h4>데이터 분석 에이전트</h4>
-        <ul><li>CSV 업로드 + 분석 요청</li><li>Code Interpreter 도구로 차트 생성</li></ul>
+        <h4>자율주행 (AVM)</h4>
+        <p style="font-size:12.3px;color:var(--text-muted);margin:0;">차량 4방향 카메라 영상을 합성해 위에서 내려다보는 탑뷰(Top View / Bird's Eye View)를 생성합니다.</p>
       </div>
       <div class="org-card">
-        <h4>자율적 리서치 비서</h4>
-        <ul><li>여러 번 웹 검색 도구 호출</li><li>종합해 시장 동향 보고서 작성</li></ul>
+        <h4>얼굴 인식</h4>
+        <p style="font-size:12.3px;color:var(--text-muted);margin:0;">얼굴의 랜드마크(눈, 코, 입)를 기준으로 얼굴을 정렬(Alignment)하여 인식 성능을 높입니다.</p>
+      </div>
+      <div class="org-card">
+        <h4>의료 영상</h4>
+        <p style="font-size:12.3px;color:var(--text-muted);margin:0;">환자의 움직임으로 틀어진 CT/MRI 이미지를 정합(Registration)하는 데 사용합니다.</p>
       </div>
     </div>
   </div>
@@ -579,70 +700,79 @@
 <section id="implementation" style="background:var(--paper-tint);">
   <div class="wrap reveal">
     <div class="kicker">[실습]</div>
-    <h2 class="title">Python으로 Tool Calling 에이전트 직접 구축하기</h2>
-    <p class="lede">OpenAI API로 LLM이 '날씨 조회 도구'를 스스로 판단하고 호출하는 완전한 Agent Loop를 구현합니다.</p>
+    <h2 class="title">Python OpenCV로 문서 스캐너(Warping) 구현하기</h2>
+    <p class="lede">가장 대표적인 예제인 <b>"기울어진 문서 펴기(Perspective Transform)"</b>를 구현해봅니다. <code>cv2.getPerspectiveTransform</code>과 <code>cv2.warpPerspective</code>가 핵심 함수입니다.</p>
 
     <div class="code-block">
       <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">setup.sh</div></div>
-      <pre><code>pip install openai python-dotenv</code></pre>
+      <pre><code>pip install opencv-python numpy</code></pre>
     </div>
 
     <div class="code-block">
-      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">tool_calling_agent.py</div></div>
-      <pre><code><span class="kw">import</span> os, json
-<span class="kw">from</span> openai <span class="kw">import</span> OpenAI
+      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">warping_example.py</div></div>
+      <pre><code><span class="kw">import</span> cv2
+<span class="kw">import</span> numpy <span class="kw">as</span> np
 
-client = OpenAI(api_key=os.getenv(<span class="st">"OPENAI_API_KEY"</span>))
+<span class="kw">def</span> warp_image(image_path):
+    <span class="cm"># 1. 이미지 로드</span>
+    img = cv2.imread(image_path)
+    <span class="kw">if</span> img <span class="kw">is</span> <span class="kw">None</span>:
+        <span class="fn">print</span>(<span class="st">"이미지를 찾을 수 없습니다."</span>)
+        <span class="kw">return</span>
 
-<span class="cm"># 1. 실제 실행될 함수 (도구 구현)</span>
-<span class="kw">def</span> get_current_weather(location: <span class="fn">str</span>, unit: <span class="fn">str</span> = <span class="st">"celsius"</span>) -&gt; <span class="fn">str</span>:
-    <span class="cm"># 실제로는 외부 날씨 API를 호출. 여기서는 모의 데이터 반환</span>
-    mock_db = {<span class="st">"서울"</span>: {<span class="st">"temperature"</span>: <span class="fn">22</span>, <span class="st">"condition"</span>: <span class="st">"맑음"</span>},
-               <span class="st">"런던"</span>: {<span class="st">"temperature"</span>: <span class="fn">18</span>, <span class="st">"condition"</span>: <span class="st">"비"</span>}}
-    info = mock_db.get(location, {<span class="st">"temperature"</span>: <span class="fn">20</span>, <span class="st">"condition"</span>: <span class="st">"알 수 없음"</span>})
-    info[<span class="st">"location"</span>] = location; info[<span class="st">"unit"</span>] = unit
-    <span class="kw">return</span> json.dumps(info, ensure_ascii=<span class="kw">False</span>)
+    h, w = img.shape[:<span class="fn">2</span>]
 
-<span class="cm"># 2. 도구 명세서 (JSON Schema)</span>
-tools_definition = [{<span class="st">"type"</span>: <span class="st">"function"</span>, <span class="st">"function"</span>: {
-    <span class="st">"name"</span>: <span class="st">"get_current_weather"</span>,
-    <span class="st">"description"</span>: <span class="st">"특정 도시의 현재 날씨와 기온 정보를 가져옵니다."</span>,
-    <span class="st">"parameters"</span>: {<span class="st">"type"</span>: <span class="st">"object"</span>,
-        <span class="st">"properties"</span>: {<span class="st">"location"</span>: {<span class="st">"type"</span>: <span class="st">"string"</span>}, <span class="st">"unit"</span>: {<span class="st">"type"</span>: <span class="st">"string"</span>, <span class="st">"enum"</span>: [<span class="st">"celsius"</span>,<span class="st">"fahrenheit"</span>]}},
-        <span class="st">"required"</span>: [<span class="st">"location"</span>]}
-}}]
+    <span class="cm"># 2. 원본 좌표점 4개 지정 (좌상, 우상, 좌하, 우하)</span>
+    <span class="cm"># 실제로는 마우스 클릭 이벤트나 엣지 검출로 자동화 가능</span>
+    <span class="cm"># 예시: 이미지가 비스듬하게 찍혔다고 가정하고 임의의 좌표 설정</span>
+    src_points = np.float32([
+        [<span class="fn">100</span>, <span class="fn">100</span>],     <span class="cm"># Top-Left</span>
+        [w-<span class="fn">100</span>, <span class="fn">50</span>],    <span class="cm"># Top-Right</span>
+        [<span class="fn">50</span>, h-<span class="fn">50</span>],     <span class="cm"># Bottom-Left</span>
+        [w-<span class="fn">50</span>, h-<span class="fn">100</span>]   <span class="cm"># Bottom-Right</span>
+    ])
 
-<span class="cm"># 3. 에이전트 루프 (Orchestrator)</span>
-<span class="kw">def</span> run_agent(user_prompt: <span class="fn">str</span>):
-    messages = [{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: user_prompt}]
-    response = client.chat.completions.create(
-        model=<span class="st">"gpt-4o-mini"</span>, messages=messages,
-        tools=tools_definition, tool_choice=<span class="st">"auto"</span>
-    )
-    msg = response.choices[<span class="fn">0</span>].message
+    <span class="cm"># 3. 변환될 목표 지점 좌표 4개 지정 (직사각형 형태)</span>
+    <span class="cm"># 결과 이미지의 크기를 정의 (여기서는 원본 크기 유지)</span>
+    dst_points = np.float32([
+        [<span class="fn">0</span>, <span class="fn">0</span>],   <span class="cm"># Top-Left</span>
+        [w, <span class="fn">0</span>],   <span class="cm"># Top-Right</span>
+        [<span class="fn">0</span>, h],   <span class="cm"># Bottom-Left</span>
+        [w, h]    <span class="cm"># Bottom-Right</span>
+    ])
 
-    <span class="kw">if</span> msg.tool_calls:
-        messages.append(msg)
-        <span class="kw">for</span> tc <span class="kw">in</span> msg.tool_calls:
-            args = json.loads(tc.function.arguments)
-            result = get_current_weather(location=args.get(<span class="st">"location"</span>), unit=args.get(<span class="st">"unit"</span>, <span class="st">"celsius"</span>))
-            messages.append({<span class="st">"tool_call_id"</span>: tc.id, <span class="st">"role"</span>: <span class="st">"tool"</span>,
-                              <span class="st">"name"</span>: tc.function.name, <span class="st">"content"</span>: result})
-        final = client.chat.completions.create(model=<span class="st">"gpt-4o-mini"</span>, messages=messages)
-        <span class="fn">print</span>(f<span class="st">"🤖 {final.choices[0].message.content}"</span>)
-    <span class="kw">else</span>:
-        <span class="fn">print</span>(f<span class="st">"🤖 {msg.content}"</span>)
+    <span class="cm"># 4. 변환 행렬(Perspective Matrix) 계산 (3x3 행렬)</span>
+    <span class="cm"># Backward Warping을 위한 행렬을 OpenCV가 계산해줌</span>
+    matrix = cv2.getPerspectiveTransform(src_points, dst_points)
 
-run_agent(<span class="st">"안녕! 넌 누구야?"</span>)        <span class="cm"># 도구 호출 불필요</span>
-run_agent(<span class="st">"지금 서울 날씨 어때?"</span>)     <span class="cm"># 도구 호출 필요</span></code></pre>
+    <span class="cm"># 5. 원근 변환(Warping) 적용</span>
+    <span class="cm"># flags=cv2.INTER_LINEAR: 쌍선형 보간법 사용 (기본값)</span>
+    warped_img = cv2.warpPerspective(img, matrix, (w, h))
+
+    <span class="cm"># 6. 꼭짓점 표시 (시각화용)</span>
+    <span class="kw">for</span> pt <span class="kw">in</span> src_points:
+        cv2.circle(img, (<span class="fn">int</span>(pt[<span class="fn">0</span>]), <span class="fn">int</span>(pt[<span class="fn">1</span>])), <span class="fn">10</span>, (<span class="fn">0</span>, <span class="fn">0</span>, <span class="fn">255</span>), -<span class="fn">1</span>)
+
+    <span class="cm"># 7. 결과 출력</span>
+    cv2.imshow(<span class="st">"Original Image with Corners"</span>, img)
+    cv2.imshow(<span class="st">"Warped Image (Result)"</span>, warped_img)
+
+    cv2.waitKey(<span class="fn">0</span>)
+    cv2.destroyAllWindows()
+
+<span class="kw">if</span> __name__ == <span class="st">"__main__"</span>:
+    <span class="cm"># 테스트할 이미지 경로를 입력하세요</span>
+    warp_image(<span class="st">"test_document.jpg"</span>)</code></pre>
     </div>
 
-    <div class="out-block">
-      <span class="arrow">▶</span> 👤 "안녕! 넌 누구야?"<br>
-      &nbsp;&nbsp;🤖 "안녕하세요! 저는 여러분의 질문에 답변하고 도움을 드리는 AI 어시스턴트입니다."<br><br>
-      &nbsp;&nbsp;👤 "지금 서울 날씨 어때?"<br>
-      &nbsp;&nbsp;[시스템 로그] 🛠️ 도구 실행 중: get_current_weather(location='서울')<br>
-      &nbsp;&nbsp;🤖 "현재 서울의 날씨는 맑으며, 기온은 섭씨 22도입니다."
+    <h3 style="font-size:15px;font-weight:700;margin-top:36px;margin-bottom:14px;">코드 해설</h3>
+    <div class="trig-box">
+      <ol>
+        <li><b>src_points</b> — 원본 이미지에서 펴고 싶은 영역의 4개 꼭짓점 좌표입니다 (보통 시계 방향이나 Z자 순서로 정의).</li>
+        <li><b>dst_points</b> — 결과 이미지에서 해당 영역이 매핑될 직사각형 좌표입니다. (0,0)부터 시작해 꽉 채우도록 설정합니다.</li>
+        <li><b>cv2.getPerspectiveTransform</b> — 두 좌표 쌍을 이용해 3×3 변환 행렬(Homography Matrix)을 계산합니다.</li>
+        <li><b>cv2.warpPerspective</b> — 계산된 행렬을 이용해 실제 픽셀을 이동시킵니다. 내부적으로 <b>Backward Warping</b>과 <b>Bilinear Interpolation</b>이 수행되어 빈 곳 없이 깔끔한 이미지가 생성됩니다.</li>
+      </ol>
     </div>
   </div>
 </section>
@@ -650,32 +780,27 @@ run_agent(<span class="st">"지금 서울 날씨 어때?"</span>)     <span clas
 <section id="comparison">
   <div class="wrap reveal">
     <div class="kicker">At a Glance</div>
-    <h2 class="title">한눈에 비교: Tool Calling vs RAG vs 파인튜닝</h2>
+    <h2 class="title">한눈에 비교: Forward vs Backward Warping</h2>
     <div class="cmp-table-wrap">
       <table class="cmp-table">
-        <tr><th>비교 항목</th><th class="col-a">Tool Calling</th><th>RAG</th><th class="col-b">Fine-Tuning</th></tr>
-        <tr><td>핵심 목적</td><td>'행동(Action)'을 수행</td><td>'지식(Knowledge)'을 참고</td><td>'뇌 구조(가중치)' 자체를 변경</td></tr>
-        <tr><td>작동 방식</td><td>API 호출, DB 쓰기, 코드 실행</td><td>벡터 DB 검색 후 프롬프트에 삽입</td><td>특정 도메인 데이터셋으로 재학습</td></tr>
-        <tr><td>데이터 실시간성</td><td>최상 (실시간 API 즉시 조회)</td><td>높음 (DB 업데이트 주기에 따름)</td><td>낮음 (학습 시점에 고정)</td></tr>
-        <tr><td>주요 사용처</td><td>날씨/주식 조회, 예약, 자동화</td><td>사내 문서 검색, 매뉴얼 QA</td><td>말투 학습, 도메인 용어 체득</td></tr>
+        <tr><th>비교 항목</th><th class="col-a">Forward Warping</th><th class="col-b">Backward Warping</th></tr>
+        <tr><td>방향</td><td>Source → Target</td><td>Target → Source</td></tr>
+        <tr><td>계산 방식</td><td>x' = M × x</td><td>x = M⁻¹ × x'</td></tr>
+        <tr><td>주요 문제</td><td>Hole(구멍) 발생, Overlap</td><td>정수 좌표 매칭 안됨 (실수 좌표)</td></tr>
+        <tr><td>해결책</td><td>Splatting (주변에 뿌리기)</td><td>Interpolation (보간법)</td></tr>
+        <tr><td>사용 빈도</td><td>거의 사용 안 함</td><td>대부분의 라이브러리 표준</td></tr>
       </table>
     </div>
-    <div class="note-box" style="margin-top:20px;"><b>상호 관계</b> — RAG 시스템을 실행하기 위한 '도구' 중 하나로 Tool Calling을 사용할 수 있습니다 (융합 가능).</div>
   </div>
 </section>
 
 <section class="summary" id="conclusion">
   <div class="wrap reveal">
     <div class="kicker on-dark">Conclusion</div>
-    <h2 class="title on-dark">마치며 — Tool Calling의 미래와 MCP</h2>
-    <p class="lede on-dark">초기의 Tool Calling은 개발자가 하나하나 함수를 구현하고 LLM에 바인딩하는 복잡한 과정을 거쳐야 했습니다. 하지만 최근에는 <b>MCP(Model Context Protocol)</b>라는 새로운 오픈소스 표준이 등장했습니다.</p>
+    <h2 class="title on-dark">마치며</h2>
+    <p class="lede on-dark">이미지 와핑은 컴퓨터 비전에서 마법과 같은 기술입니다. 3차원 세상을 2차원 평면에 담으면서 생긴 왜곡을 수학적 원리(행렬 연산)로 보정하여, AI가 세상을 더 정확하게 이해하도록 돕습니다.</p>
 
-    <div class="recap-list">
-      <div class="recap-item"><span class="num">01</span><span class="rt">MCP를 활용하면 도구를 별도의 서버로 분리해, Claude든 GPT든 상관없이 <b>"플러그 앤 플레이"</b> 방식으로 도구를 손쉽게 공유·연동할 수 있습니다.</span></div>
-      <div class="recap-item"><span class="num">02</span><span class="rt">Tool Calling은 LLM을 단순한 '말동무'에서 실질적인 비즈니스 가치를 창출하는 <b>'디지털 노동자(AI Agent)'</b>로 진화시키는 핵심 심장입니다.</span></div>
-    </div>
-
-    <div class="final-line" style="margin-top:30px;"><b>기억할 것 한 줄</b> — AI 서비스 개발을 계획한다면, 프롬프트 엔지니어링을 넘어 Tool Calling 아키텍처 설계 역량은 선택이 아닌 필수입니다.</div>
+    <div class="final-line"><b>기억할 것 한 줄</b> — 특히 <b>Backward Warping</b>과 <b>보간법(Interpolation)</b>의 조합은 현대 그래픽스 및 비전 라이브러리의 표준이므로, 이 개념을 확실히 잡아두면 다양한 영상 처리 프로젝트에서 큰 도움이 됩니다. 지금 바로 책상 위 문서를 비스듬히 찍어서, 위의 파이썬 코드로 반듯하게 펴보는 실습을 해보세요 🚀</div>
   </div>
 </section>
 
@@ -683,7 +808,7 @@ run_agent(<span class="st">"지금 서울 날씨 어때?"</span>)     <span clas
 
 <footer>
   <div class="wrap">
-    <span>Tool Calling 완벽 가이드 · A10 · AI 에이전트</span>
+    <span>이미지 와핑 완벽 가이드 · I01 · ML/DL</span>
     <a class="totop" href="#top">맨 위로 ↑</a>
   </div>
 </footer>

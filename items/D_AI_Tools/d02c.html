@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NotebookLM vs Perplexity 비교 분석</title>
+<style>
+:root{
+ --bg:#0C0E14; --panel:#171B27; --panel2:#1E2333;
+ --line:#2A3042; --text:#E8EBF2; --mute:#9BA3B8;
+ --signal:#5CE0C6; --spark:#F5B54C; --rose:#F2749A;
+}
+*{box-sizing:border-box}
+body{
+ margin:0;background:var(--bg);color:var(--text);
+ font-family:"Noto Sans KR",Arial,sans-serif;line-height:1.8;
+ background-image:radial-gradient(700px 500px at 90% -10%,rgba(92,224,198,.08),transparent 60%);
+}
+.wrap{max-width:1150px;margin:auto;padding:45px 30px}
+h1{font-size:52px;line-height:1.2}
+h2{margin-top:50px;border-left:4px solid var(--signal);padding-left:15px}
+h3{color:var(--signal)}
+.card{
+ background:var(--panel);border:1px solid var(--line);
+ border-radius:14px;padding:28px;margin:24px 0;
+}
+.quote{border-left:3px solid var(--signal);padding-left:18px;color:var(--signal)}
+table{width:100%;border-collapse:collapse}
+th{background:var(--panel2);color:var(--signal);padding:14px;text-align:left}
+td{padding:12px;border-bottom:1px solid var(--line);color:var(--mute)}
+.badge{
+ display:inline-block;background:var(--panel2);
+ border:1px solid var(--line);border-radius:30px;
+ padding:7px 16px;margin:5px
+}
+.flow{
+ background:#090B10;border:1px solid var(--line);
+ border-radius:12px;padding:20px;color:var(--signal);
+ white-space:pre-line
+}
+.score{color:var(--spark)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>NotebookLM vs Perplexity<br>비교 분석</h1>
+
+<div class="card">
+<h2>한 줄 요약</h2>
+<table>
+<tr><th>Tool</th><th>정의</th></tr>
+<tr><td>NotebookLM (Google)</td><td>내가 제공한 자료를 이해하고 분석하는 AI Knowledge Assistant</td></tr>
+<tr><td>Perplexity</td><td>웹에서 정보를 찾아 검증하고 정리하는 AI Research Assistant</td></tr>
+</table>
+<p class="quote">
+핵심 차이: NotebookLM은 내가 가진 자료(Source)가 중심이고, Perplexity는 인터넷(Web)이 중심입니다.
+</p>
+</div>
+
+<div class="card">
+<h2>1. 기본 개념 비교</h2>
+<table>
+<tr><th>구분</th><th>NotebookLM</th><th>Perplexity</th></tr>
+<tr><td>목적</td><td>자료 이해</td><td>정보 탐색</td></tr>
+<tr><td>기준 데이터</td><td>사용자 제공 자료</td><td>인터넷/Web</td></tr>
+<tr><td>역할</td><td>AI 연구 노트</td><td>AI 검색 Analyst</td></tr>
+<tr><td>강점</td><td>깊은 문서 이해</td><td>최신 정보 조사</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h2>2. NotebookLM 핵심 강점</h2>
+<h3>Source Grounding (자료 기반 답변)</h3>
+<p>
+NotebookLM은 사용자가 제공한 문서를 기반으로 답변합니다.
+</p>
+<div class="flow">
+질문
+↓
+내 문서 분석
+↓
+자료 기반 답변
+↓
+근거 확인
+</div>
+
+<h3>활용 예</h3>
+<ul>
+<li>기술 문서 분석</li>
+<li>회의록 분석</li>
+<li>발표자료 검토</li>
+<li>시장 자료 통합 분석</li>
+</ul>
+
+<h3>Audio Overview</h3>
+<p>
+업로드한 문서를 기반으로 AI 대화형 오디오 요약을 생성합니다.
+</p>
+<ul>
+<li>논문 공부</li>
+<li>기술 보고서 학습</li>
+<li>교육 자료 제작</li>
+<li>임원 Briefing 준비</li>
+</ul>
+
+<h3>Multiple Source 분석</h3>
+<p>
+논문, 시장 보고서, 경쟁사 자료 등 여러 자료를 동시에 분석하여 연결 관계를 파악합니다.
+</p>
+</div>
+
+<div class="card">
+<h2>3. Perplexity 핵심 강점</h2>
+
+<h3>최신 정보 검색</h3>
+<p>Web-first 방식으로 최신 정보를 조사합니다.</p>
+
+<div class="flow">
+질문
+↓
+Web 검색
+↓
+여러 출처 분석
+↓
+AI 요약
+↓
+출처 제공
+</div>
+
+<h3>Citation 기반 답변</h3>
+<ul>
+<li>뉴스 기사</li>
+<li>논문</li>
+<li>공식 문서</li>
+<li>웹사이트</li>
+</ul>
+
+<h3>Market Research</h3>
+<ul>
+<li>시장 규모</li>
+<li>경쟁사</li>
+<li>투자 동향</li>
+<li>산업 Trend</li>
+</ul>
+
+<h3>Pro Search</h3>
+<div class="flow">
+질문 분석
+↓
+다중 검색
+↓
+정보 비교
+↓
+심층 답변
+</div>
+</div>
+
+<div class="card">
+<h2>4. 업무별 비교</h2>
+<table>
+<tr><th>업무</th><th>NotebookLM</th><th>Perplexity</th></tr>
+<tr><td>내부 문서 분석</td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐</td></tr>
+<tr><td>논문 분석</td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐⭐</td></tr>
+<tr><td>시장 조사</td><td>⭐⭐⭐</td><td>⭐⭐⭐⭐⭐</td></tr>
+<tr><td>경쟁사 분석</td><td>⭐⭐⭐</td><td>⭐⭐⭐⭐⭐</td></tr>
+<tr><td>최신 뉴스</td><td>⭐⭐</td><td>⭐⭐⭐⭐⭐</td></tr>
+<tr><td>기술 문서 분석</td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐⭐</td></tr>
+<tr><td>교육 자료 제작</td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h2>5. ChatGPT / Claude / Gemini 포함 역할 비교</h2>
+<table>
+<tr><th>Tool</th><th>가장 잘하는 역할</th></tr>
+<tr><td>ChatGPT</td><td>실행 / 생성 / 업무 자동화</td></tr>
+<tr><td>Claude</td><td>사고 / 문서 작성 / 논리 검토</td></tr>
+<tr><td>Gemini</td><td>Google 생태계 활용</td></tr>
+<tr><td>NotebookLM</td><td>내 자료 분석</td></tr>
+<tr><td>Perplexity</td><td>외부 정보 조사</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h2>6. 실제 업무 Workflow</h2>
+<h3>전략기획 / 사업개발</h3>
+<div class="flow">
+Perplexity
+↓
+시장 조사
+
+NotebookLM
+↓
+내부 자료 통합 분석
+
+Claude
+↓
+논리 구조화
+
+ChatGPT
+↓
+PPT / 보고서 작성
+</div>
+
+<h3>개발 조직</h3>
+<div class="flow">
+Perplexity
+↓
+최신 논문 / Framework / API 조사
+
+NotebookLM
+↓
+기술 문서 / Architecture / Wiki 분석
+
+Claude
+↓
+설계 검토 / Code Review
+
+ChatGPT
+↓
+구현 지원
+</div>
+</div>
+
+<div class="card">
+<h2>7. 상황별 선택 기준</h2>
+<table>
+<tr><th>질문</th><th>추천</th></tr>
+<tr><td>이 문서를 이해해줘</td><td>NotebookLM</td></tr>
+<tr><td>최신 정보를 찾아줘</td><td>Perplexity</td></tr>
+<tr><td>여러 자료를 비교해줘</td><td>NotebookLM</td></tr>
+<tr><td>시장 조사를 해줘</td><td>Perplexity</td></tr>
+<tr><td>보고서를 작성해줘</td><td>ChatGPT / Claude</td></tr>
+<tr><td>내 자료 기반 발표 준비</td><td>NotebookLM + ChatGPT</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h2>8. 최종 비교 평가</h2>
+<table>
+<tr><th>항목</th><th>NotebookLM</th><th>Perplexity</th></tr>
+<tr><td>자료 이해</td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐</td></tr>
+<tr><td>최신 정보</td><td>⭐⭐</td><td>⭐⭐⭐⭐⭐</td></tr>
+<tr><td>출처 관리</td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐⭐⭐</td></tr>
+<tr><td>긴 문서 분석</td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐⭐</td></tr>
+<tr><td>시장 조사</td><td>⭐⭐⭐</td><td>⭐⭐⭐⭐⭐</td></tr>
+<tr><td>기업 내부 자료</td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐</td></tr>
+<tr><td>경쟁사 조사</td><td>⭐⭐⭐</td><td>⭐⭐⭐⭐⭐</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h2>결론</h2>
+<p>
+NotebookLM과 Perplexity는 경쟁 관계가 아니라 역할이 다른 보완 관계입니다.
+</p>
+
+<p class="quote">
+NotebookLM = 내가 가진 지식을 이해하는 AI<br>
+Perplexity = 세상의 정보를 찾아주는 AI
+</p>
+
+<h3>최강 조합</h3>
+<div class="flow">
+Perplexity
+(외부 정보 수집)
+
+↓
+
+NotebookLM
+(내 자료와 통합 분석)
+
+↓
+
+Claude
+(논리 구조화)
+
+↓
+
+ChatGPT
+(보고서/PPT 생성)
+</div>
+
+<p>
+전략기획, R&D, DX 조직 기준으로 보면
+<b>Perplexity = 외부 Intelligence</b>,
+<b>NotebookLM = 내부 Knowledge Base</b>
+역할로 보는 것이 적합합니다.
+</p>
+</div>
+
+</div>
+</body>
+</html>

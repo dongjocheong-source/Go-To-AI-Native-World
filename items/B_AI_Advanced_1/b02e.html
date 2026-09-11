@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Agent의 핵심 무기 Tool Calling(도구 호출) 완벽 가이드 — 정의, 구성요소, 장단점, 실습</title>
-<meta name="description" content="Tool Calling의 정의, Function Calling과의 차이, 핵심 구성요소, ReAct 기반 작동 원리, 장단점, 활용 분야, OpenAI API 실습 코드, Tool Calling vs RAG vs 파인튜닝 비교, MCP와의 관계까지 정리한 완벽 가이드">
+<title>프롬프트 엔지니어링 실전 설계 꿀팁 4 — Data Generation, Function Calling, Agent</title>
+<meta name="description" content="AI를 데이터 공장·코드 코파일럿으로 활용하는 법, 프롬프트 함수, AI 에이전트의 핵심인 Function Calling을 실전 예시로 정리한 시리즈 5편(완결)">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -19,10 +19,10 @@
     --line:#E7E1FA;
     --text-dark:#1B1730;
     --text-muted:#655F82;
-    --acc-a:#2563EB;
-    --acc-a-ink:#173E99;
-    --acc-b:#059669;
-    --acc-b-ink:#054F35;
+    --acc-a:#F2A93B;
+    --acc-a-ink:#7A5200;
+    --acc-b:#3E7BFA;
+    --acc-b-ink:#1B3E99;
     --acc-c:#8880B0;
     --acc-c-ink:#3A3560;
     --danger:#D6455B;
@@ -323,8 +323,8 @@
 
 
   .hero-simple{
-    background:radial-gradient(circle at 18% 22%, rgba(37,99,235,0.22), transparent 45%),
-               radial-gradient(circle at 84% 18%, rgba(5,150,105,0.18), transparent 45%),
+    background:radial-gradient(circle at 18% 22%, rgba(242,169,59,0.18), transparent 45%),
+               radial-gradient(circle at 84% 18%, rgba(62,123,250,0.24), transparent 45%),
                linear-gradient(180deg,var(--ink) 0%, var(--ink-deep) 100%);
     color:var(--paper);min-height:92vh;display:flex;align-items:center;overflow:hidden;padding:120px 0 64px;
   }
@@ -439,29 +439,24 @@
 
 <header class="nav" id="siteNav">
   <div class="wrap">
-    <div class="brand"><span class="dot2"><span></span><span></span></span> Tool Calling 완벽 가이드 · A10 · AI 에이전트</div>
+    <div class="brand"><span class="dot2"><span></span><span></span></span> 프롬프트 엔지니어링 시리즈 5/5 · 실전 응용 편 (완결)</div>
     <nav class="links">
-      <a href="#overview">개요</a>
-      <a href="#components">구성요소</a>
-      <a href="#howitworks">작동원리</a>
-      <a href="#proscons">장단점</a>
-      <a href="#usecases">활용분야</a>
-      <a href="#implementation">실습</a>
-      <a href="#comparison">비교</a>
+      <a href="#datagen">데이터생성</a>
+      <a href="#codegen">코드생성</a>
+      <a href="#promptfunc">프롬프트함수</a>
+      <a href="#funccall">FunctionCalling</a>
+      <a href="#summary">요약표</a>
     </nav>
     <button class="hamburger" id="hamBtn" aria-label="메뉴 열기"><span></span><span></span><span></span></button>
   </div>
 </header>
 
 <div class="mobile-menu" id="mobileMenu">
-  <a href="#overview">Tool Calling이란</a>
-  <a href="#components">핵심 구성요소</a>
-  <a href="#howitworks">작동 원리 (Step-by-Step)</a>
-  <a href="#proscons">특징 및 장단점</a>
-  <a href="#usecases">주요 활용 분야</a>
-  <a href="#implementation">[실습] 날씨 에이전트 구축</a>
-  <a href="#comparison">Tool Calling vs RAG vs 파인튜닝</a>
-  <a href="#conclusion">마치며 · MCP</a>
+  <a href="#datagen">데이터 생성 (Mock Data)</a>
+  <a href="#codegen">코드 코파일럿</a>
+  <a href="#promptfunc">프롬프트 함수</a>
+  <a href="#funccall">Function Calling</a>
+  <a href="#summary">실전 응용 패턴 요약</a>
 </div>
 <button class="mobile-close" id="mobileClose">×</button>
 
@@ -469,213 +464,169 @@
 
 <section class="hero-simple" id="top">
   <div class="wrap">
-    <div class="eyebrow">A10 · AI Basic · AI 에이전트의 핵심 무기</div>
-    <h1>AI Agent의 핵심 무기<br><span class="accent-word">Tool Calling(도구 호출)</span> 완벽 가이드</h1>
-    <p class="sub">"오늘 서울 날씨 어때?", "이메일 좀 보내줘" — LLM은 텍스트 창에 갇혀 실시간 데이터를 모르고, 실제로 메일을 보낼 수도 없습니다. 두뇌(AI)가 외부 세계와 상호작용할 수 있도록 '손과 발'을 달아주는 핵심 기술, Tool Calling을 정리합니다.</p>
-    <div class="chip-row">
-      <a class="chip" href="#howitworks">6단계 작동원리</a>
-      <a class="chip" href="#implementation">날씨 에이전트 실습</a>
-      <a class="chip" href="#comparison">RAG·파인튜닝과 비교</a>
+    <div class="eyebrow">A07 · AI Basic · Prompt Engineering 시리즈</div>
+    <h1>실전 설계 꿀팁 4<br><span class="accent-word">Data Generation, Function Calling, Agent</span></h1>
+    <p class="sub">AI는 이제 단순한 대화 상대가 아닙니다. 개발 프로세스에 깊숙이 들어와 데이터를 생성하고 코드를 짜주는 '일꾼'이 됩니다. 시리즈의 마지막, 모든 기법을 조합하는 실전 응용과 AI 에이전트의 핵심 Function Calling을 마스터합니다.</p>
+    <div class="series-badge">
+      <div class="series-dots"><span></span><span></span><span></span><span></span><span class="on"></span></div>
+      <span>프롬프트 엔지니어링 시리즈 · <b>5 / 5</b> · 실전 응용 편 (완결)</span>
     </div>
   </div>
 </section>
 
 
-<section id="overview">
+<section id="datagen">
   <div class="wrap reveal">
-    <div class="kicker">Overview</div>
-    <h2 class="title">Tool Calling이란?</h2>
-    <p class="lede">LLM이 사용자의 자연어 입력을 분석해, 목적 달성을 위해 <b>미리 정의된 외부 도구(API, 함수, DB 검색 등)를 자율적으로 선택하고 실행할 수 있도록 하는 메커니즘</b>입니다. LLM이 "어떤 도구를, 어떤 파라미터로 실행해야 하는지"를 JSON 형태의 구조화된 데이터로 출력합니다.</p>
+    <div class="kicker">Mock Data</div>
+    <h2 class="title">AI를 '데이터 공장'으로 쓰기</h2>
+    <p class="lede">개발 테스트용 목업 데이터나 유닛 테스트 케이스가 없어 'test1, test2'로 채우던 답답함은 이제 안녕입니다. LLM은 원하는 '형식'과 '내용'을 갖춘 대량 데이터를 빠르게 생성합니다.</p>
+    <div class="code-block">
+      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">mock_data_prompt.txt</div></div>
+      <pre><code><span class="kw">### 지시 ###</span>
+당신은 백엔드 개발자입니다.
+'InstaFace' 앱 테스트를 위해 가상 사용자 프로필 5개를 생성하세요.
 
-    <h3 style="font-size:15px;font-weight:700;margin-top:44px;margin-bottom:14px;">Function Calling과의 차이점</h3>
-    <div class="compare-2">
-      <div class="cc-card">
-        <h4>Function Calling</h4>
-        <p class="small">2023년 OpenAI가 처음 도입한 개념. 개발자가 정의한 '특정 함수'를 호출하도록 LLM이 인자값을 만들어주는 기능입니다.</p>
-      </div>
-      <div class="cc-card b">
-        <h4>Tool Calling (상위 개념)</h4>
-        <p class="small">Function Calling을 포함하는 상위 개념. 사용자 정의 함수뿐 아니라 웹 브라우징, 코드 실행기, 파일 시스템 접근 등 다양한 형태의 '도구'를 호출하는 현대적·확장된 개념입니다.</p>
-      </div>
+<span class="kw">### 요구 조건 ###</span>
+1. 출력 형식은 반드시 'JSON 리스트'
+2. "username"(영문+숫자), "email", "age"(20~40세), "last_login"(ISO 8601)
+3. "username"은 중복 불가</code></pre>
+    </div>
+    <div class="code-block">
+      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">result.json</div></div>
+      <pre><code>[
+  { <span class="st">"username"</span>: <span class="st">"dev_king_88"</span>, <span class="st">"email"</span>: <span class="st">"devking88@example.com"</span>,
+    <span class="st">"age"</span>: <span class="fn">32</span>, <span class="st">"last_login"</span>: <span class="st">"2025-11-17T14:22:01Z"</span> },
+  { <span class="st">"username"</span>: <span class="st">"coding_master"</span>, <span class="st">"email"</span>: <span class="st">"master@example.com"</span>,
+    <span class="st">"age"</span>: <span class="fn">28</span>, <span class="st">"last_login"</span>: <span class="st">"2025-11-18T01:15:30Z"</span> }
+  <span class="cm">// ... 3개 더</span>
+]</code></pre>
     </div>
   </div>
 </section>
 
-<section id="components" style="background:var(--paper-tint);">
+<section id="codegen" style="background:var(--paper-tint);">
   <div class="wrap reveal">
-    <div class="kicker">Architecture</div>
-    <h2 class="title">핵심 구성요소</h2>
-    <p class="lede">Tool Calling이 포함된 시스템은 다음 요소들이 유기적으로 맞물려 루프(Loop)를 형성합니다.</p>
+    <div class="kicker">Pair Programmer</div>
+    <h2 class="title">AI를 '코파일럿'으로 쓰기</h2>
+    <p class="lede">요구사항을 '자연어(주석)'로 명확히 적기만 하면 AI가 실제 코드를 생성합니다. '주석 → 코드' 변환과 복잡한 SQL 쿼리 생성에 특히 강력합니다.</p>
 
-    <div class="feat-list">
-      <div class="feat-item"><div class="fi" style="background:var(--acc-a);">1</div><div><b>Tool Definition (도구 정의 스키마)</b><span>"내가 가진 도구는 이런 것들이고, 이런 규칙으로 써야 해"를 알려주는 설명서. JSON Schema로 이름·설명·필수 입력값 등을 정의합니다.</span></div></div>
-      <div class="feat-item"><div class="fi" style="background:var(--acc-a);">2</div><div><b>LLM (추론 엔진)</b><span>사용자 요청과 도구 정의서를 비교 분석해, 도구가 필요한지 판단하고 실행 파라미터를 생성합니다.</span></div></div>
-      <div class="feat-item"><div class="fi" style="background:var(--acc-b);">3</div><div><b>Tool Executor (도구 실행기)</b><span>LLM이 반환한 JSON을 받아 실제로 코드를 실행하거나 외부 API를 호출하는 애플리케이션 백엔드 계층</span></div></div>
-      <div class="feat-item"><div class="fi" style="background:var(--acc-b);">4</div><div><b>Orchestrator (에이전트 루프)</b><span>사용자 입력 → LLM의 도구 호출 판단 → 도구 실행 → 결과를 다시 LLM에 전달 → 최종 답변 생성의 전체 흐름을 제어</span></div></div>
+    <div class="code-block">
+      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">requirements.js</div></div>
+      <pre><code><span class="cm">/*
+1. 'user-input' input 필드에서 텍스트 값을 가져온다.
+2. 값이 비어있으면(trim 처리 후), 'error-msg' span에
+   "값을 입력하세요!"를 2초간 보여준 뒤 지운다.
+3. 값이 있으면 'result-div'에 "입력된 값: [값]" <p> 태그를 추가한다.
+4. 값 추가 후 input 필드는 비운다.
+*/</span></code></pre>
     </div>
+    <div class="code-block">
+      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">result.js</div></div>
+      <pre><code><span class="kw">function</span> handleSubmit() {
+  <span class="kw">const</span> inputField = document.getElementById(<span class="st">'user-input'</span>);
+  <span class="kw">const</span> errorMsg = document.getElementById(<span class="st">'error-msg'</span>);
+  <span class="kw">const</span> resultDiv = document.getElementById(<span class="st">'result-div'</span>);
+  <span class="kw">const</span> value = inputField.value.trim();
+
+  <span class="kw">if</span> (value === <span class="st">""</span>) {
+    errorMsg.textContent = <span class="st">"값을 입력하세요!"</span>;
+    setTimeout(() =&gt; { errorMsg.textContent = <span class="st">""</span>; }, <span class="fn">2000</span>);
+  } <span class="kw">else</span> {
+    <span class="kw">const</span> p = document.createElement(<span class="st">'p'</span>);
+    p.textContent = <span class="st">`입력된 값: ${value}`</span>;
+    resultDiv.appendChild(p);
+    inputField.value = <span class="st">""</span>;
+  }
+}</code></pre>
+    </div>
+    <div class="note-box">복잡한 JOIN이나 GROUP BY가 기억나지 않을 때도, 테이블 스키마와 요청 조건을 자연어로 주면 MySQL 쿼리를 바로 생성해줍니다.</div>
   </div>
 </section>
 
-<section id="howitworks">
+<section id="promptfunc">
   <div class="wrap reveal">
-    <div class="kicker">ReAct-based</div>
-    <h2 class="title">작동 원리 (Step-by-Step)</h2>
-    <p class="lede">ReAct(Reasoning + Acting) 패턴을 기반으로 한 Tool Calling의 흐름입니다.</p>
+    <div class="kicker">User-side Template</div>
+    <h2 class="title">프롬프트 함수 — 나만의 명령어 템플릿</h2>
+    <p class="lede">'프롬프트 함수'는 Function Calling과 다른 개념입니다. 개발자의 API 기능이 아니라, <b>사용자가 챗봇 인터페이스에서 쓸 수 있는 '커스텀 명령어 템플릿'</b>에 가깝습니다. 매번 같은 페르소나를 입력하기 귀찮을 때, 작업을 '함수'처럼 캡슐화합니다.</p>
 
     <div class="trig-box">
+      <h5>Tistory 블로그 SEO 도우미 만들기</h5>
       <ol>
-        <li><b>사용자 요청</b> — "현재 애플(AAPL) 주가가 얼마야?"</li>
-        <li><b>LLM의 추론(Thought)</b> — "내 학습 데이터에는 실시간 주가 정보가 없네. get_stock_price 도구를 써야겠다. ticker: 'AAPL'로 설정하자."</li>
-        <li><b>도구 호출 요청(Action)</b> — LLM이 텍스트 대신 <code>{"name":"get_stock_price","arguments":{"ticker":"AAPL"}}</code> JSON을 출력</li>
-        <li><b>도구 실행</b> — 오케스트레이터가 JSON을 가로채 실제 주가 조회 API를 실행</li>
-        <li><b>결과 관찰(Observation)</b> — API 실행 결과(예: <code>{"price":150.25}</code>)를 다시 LLM에 전달</li>
-        <li><b>최종 응답 생성</b> — "현재 애플의 주가는 $150.25입니다."</li>
+        <li><b>Step 1 — 함수 생성기 활성화</b> (세션당 1회) — "내가 함수를 정의하면, 규칙을 기억했다가 <code>함수명(입력)</code> 호출 시 수행해줘"</li>
+        <li><b>Step 2 — 함수 정의</b> — <code>function_name: [blog_seo]</code>, <code>input: ["주제"]</code>, <code>rule: [SEO 제목 5개, 키워드 10개를 JSON으로 제안]</code></li>
+        <li><b>Step 3 — 함수 호출</b> — <code>blog_seo(주제="오늘 배운 RAG와 ReAct 개념")</code> → JSON으로 제목·태그 즉시 생성</li>
       </ol>
     </div>
   </div>
 </section>
 
-<section id="proscons" style="background:var(--paper-tint);">
+<section id="funccall" style="background:var(--paper-tint);">
   <div class="wrap reveal">
-    <div class="kicker">Trade-offs</div>
-    <h2 class="title">특징 및 장단점</h2>
-    <div class="pc-grid">
-      <div class="pc-card pro">
-        <h4>✅ 장점</h4>
-        <div class="pc-item"><span class="n">·</span><div><b>LLM 능력의 무한한 확장</b><span>실시간 검색, 복잡한 수학 연산, 파일 조작, 이메일·슬랙 연동이 가능해짐</span></div></div>
-        <div class="pc-item"><span class="n">·</span><div><b>환각 방지</b><span>모르는 사실을 지어내는 대신 외부 도구(검색, RAG)로 검증된 팩트 기반 답변</span></div></div>
-        <div class="pc-item"><span class="n">·</span><div><b>모듈식 확장성</b><span>재학습 없이 새 도구(API) 등록만으로 능력이 계속 늘어남</span></div></div>
-      </div>
-      <div class="pc-card con">
-        <h4>❌ 단점</h4>
-        <div class="pc-item"><span class="n">·</span><div><b>비용 및 지연 시간 증가</b><span>LLM→도구 실행→LLM의 여러 번 핑퐁(Round-trip)으로 응답 속도 저하, 토큰 비용 증가</span></div></div>
-        <div class="pc-item"><span class="n">·</span><div><b>보안 위험</b><span>LLM이 생성한 파라미터로 실제 코드가 실행되므로, 프롬프트 인젝션으로 <code>delete_all_data()</code> 같은 도구가 실행될 위험. 철저한 입력 검증·샌드박싱 필수</span></div></div>
-      </div>
+    <div class="kicker">The Real Deal</div>
+    <h2 class="title">Function Calling — AI 에이전트의 'API 연동'</h2>
+    <p class="lede">ReAct와 PAL이 '개념'이었다면, Function Calling은 '실체(Implementation)'입니다. AI가 '자연어'가 아닌 <b>'구조화된 JSON'</b>을 출력하도록 보장하는, LLM API가 공식 지원하는 기능입니다.</p>
+    <div class="quote-box"><p>사용자가 자연어로 질문을 던졌을 때, AI가 답변을 '생성'하는 대신, 우리 애플리케이션이 가진 '외부 도구(API)'를 호출하라는 '명령서(JSON)'를 반환하는 기술입니다.</p></div>
+
+    <h3 style="font-size:15px;font-weight:700;margin-top:44px;margin-bottom:14px;">실전 예시 — 주식 조회 에이전트</h3>
+    <div class="pipeline" style="margin-top:0;">
+      <div class="pl-stage s0"><div class="plnum">STEP 1</div><div class="plname">도구 정의</div><div class="pldesc">개발자가 get_stock_price(ticker) 함수를 tools 파라미터로 등록</div></div>
+      <div class="pl-connector">→</div>
+      <div class="pl-stage s1"><div class="plnum">STEP 2</div><div class="plname">애매한 질문</div><div class="pldesc">"오늘 삼성전자 주가 얼마예요?"</div></div>
+      <div class="pl-connector">→</div>
+      <div class="pl-stage s2"><div class="plnum">STEP 3</div><div class="plname">JSON 명령 반환</div><div class="pldesc">AI가 값 대신 get_stock_price("005930") 호출 명령서를 반환</div></div>
+      <div class="pl-connector">→</div>
+      <div class="pl-stage s3"><div class="plnum">STEP 4~5</div><div class="plname">실행 후 답변</div><div class="pldesc">앱이 실제 API 호출 → 결과를 AI에 전달 → 최종 자연어 답변 생성</div></div>
     </div>
+
+    <div class="code-block" style="margin-top:28px;">
+      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">tool_call_response.json</div></div>
+      <pre><code>{
+  <span class="st">"role"</span>: <span class="st">"assistant"</span>,
+  <span class="st">"tool_calls"</span>: [{
+    <span class="st">"id"</span>: <span class="st">"call_abc123"</span>,
+    <span class="st">"type"</span>: <span class="st">"function"</span>,
+    <span class="st">"function"</span>: {
+      <span class="st">"name"</span>: <span class="st">"get_stock_price"</span>,
+      <span class="st">"arguments"</span>: <span class="st">"{\"ticker\":\"005930\"}"</span>
+    }
+  }]
+}</code></pre>
+    </div>
+    <div class="safe-box">이 5단계를 거치면 ReAct와 RAG가 결합된 '진짜' AI 에이전트가 완성됩니다 — "네, 삼성전자(005930)의 현재 주가는 85,000원입니다."</div>
   </div>
 </section>
 
-<section id="usecases">
+<section id="summary">
   <div class="wrap reveal">
-    <div class="kicker">Use Cases</div>
-    <h2 class="title">주요 활용 분야</h2>
-    <div class="org-grid">
-      <div class="org-card">
-        <h4>대화형 커머스 · CS 챗봇</h4>
-        <ul><li>"배송 언제 와?" → 내부 DB 조회 도구</li><li>반품 처리 API 호출로 환불 자동화</li></ul>
-      </div>
-      <div class="org-card">
-        <h4>데이터 분석 에이전트</h4>
-        <ul><li>CSV 업로드 + 분석 요청</li><li>Code Interpreter 도구로 차트 생성</li></ul>
-      </div>
-      <div class="org-card">
-        <h4>자율적 리서치 비서</h4>
-        <ul><li>여러 번 웹 검색 도구 호출</li><li>종합해 시장 동향 보고서 작성</li></ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="implementation" style="background:var(--paper-tint);">
-  <div class="wrap reveal">
-    <div class="kicker">[실습]</div>
-    <h2 class="title">Python으로 Tool Calling 에이전트 직접 구축하기</h2>
-    <p class="lede">OpenAI API로 LLM이 '날씨 조회 도구'를 스스로 판단하고 호출하는 완전한 Agent Loop를 구현합니다.</p>
-
-    <div class="code-block">
-      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">setup.sh</div></div>
-      <pre><code>pip install openai python-dotenv</code></pre>
-    </div>
-
-    <div class="code-block">
-      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">tool_calling_agent.py</div></div>
-      <pre><code><span class="kw">import</span> os, json
-<span class="kw">from</span> openai <span class="kw">import</span> OpenAI
-
-client = OpenAI(api_key=os.getenv(<span class="st">"OPENAI_API_KEY"</span>))
-
-<span class="cm"># 1. 실제 실행될 함수 (도구 구현)</span>
-<span class="kw">def</span> get_current_weather(location: <span class="fn">str</span>, unit: <span class="fn">str</span> = <span class="st">"celsius"</span>) -&gt; <span class="fn">str</span>:
-    <span class="cm"># 실제로는 외부 날씨 API를 호출. 여기서는 모의 데이터 반환</span>
-    mock_db = {<span class="st">"서울"</span>: {<span class="st">"temperature"</span>: <span class="fn">22</span>, <span class="st">"condition"</span>: <span class="st">"맑음"</span>},
-               <span class="st">"런던"</span>: {<span class="st">"temperature"</span>: <span class="fn">18</span>, <span class="st">"condition"</span>: <span class="st">"비"</span>}}
-    info = mock_db.get(location, {<span class="st">"temperature"</span>: <span class="fn">20</span>, <span class="st">"condition"</span>: <span class="st">"알 수 없음"</span>})
-    info[<span class="st">"location"</span>] = location; info[<span class="st">"unit"</span>] = unit
-    <span class="kw">return</span> json.dumps(info, ensure_ascii=<span class="kw">False</span>)
-
-<span class="cm"># 2. 도구 명세서 (JSON Schema)</span>
-tools_definition = [{<span class="st">"type"</span>: <span class="st">"function"</span>, <span class="st">"function"</span>: {
-    <span class="st">"name"</span>: <span class="st">"get_current_weather"</span>,
-    <span class="st">"description"</span>: <span class="st">"특정 도시의 현재 날씨와 기온 정보를 가져옵니다."</span>,
-    <span class="st">"parameters"</span>: {<span class="st">"type"</span>: <span class="st">"object"</span>,
-        <span class="st">"properties"</span>: {<span class="st">"location"</span>: {<span class="st">"type"</span>: <span class="st">"string"</span>}, <span class="st">"unit"</span>: {<span class="st">"type"</span>: <span class="st">"string"</span>, <span class="st">"enum"</span>: [<span class="st">"celsius"</span>,<span class="st">"fahrenheit"</span>]}},
-        <span class="st">"required"</span>: [<span class="st">"location"</span>]}
-}}]
-
-<span class="cm"># 3. 에이전트 루프 (Orchestrator)</span>
-<span class="kw">def</span> run_agent(user_prompt: <span class="fn">str</span>):
-    messages = [{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: user_prompt}]
-    response = client.chat.completions.create(
-        model=<span class="st">"gpt-4o-mini"</span>, messages=messages,
-        tools=tools_definition, tool_choice=<span class="st">"auto"</span>
-    )
-    msg = response.choices[<span class="fn">0</span>].message
-
-    <span class="kw">if</span> msg.tool_calls:
-        messages.append(msg)
-        <span class="kw">for</span> tc <span class="kw">in</span> msg.tool_calls:
-            args = json.loads(tc.function.arguments)
-            result = get_current_weather(location=args.get(<span class="st">"location"</span>), unit=args.get(<span class="st">"unit"</span>, <span class="st">"celsius"</span>))
-            messages.append({<span class="st">"tool_call_id"</span>: tc.id, <span class="st">"role"</span>: <span class="st">"tool"</span>,
-                              <span class="st">"name"</span>: tc.function.name, <span class="st">"content"</span>: result})
-        final = client.chat.completions.create(model=<span class="st">"gpt-4o-mini"</span>, messages=messages)
-        <span class="fn">print</span>(f<span class="st">"🤖 {final.choices[0].message.content}"</span>)
-    <span class="kw">else</span>:
-        <span class="fn">print</span>(f<span class="st">"🤖 {msg.content}"</span>)
-
-run_agent(<span class="st">"안녕! 넌 누구야?"</span>)        <span class="cm"># 도구 호출 불필요</span>
-run_agent(<span class="st">"지금 서울 날씨 어때?"</span>)     <span class="cm"># 도구 호출 필요</span></code></pre>
-    </div>
-
-    <div class="out-block">
-      <span class="arrow">▶</span> 👤 "안녕! 넌 누구야?"<br>
-      &nbsp;&nbsp;🤖 "안녕하세요! 저는 여러분의 질문에 답변하고 도움을 드리는 AI 어시스턴트입니다."<br><br>
-      &nbsp;&nbsp;👤 "지금 서울 날씨 어때?"<br>
-      &nbsp;&nbsp;[시스템 로그] 🛠️ 도구 실행 중: get_current_weather(location='서울')<br>
-      &nbsp;&nbsp;🤖 "현재 서울의 날씨는 맑으며, 기온은 섭씨 22도입니다."
-    </div>
-  </div>
-</section>
-
-<section id="comparison">
-  <div class="wrap reveal">
-    <div class="kicker">At a Glance</div>
-    <h2 class="title">한눈에 비교: Tool Calling vs RAG vs 파인튜닝</h2>
+    <div class="kicker">Quick Reference</div>
+    <h2 class="title">한눈에 비교: 실전 응용 패턴</h2>
     <div class="cmp-table-wrap">
       <table class="cmp-table">
-        <tr><th>비교 항목</th><th class="col-a">Tool Calling</th><th>RAG</th><th class="col-b">Fine-Tuning</th></tr>
-        <tr><td>핵심 목적</td><td>'행동(Action)'을 수행</td><td>'지식(Knowledge)'을 참고</td><td>'뇌 구조(가중치)' 자체를 변경</td></tr>
-        <tr><td>작동 방식</td><td>API 호출, DB 쓰기, 코드 실행</td><td>벡터 DB 검색 후 프롬프트에 삽입</td><td>특정 도메인 데이터셋으로 재학습</td></tr>
-        <tr><td>데이터 실시간성</td><td>최상 (실시간 API 즉시 조회)</td><td>높음 (DB 업데이트 주기에 따름)</td><td>낮음 (학습 시점에 고정)</td></tr>
-        <tr><td>주요 사용처</td><td>날씨/주식 조회, 예약, 자동화</td><td>사내 문서 검색, 매뉴얼 QA</td><td>말투 학습, 도메인 용어 체득</td></tr>
+        <tr><th>패턴</th><th class="col-a">주요 특징</th><th class="col-b">사용처</th></tr>
+        <tr><td>Data Generation</td><td>원하는 포맷(JSON 등)으로 대량 생성</td><td>테스트용 Mock Data, QA 케이스</td></tr>
+        <tr><td>Code Copilot</td><td>자연어(주석)를 실행 가능한 코드로 변환</td><td>복잡한 SQL, 정규식, 보일러플레이트</td></tr>
+        <tr><td>Prompt Function</td><td>사용자가 정의하는 매크로/함수 (User-side)</td><td>반복적 페르소나, 블로그 글 양식</td></tr>
+        <tr><td>Function Calling</td><td>AI가 구조화된 JSON 명령 출력 (Dev-side)</td><td>실제 서비스 연동 (날씨, 주식, DB 조회)</td></tr>
       </table>
     </div>
-    <div class="note-box" style="margin-top:20px;"><b>상호 관계</b> — RAG 시스템을 실행하기 위한 '도구' 중 하나로 Tool Calling을 사용할 수 있습니다 (융합 가능).</div>
   </div>
 </section>
 
-<section class="summary" id="conclusion">
+<section class="summary" id="series-end">
   <div class="wrap reveal">
-    <div class="kicker on-dark">Conclusion</div>
-    <h2 class="title on-dark">마치며 — Tool Calling의 미래와 MCP</h2>
-    <p class="lede on-dark">초기의 Tool Calling은 개발자가 하나하나 함수를 구현하고 LLM에 바인딩하는 복잡한 과정을 거쳐야 했습니다. 하지만 최근에는 <b>MCP(Model Context Protocol)</b>라는 새로운 오픈소스 표준이 등장했습니다.</p>
+    <div class="kicker on-dark">Series Complete</div>
+    <h2 class="title on-dark">시리즈를 마치며</h2>
+    <p class="lede on-dark">1편(기초)부터 5편(응용)까지, AI에게 '단순 질문'을 던지는 사용자를 넘어 AI의 행동을 '설계'하고 '제어'하며 '외부 도구'와 연결하는 '엔지니어'의 관점을 갖게 되었습니다.</p>
 
-    <div class="recap-list">
-      <div class="recap-item"><span class="num">01</span><span class="rt">MCP를 활용하면 도구를 별도의 서버로 분리해, Claude든 GPT든 상관없이 <b>"플러그 앤 플레이"</b> 방식으로 도구를 손쉽게 공유·연동할 수 있습니다.</span></div>
-      <div class="recap-item"><span class="num">02</span><span class="rt">Tool Calling은 LLM을 단순한 '말동무'에서 실질적인 비즈니스 가치를 창출하는 <b>'디지털 노동자(AI Agent)'</b>로 진화시키는 핵심 심장입니다.</span></div>
+    <div class="series-toc">
+      <div class="series-toc-row"><span class="stn">01</span><span class="stt">프롬프트 엔지니어링이란 무엇인가 — 개념·배경·LLM 파라미터</span></div>
+      <div class="series-toc-row"><span class="stn">02</span><span class="stt">실전 설계 꿀팁 1 — 4가지 국룰과 5대 기본 작업</span></div>
+      <div class="series-toc-row"><span class="stn">03</span><span class="stt">실전 설계 꿀팁 2 — Few-Shot, CoT, Self-Consistency</span></div>
+      <div class="series-toc-row"><span class="stn">04</span><span class="stt">실전 설계 꿀팁 3 — RAG, ReAct, ToT, PAL, Reflexion</span></div>
+      <div class="series-toc-row current"><span class="stn">05</span><span class="stt">실전 설계 꿀팁 4 — Data Generation, Function Calling</span><span class="stbadge">현재 편</span></div>
     </div>
 
-    <div class="final-line" style="margin-top:30px;"><b>기억할 것 한 줄</b> — AI 서비스 개발을 계획한다면, 프롬프트 엔지니어링을 넘어 Tool Calling 아키텍처 설계 역량은 선택이 아닌 필수입니다.</div>
+    <div class="final-line" style="margin-top:30px;"><b>기억할 것 한 줄</b> — 프롬프트는 '설계도'입니다. 간단히 시작해서, 구체적으로 다듬고, 필요하면 추론(CoT)과 외부 도구(RAG/ReAct/Function Calling)를 조합하세요.</div>
   </div>
 </section>
 
@@ -683,7 +634,7 @@ run_agent(<span class="st">"지금 서울 날씨 어때?"</span>)     <span clas
 
 <footer>
   <div class="wrap">
-    <span>Tool Calling 완벽 가이드 · A10 · AI 에이전트</span>
+    <span>프롬프트 엔지니어링 시리즈 5/5 · 실전 응용 편 (완결)</span>
     <a class="totop" href="#top">맨 위로 ↑</a>
   </div>
 </footer>

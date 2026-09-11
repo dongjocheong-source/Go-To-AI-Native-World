@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Agent의 핵심 무기 Tool Calling(도구 호출) 완벽 가이드 — 정의, 구성요소, 장단점, 실습</title>
-<meta name="description" content="Tool Calling의 정의, Function Calling과의 차이, 핵심 구성요소, ReAct 기반 작동 원리, 장단점, 활용 분야, OpenAI API 실습 코드, Tool Calling vs RAG vs 파인튜닝 비교, MCP와의 관계까지 정리한 완벽 가이드">
+<title>브리핑: 기업 생성형 AI 도입의 핵심 성공 동력 — 온톨로지(Ontology) 프로젝트 분석</title>
+<meta name="description" content="온톨로지의 본질적 정의와 RDB와의 차별점, 할루시네이션 억제 기술(환각률 32%→5%)과 OQL, 시멘틱 레이어와 하이브리드 데이터 아키텍처, 구축 방법론 및 거버넌스, 산업별 활용 사례와 ROI(의사결정 2일→10분), 결론 및 전략적 제언까지 정리한 기업 생성형 AI 전략 브리핑">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -19,10 +19,10 @@
     --line:#E7E1FA;
     --text-dark:#1B1730;
     --text-muted:#655F82;
-    --acc-a:#2563EB;
-    --acc-a-ink:#173E99;
-    --acc-b:#059669;
-    --acc-b-ink:#054F35;
+    --acc-a:#1E3A5F;
+    --acc-a-ink:#0F2238;
+    --acc-b:#B8860B;
+    --acc-b-ink:#6B4E06;
     --acc-c:#8880B0;
     --acc-c-ink:#3A3560;
     --danger:#D6455B;
@@ -319,12 +319,85 @@
   .ref-card .rc-text b{display:block;font-size:13.5px;color:var(--ink);margin-bottom:2px;}
   .ref-card .rc-arrow{color:var(--acc-b);font-size:16px;flex-shrink:0;}
 
+  .hero-panel .ptag{
+    display:inline-block;margin-top:14px;padding:5px 14px;border-radius:14px;
+    background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.22);
+    font-size:11px;font-weight:700;letter-spacing:.5px;position:relative;z-index:2;
+  }
+
+  /* ===== LLM 동작원리 — token demo, vector space, transformer stack, heatmap, prob bars ===== */
+  .tok-demo{background:var(--ink-deep);border-radius:var(--radius);padding:26px 28px;margin-top:28px;}
+  .tok-line{font-family:var(--mono);font-size:13px;color:#B8B0DE;margin-bottom:10px;}
+  .tok-line .hi{color:#E4DEFF;}
+  .tok-row{display:flex;flex-wrap:wrap;gap:9px;margin:16px 0;}
+  .tok-chip{padding:7px 14px;border-radius:8px;font-family:var(--mono);font-weight:600;font-size:13px;border:1px solid;}
+  .tok-chip.c0{background:rgba(13,148,136,0.16);color:#5EEAD4;border-color:rgba(13,148,136,0.4);}
+  .tok-chip.c1{background:rgba(217,119,6,0.16);color:#FCD34D;border-color:rgba(217,119,6,0.4);}
+  .tok-chip.c2{background:rgba(217,119,6,0.16);color:#FCD34D;border-color:rgba(217,119,6,0.4);}
+  .tok-chip.c3{background:rgba(13,148,136,0.16);color:#5EEAD4;border-color:rgba(13,148,136,0.4);}
+  .tok-chip.c4{background:rgba(217,119,6,0.16);color:#FCD34D;border-color:rgba(217,119,6,0.4);}
+  .tok-ids{font-family:var(--mono);font-size:13px;color:#E4DEFF;background:var(--ink-2);border-radius:8px;padding:11px 16px;display:inline-block;}
+
+  .embed-wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:24px;align-items:stretch;margin-top:28px;}
+  .vecspace{background:var(--paper-tint);border:1px solid var(--line);border-radius:var(--radius);position:relative;min-height:320px;overflow:hidden;}
+  .vecspace .axis{position:absolute;background:var(--line);}
+  .word-dot{position:absolute;transform:translate(-50%,-50%);font-family:var(--mono);font-size:12px;padding:6px 12px;border-radius:20px;border:1.4px solid;white-space:nowrap;font-weight:600;}
+  .word-dot.wa{background:rgba(13,148,136,0.1);color:var(--acc-a-ink);border-color:var(--acc-a);}
+  .word-dot.wb{background:rgba(217,119,6,0.1);color:var(--acc-b-ink);border-color:var(--acc-b);}
+  .word-dot.wc{background:rgba(124,58,237,0.1);color:#5B21B6;border-color:#8B5CF6;}
+  .embed-notes{display:flex;flex-direction:column;gap:16px;justify-content:center;}
+  .embed-notes .n{border-left:3px solid var(--acc-a);padding-left:16px;}
+  .embed-notes .n b{display:block;font-size:13.5px;margin-bottom:3px;color:var(--ink);}
+  .embed-notes .n span{font-size:12.6px;color:var(--text-muted);}
+
+  .tf-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:28px;max-width:420px;margin-left:auto;margin-right:auto;}
+  .tf-cap{font-family:var(--mono);font-size:11.5px;color:var(--text-muted);text-align:center;}
+  .tf-block{width:100%;border:1px solid var(--line);border-radius:10px;background:var(--paper-tint);padding:13px;text-align:center;}
+  .tf-block .l1{font-size:13px;font-weight:700;color:var(--acc-a-ink);}
+  .tf-block .l2{font-size:11.5px;color:var(--text-muted);margin-top:3px;}
+  .tf-repeat{font-family:var(--mono);font-size:11.5px;color:var(--acc-b-ink);font-weight:700;text-align:center;padding:2px 0;}
+  .tf-notes{margin-top:32px;display:flex;flex-direction:column;gap:16px;max-width:640px;margin-left:auto;margin-right:auto;}
+  .tf-notes .n b{display:block;color:var(--ink);font-weight:700;font-size:13.5px;margin-bottom:3px;}
+  .tf-notes .n p{margin:0;color:var(--text-muted);font-size:12.6px;}
+
+  .attn-wrap{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:28px;align-items:start;}
+  .qkv .row{display:flex;gap:14px;margin-bottom:14px;align-items:baseline;}
+  .qkv .k{font-family:var(--mono);font-size:12.5px;width:58px;flex-shrink:0;font-weight:700;}
+  .qkv .row:nth-child(1) .k{color:var(--acc-a-ink);}
+  .qkv .row:nth-child(2) .k{color:#8B5CF6;}
+  .qkv .row:nth-child(3) .k{color:var(--acc-b-ink);}
+  .qkv .v{font-size:12.8px;color:var(--text-muted);}
+  table.heat{border-collapse:collapse;width:100%;font-family:var(--mono);}
+  table.heat th{font-size:11px;color:var(--text-muted);font-weight:500;padding:6px;text-align:center;}
+  table.heat td.lab{font-size:11.5px;color:var(--text-muted);text-align:right;padding-right:10px;white-space:nowrap;}
+  table.heat td.cell{width:48px;height:40px;text-align:center;font-size:12px;font-weight:700;border-radius:6px;border:2px solid var(--paper);}
+  .heat-cap{font-family:var(--mono);font-size:11px;color:var(--text-muted);margin-top:12px;}
+
+  .prob-wrap{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:28px;align-items:center;}
+  .prompt-box{font-family:var(--mono);font-size:15px;background:var(--paper-tint);border:1px solid var(--line);border-radius:10px;padding:15px 18px;margin-bottom:22px;}
+  .prompt-box .blank{color:var(--acc-a-ink);border-bottom:2px solid var(--acc-a);padding:0 16px;font-weight:700;}
+  .bar{margin-bottom:12px;}
+  .bar .bl{display:flex;justify-content:space-between;font-size:12.8px;margin-bottom:5px;}
+  .bar .bl .pct{font-family:var(--mono);color:var(--text-muted);}
+  .bar .track{height:11px;background:var(--paper-tint);border-radius:6px;overflow:hidden;}
+  .bar .fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--acc-a-ink),var(--acc-a));}
+  ol.steps{counter-reset:s;list-style:none;padding:0;margin:0;}
+  ol.steps li{counter-increment:s;position:relative;padding:11px 0 11px 46px;border-bottom:1px solid var(--line);font-size:13.3px;color:var(--text-muted);}
+  ol.steps li:last-child{border-bottom:none;}
+  ol.steps li::before{content:counter(s,decimal-leading-zero);position:absolute;left:0;top:11px;font-family:var(--mono);font-size:11px;color:var(--acc-a-ink);border:1px solid var(--acc-a);border-radius:6px;padding:2px 7px;}
+  ol.steps li b{color:var(--ink);font-weight:700;}
+
+  @media(max-width:900px){
+    .embed-wrap,.attn-wrap,.prob-wrap{grid-template-columns:1fr;}
+  }
+
   /* ===== RLHF guide additions ===== */
 
 
+
   .hero-simple{
-    background:radial-gradient(circle at 18% 22%, rgba(37,99,235,0.22), transparent 45%),
-               radial-gradient(circle at 84% 18%, rgba(5,150,105,0.18), transparent 45%),
+    background:radial-gradient(circle at 18% 22%, rgba(30,58,95,0.26), transparent 45%),
+               radial-gradient(circle at 84% 18%, rgba(184,134,11,0.18), transparent 45%),
                linear-gradient(180deg,var(--ink) 0%, var(--ink-deep) 100%);
     color:var(--paper);min-height:92vh;display:flex;align-items:center;overflow:hidden;padding:120px 0 64px;
   }
@@ -439,29 +512,28 @@
 
 <header class="nav" id="siteNav">
   <div class="wrap">
-    <div class="brand"><span class="dot2"><span></span><span></span></span> Tool Calling 완벽 가이드 · A10 · AI 에이전트</div>
+    <div class="brand"><span class="dot2"><span></span><span></span></span> 온톨로지 프로젝트 분석 브리핑 · H01 · DB and Ontology</div>
     <nav class="links">
-      <a href="#overview">개요</a>
-      <a href="#components">구성요소</a>
-      <a href="#howitworks">작동원리</a>
-      <a href="#proscons">장단점</a>
-      <a href="#usecases">활용분야</a>
-      <a href="#implementation">실습</a>
-      <a href="#comparison">비교</a>
+      <a href="#summary">핵심요약</a>
+      <a href="#definition">본질적정의</a>
+      <a href="#hallucination">환각억제</a>
+      <a href="#semanticlayer">시멘틱레이어</a>
+      <a href="#methodology">구축방법론</a>
+      <a href="#industry">산업사례·ROI</a>
+      <a href="#conclusion">미래전망</a>
     </nav>
     <button class="hamburger" id="hamBtn" aria-label="메뉴 열기"><span></span><span></span><span></span></button>
   </div>
 </header>
 
 <div class="mobile-menu" id="mobileMenu">
-  <a href="#overview">Tool Calling이란</a>
-  <a href="#components">핵심 구성요소</a>
-  <a href="#howitworks">작동 원리 (Step-by-Step)</a>
-  <a href="#proscons">특징 및 장단점</a>
-  <a href="#usecases">주요 활용 분야</a>
-  <a href="#implementation">[실습] 날씨 에이전트 구축</a>
-  <a href="#comparison">Tool Calling vs RAG vs 파인튜닝</a>
-  <a href="#conclusion">마치며 · MCP</a>
+  <a href="#summary">핵심 요약 (Executive Summary)</a>
+  <a href="#definition">온톨로지의 본질적 정의</a>
+  <a href="#hallucination">생성형 AI 한계 극복: 환각 억제</a>
+  <a href="#semanticlayer">시멘틱 레이어와 데이터 아키텍처</a>
+  <a href="#methodology">구축 방법론 및 거버넌스</a>
+  <a href="#industry">산업별 활용 사례 및 ROI</a>
+  <a href="#conclusion">결론 및 미래 전망</a>
 </div>
 <button class="mobile-close" id="mobileClose">×</button>
 
@@ -469,213 +541,212 @@
 
 <section class="hero-simple" id="top">
   <div class="wrap">
-    <div class="eyebrow">A10 · AI Basic · AI 에이전트의 핵심 무기</div>
-    <h1>AI Agent의 핵심 무기<br><span class="accent-word">Tool Calling(도구 호출)</span> 완벽 가이드</h1>
-    <p class="sub">"오늘 서울 날씨 어때?", "이메일 좀 보내줘" — LLM은 텍스트 창에 갇혀 실시간 데이터를 모르고, 실제로 메일을 보낼 수도 없습니다. 두뇌(AI)가 외부 세계와 상호작용할 수 있도록 '손과 발'을 달아주는 핵심 기술, Tool Calling을 정리합니다.</p>
+    <div class="eyebrow">브리핑 · H01 DB and Ontology · 기업 생성형 AI 전략</div>
+    <h1>기업 생성형 AI 도입의<br>핵심 성공 동력<br><span class="accent-word">온톨로지(Ontology)</span> 프로젝트 분석</h1>
+    <p class="sub">온톨로지라는 지식 구조 체계 없이 도입된 생성형 AI는 맥락을 이해하지 못하는 단순 답변기에 불과하며, 비즈니스 현장에서는 결국 실패합니다. 이 브리핑은 온톨로지가 어떻게 환각을 억제하고, 레거시를 보존하며, 의사결정 속도를 2일에서 10분으로 단축시키는지를 분석합니다.</p>
     <div class="chip-row">
-      <a class="chip" href="#howitworks">6단계 작동원리</a>
-      <a class="chip" href="#implementation">날씨 에이전트 실습</a>
-      <a class="chip" href="#comparison">RAG·파인튜닝과 비교</a>
+      <a class="chip" href="#hallucination">환각률 32% → 5%</a>
+      <a class="chip" href="#industry">ROI: 2일 → 10분</a>
+      <a class="chip" href="#conclusion">액션 플랜 3가지</a>
     </div>
   </div>
 </section>
 
 
-<section id="overview">
+<section id="summary">
   <div class="wrap reveal">
-    <div class="kicker">Overview</div>
-    <h2 class="title">Tool Calling이란?</h2>
-    <p class="lede">LLM이 사용자의 자연어 입력을 분석해, 목적 달성을 위해 <b>미리 정의된 외부 도구(API, 함수, DB 검색 등)를 자율적으로 선택하고 실행할 수 있도록 하는 메커니즘</b>입니다. LLM이 "어떤 도구를, 어떤 파라미터로 실행해야 하는지"를 JSON 형태의 구조화된 데이터로 출력합니다.</p>
-
-    <h3 style="font-size:15px;font-weight:700;margin-top:44px;margin-bottom:14px;">Function Calling과의 차이점</h3>
-    <div class="compare-2">
-      <div class="cc-card">
-        <h4>Function Calling</h4>
-        <p class="small">2023년 OpenAI가 처음 도입한 개념. 개발자가 정의한 '특정 함수'를 호출하도록 LLM이 인자값을 만들어주는 기능입니다.</p>
-      </div>
-      <div class="cc-card b">
-        <h4>Tool Calling (상위 개념)</h4>
-        <p class="small">Function Calling을 포함하는 상위 개념. 사용자 정의 함수뿐 아니라 웹 브라우징, 코드 실행기, 파일 시스템 접근 등 다양한 형태의 '도구'를 호출하는 현대적·확장된 개념입니다.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="components" style="background:var(--paper-tint);">
-  <div class="wrap reveal">
-    <div class="kicker">Architecture</div>
-    <h2 class="title">핵심 구성요소</h2>
-    <p class="lede">Tool Calling이 포함된 시스템은 다음 요소들이 유기적으로 맞물려 루프(Loop)를 형성합니다.</p>
+    <div class="kicker">Executive Summary</div>
+    <h2 class="title">핵심 요약</h2>
 
     <div class="feat-list">
-      <div class="feat-item"><div class="fi" style="background:var(--acc-a);">1</div><div><b>Tool Definition (도구 정의 스키마)</b><span>"내가 가진 도구는 이런 것들이고, 이런 규칙으로 써야 해"를 알려주는 설명서. JSON Schema로 이름·설명·필수 입력값 등을 정의합니다.</span></div></div>
-      <div class="feat-item"><div class="fi" style="background:var(--acc-a);">2</div><div><b>LLM (추론 엔진)</b><span>사용자 요청과 도구 정의서를 비교 분석해, 도구가 필요한지 판단하고 실행 파라미터를 생성합니다.</span></div></div>
-      <div class="feat-item"><div class="fi" style="background:var(--acc-b);">3</div><div><b>Tool Executor (도구 실행기)</b><span>LLM이 반환한 JSON을 받아 실제로 코드를 실행하거나 외부 API를 호출하는 애플리케이션 백엔드 계층</span></div></div>
-      <div class="feat-item"><div class="fi" style="background:var(--acc-b);">4</div><div><b>Orchestrator (에이전트 루프)</b><span>사용자 입력 → LLM의 도구 호출 판단 → 도구 실행 → 결과를 다시 LLM에 전달 → 최종 답변 생성의 전체 흐름을 제어</span></div></div>
+      <div class="feat-item"><div class="fi" style="background:var(--acc-a);">1</div><div><b>사상누각(A House of Cards)을 경계하라</b><span>온톨로지라는 지식 구조 체계 없이 도입된 생성형 AI는 맥락을 이해하지 못하는 단순 답변기에 불과하며, 비즈니스 현장에서는 결국 실패할 수밖에 없습니다.</span></div></div>
+      <div class="feat-item"><div class="fi" style="background:var(--acc-a);">2</div><div><b>AI-Ready Data의 재정의</b><span>단순히 정제된 데이터가 아니라, AI가 즉각적인 추론과 의사결정을 수행할 수 있도록 비즈니스 맥락과 인과관계가 주입된 '지식 자산'만이 생존의 열쇠입니다.</span></div></div>
+      <div class="feat-item"><div class="fi" style="background:var(--acc-b);">3</div><div><b>미션 크리티컬(Mission Critical) 신뢰성 확보</b><span>확률에 의존하는 LLM의 한계를 온톨로지의 결정론적 구조로 보완하여, 0.1%의 오차도 허용되지 않는 산업 현장에서 AI의 실무 적용 가능성을 증명합니다.</span></div></div>
+      <div class="feat-item"><div class="fi" style="background:var(--acc-b);">4</div><div><b>지속 가능한 지능형 인프라</b><span>레거시 시스템을 파괴하지 않고도 AI를 연결하는 시멘틱 레이어(Semantic Layer)를 통해 기업의 '데이터 부채'를 해결하고 자산화하는 것이 본 프로젝트의 핵심 가치입니다.</span></div></div>
     </div>
   </div>
 </section>
 
-<section id="howitworks">
+<section id="definition" style="background:var(--paper-tint);">
   <div class="wrap reveal">
-    <div class="kicker">ReAct-based</div>
-    <h2 class="title">작동 원리 (Step-by-Step)</h2>
-    <p class="lede">ReAct(Reasoning + Acting) 패턴을 기반으로 한 Tool Calling의 흐름입니다.</p>
+    <div class="kicker">Definition</div>
+    <h2 class="title">온톨로지의 본질적 정의 및 기존 DB와의 차별점</h2>
+    <p class="lede">온톨로지는 데이터를 단순히 저장하는 물리적 공간이 아니라, 데이터 간의 의미와 관계를 정의하는 고도화된 지식 구조입니다. 이를 <b>교통 체계</b>에 비유할 수 있습니다.</p>
 
-    <div class="trig-box">
-      <ol>
-        <li><b>사용자 요청</b> — "현재 애플(AAPL) 주가가 얼마야?"</li>
-        <li><b>LLM의 추론(Thought)</b> — "내 학습 데이터에는 실시간 주가 정보가 없네. get_stock_price 도구를 써야겠다. ticker: 'AAPL'로 설정하자."</li>
-        <li><b>도구 호출 요청(Action)</b> — LLM이 텍스트 대신 <code>{"name":"get_stock_price","arguments":{"ticker":"AAPL"}}</code> JSON을 출력</li>
-        <li><b>도구 실행</b> — 오케스트레이터가 JSON을 가로채 실제 주가 조회 API를 실행</li>
-        <li><b>결과 관찰(Observation)</b> — API 실행 결과(예: <code>{"price":150.25}</code>)를 다시 LLM에 전달</li>
-        <li><b>최종 응답 생성</b> — "현재 애플의 주가는 $150.25입니다."</li>
-      </ol>
-    </div>
-  </div>
-</section>
-
-<section id="proscons" style="background:var(--paper-tint);">
-  <div class="wrap reveal">
-    <div class="kicker">Trade-offs</div>
-    <h2 class="title">특징 및 장단점</h2>
-    <div class="pc-grid">
-      <div class="pc-card pro">
-        <h4>✅ 장점</h4>
-        <div class="pc-item"><span class="n">·</span><div><b>LLM 능력의 무한한 확장</b><span>실시간 검색, 복잡한 수학 연산, 파일 조작, 이메일·슬랙 연동이 가능해짐</span></div></div>
-        <div class="pc-item"><span class="n">·</span><div><b>환각 방지</b><span>모르는 사실을 지어내는 대신 외부 도구(검색, RAG)로 검증된 팩트 기반 답변</span></div></div>
-        <div class="pc-item"><span class="n">·</span><div><b>모듈식 확장성</b><span>재학습 없이 새 도구(API) 등록만으로 능력이 계속 늘어남</span></div></div>
+    <div class="compare-2">
+      <div class="cc-card">
+        <h4>데이터베이스 (DB)</h4>
+        <p class="small">자동차가 주행하는 물리적인 <b>'도로 인프라'</b>입니다.</p>
       </div>
-      <div class="pc-card con">
-        <h4>❌ 단점</h4>
-        <div class="pc-item"><span class="n">·</span><div><b>비용 및 지연 시간 증가</b><span>LLM→도구 실행→LLM의 여러 번 핑퐁(Round-trip)으로 응답 속도 저하, 토큰 비용 증가</span></div></div>
-        <div class="pc-item"><span class="n">·</span><div><b>보안 위험</b><span>LLM이 생성한 파라미터로 실제 코드가 실행되므로, 프롬프트 인젝션으로 <code>delete_all_data()</code> 같은 도구가 실행될 위험. 철저한 입력 검증·샌드박싱 필수</span></div></div>
+      <div class="cc-card b">
+        <h4>온톨로지 (Ontology)</h4>
+        <p class="small">일방통행, 속도 제한, 특정 차량 통행 금지 등 도로 위에서 차량이 안전하고 목적에 맞게 움직이도록 규제하고 안내하는 <b>'교통 체계 및 운행 규칙'</b>입니다.</p>
       </div>
     </div>
-  </div>
-</section>
 
-<section id="usecases">
-  <div class="wrap reveal">
-    <div class="kicker">Use Cases</div>
-    <h2 class="title">주요 활용 분야</h2>
-    <div class="org-grid">
-      <div class="org-card">
-        <h4>대화형 커머스 · CS 챗봇</h4>
-        <ul><li>"배송 언제 와?" → 내부 DB 조회 도구</li><li>반품 처리 API 호출로 환불 자동화</li></ul>
-      </div>
-      <div class="org-card">
-        <h4>데이터 분석 에이전트</h4>
-        <ul><li>CSV 업로드 + 분석 요청</li><li>Code Interpreter 도구로 차트 생성</li></ul>
-      </div>
-      <div class="org-card">
-        <h4>자율적 리서치 비서</h4>
-        <ul><li>여러 번 웹 검색 도구 호출</li><li>종합해 시장 동향 보고서 작성</li></ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="implementation" style="background:var(--paper-tint);">
-  <div class="wrap reveal">
-    <div class="kicker">[실습]</div>
-    <h2 class="title">Python으로 Tool Calling 에이전트 직접 구축하기</h2>
-    <p class="lede">OpenAI API로 LLM이 '날씨 조회 도구'를 스스로 판단하고 호출하는 완전한 Agent Loop를 구현합니다.</p>
-
-    <div class="code-block">
-      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">setup.sh</div></div>
-      <pre><code>pip install openai python-dotenv</code></pre>
-    </div>
-
-    <div class="code-block">
-      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">tool_calling_agent.py</div></div>
-      <pre><code><span class="kw">import</span> os, json
-<span class="kw">from</span> openai <span class="kw">import</span> OpenAI
-
-client = OpenAI(api_key=os.getenv(<span class="st">"OPENAI_API_KEY"</span>))
-
-<span class="cm"># 1. 실제 실행될 함수 (도구 구현)</span>
-<span class="kw">def</span> get_current_weather(location: <span class="fn">str</span>, unit: <span class="fn">str</span> = <span class="st">"celsius"</span>) -&gt; <span class="fn">str</span>:
-    <span class="cm"># 실제로는 외부 날씨 API를 호출. 여기서는 모의 데이터 반환</span>
-    mock_db = {<span class="st">"서울"</span>: {<span class="st">"temperature"</span>: <span class="fn">22</span>, <span class="st">"condition"</span>: <span class="st">"맑음"</span>},
-               <span class="st">"런던"</span>: {<span class="st">"temperature"</span>: <span class="fn">18</span>, <span class="st">"condition"</span>: <span class="st">"비"</span>}}
-    info = mock_db.get(location, {<span class="st">"temperature"</span>: <span class="fn">20</span>, <span class="st">"condition"</span>: <span class="st">"알 수 없음"</span>})
-    info[<span class="st">"location"</span>] = location; info[<span class="st">"unit"</span>] = unit
-    <span class="kw">return</span> json.dumps(info, ensure_ascii=<span class="kw">False</span>)
-
-<span class="cm"># 2. 도구 명세서 (JSON Schema)</span>
-tools_definition = [{<span class="st">"type"</span>: <span class="st">"function"</span>, <span class="st">"function"</span>: {
-    <span class="st">"name"</span>: <span class="st">"get_current_weather"</span>,
-    <span class="st">"description"</span>: <span class="st">"특정 도시의 현재 날씨와 기온 정보를 가져옵니다."</span>,
-    <span class="st">"parameters"</span>: {<span class="st">"type"</span>: <span class="st">"object"</span>,
-        <span class="st">"properties"</span>: {<span class="st">"location"</span>: {<span class="st">"type"</span>: <span class="st">"string"</span>}, <span class="st">"unit"</span>: {<span class="st">"type"</span>: <span class="st">"string"</span>, <span class="st">"enum"</span>: [<span class="st">"celsius"</span>,<span class="st">"fahrenheit"</span>]}},
-        <span class="st">"required"</span>: [<span class="st">"location"</span>]}
-}}]
-
-<span class="cm"># 3. 에이전트 루프 (Orchestrator)</span>
-<span class="kw">def</span> run_agent(user_prompt: <span class="fn">str</span>):
-    messages = [{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: user_prompt}]
-    response = client.chat.completions.create(
-        model=<span class="st">"gpt-4o-mini"</span>, messages=messages,
-        tools=tools_definition, tool_choice=<span class="st">"auto"</span>
-    )
-    msg = response.choices[<span class="fn">0</span>].message
-
-    <span class="kw">if</span> msg.tool_calls:
-        messages.append(msg)
-        <span class="kw">for</span> tc <span class="kw">in</span> msg.tool_calls:
-            args = json.loads(tc.function.arguments)
-            result = get_current_weather(location=args.get(<span class="st">"location"</span>), unit=args.get(<span class="st">"unit"</span>, <span class="st">"celsius"</span>))
-            messages.append({<span class="st">"tool_call_id"</span>: tc.id, <span class="st">"role"</span>: <span class="st">"tool"</span>,
-                              <span class="st">"name"</span>: tc.function.name, <span class="st">"content"</span>: result})
-        final = client.chat.completions.create(model=<span class="st">"gpt-4o-mini"</span>, messages=messages)
-        <span class="fn">print</span>(f<span class="st">"🤖 {final.choices[0].message.content}"</span>)
-    <span class="kw">else</span>:
-        <span class="fn">print</span>(f<span class="st">"🤖 {msg.content}"</span>)
-
-run_agent(<span class="st">"안녕! 넌 누구야?"</span>)        <span class="cm"># 도구 호출 불필요</span>
-run_agent(<span class="st">"지금 서울 날씨 어때?"</span>)     <span class="cm"># 도구 호출 필요</span></code></pre>
-    </div>
-
-    <div class="out-block">
-      <span class="arrow">▶</span> 👤 "안녕! 넌 누구야?"<br>
-      &nbsp;&nbsp;🤖 "안녕하세요! 저는 여러분의 질문에 답변하고 도움을 드리는 AI 어시스턴트입니다."<br><br>
-      &nbsp;&nbsp;👤 "지금 서울 날씨 어때?"<br>
-      &nbsp;&nbsp;[시스템 로그] 🛠️ 도구 실행 중: get_current_weather(location='서울')<br>
-      &nbsp;&nbsp;🤖 "현재 서울의 날씨는 맑으며, 기온은 섭씨 22도입니다."
-    </div>
-  </div>
-</section>
-
-<section id="comparison">
-  <div class="wrap reveal">
-    <div class="kicker">At a Glance</div>
-    <h2 class="title">한눈에 비교: Tool Calling vs RAG vs 파인튜닝</h2>
+    <h3 style="font-size:15px;font-weight:700;margin-top:36px;margin-bottom:14px;">비교 분석: 일반 데이터베이스(RDB) vs 온톨로지</h3>
     <div class="cmp-table-wrap">
       <table class="cmp-table">
-        <tr><th>비교 항목</th><th class="col-a">Tool Calling</th><th>RAG</th><th class="col-b">Fine-Tuning</th></tr>
-        <tr><td>핵심 목적</td><td>'행동(Action)'을 수행</td><td>'지식(Knowledge)'을 참고</td><td>'뇌 구조(가중치)' 자체를 변경</td></tr>
-        <tr><td>작동 방식</td><td>API 호출, DB 쓰기, 코드 실행</td><td>벡터 DB 검색 후 프롬프트에 삽입</td><td>특정 도메인 데이터셋으로 재학습</td></tr>
-        <tr><td>데이터 실시간성</td><td>최상 (실시간 API 즉시 조회)</td><td>높음 (DB 업데이트 주기에 따름)</td><td>낮음 (학습 시점에 고정)</td></tr>
-        <tr><td>주요 사용처</td><td>날씨/주식 조회, 예약, 자동화</td><td>사내 문서 검색, 매뉴얼 QA</td><td>말투 학습, 도메인 용어 체득</td></tr>
+        <tr><th>구분</th><th>일반 데이터베이스 (RDB)</th><th class="col-a">온톨로지 (Ontology)</th></tr>
+        <tr><td>핵심 목적</td><td>데이터의 물리적 저장 및 CRUD 관리</td><td>데이터 간 의미 정의 및 지식 구조화</td></tr>
+        <tr><td>데이터 처리</td><td>스키마 기반의 데이터 조회 및 검색</td><td>논리적 추론 및 새로운 지식의 발견</td></tr>
+        <tr><td>비즈니스 가치</td><td>현상 데이터의 보존</td><td>맥락 이해 및 인과관계 파악</td></tr>
+        <tr><td>핵심 기능</td><td>데이터 정합성 유지</td><td>비결정론적 LLM의 결정론적 제어</td></tr>
+        <tr><td>비유</td><td>도로 인프라 그 자체</td><td>지능형 교통 관제 시스템 및 규칙</td></tr>
       </table>
     </div>
-    <div class="note-box" style="margin-top:20px;"><b>상호 관계</b> — RAG 시스템을 실행하기 위한 '도구' 중 하나로 Tool Calling을 사용할 수 있습니다 (융합 가능).</div>
+
+    <h3 style="font-size:15px;font-weight:700;margin-top:36px;margin-bottom:14px;">4대 필수 구성 요소</h3>
+    <div class="org-grid">
+      <div class="org-card"><h4>1 · 개념 (Concepts)</h4><p style="font-size:12.3px;color:var(--text-muted);margin:0;">특정 도메인이나 업(Business)의 핵심 객체(Entity)</p></div>
+      <div class="org-card"><h4>2 · 관계 (Relationships)</h4><p style="font-size:12.3px;color:var(--text-muted);margin:0;">개념들 사이의 의미론적 연결 고리</p></div>
+      <div class="org-card"><h4>3 · 인스턴스 (Instances)</h4><p style="font-size:12.3px;color:var(--text-muted);margin:0;">온톨로지 구조에 매핑된 실제 데이터 값</p></div>
+      <div class="org-card"><h4>4 · 규칙/공리 (Rules/Axioms)</h4><p style="font-size:12.3px;color:var(--text-muted);margin:0;">"해서는 안 될 행동과 해야 할 행동"을 규정하는 비즈니스 가이드라인이자 판단의 절대적 기준</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="hallucination">
+  <div class="wrap reveal">
+    <div class="kicker">Hallucination Control</div>
+    <h2 class="title">생성형 AI의 한계 극복 — 할루시네이션 억제 기술</h2>
+    <p class="lede">LLM 단독 사용 시 발생하는 높은 환각률은 기업용 AI 도입의 최대 걸림돌입니다. 온톨로지는 이를 구조적으로 억제합니다.</p>
+
+    <div class="receipt-row" style="grid-template-columns:1fr 1fr;">
+      <div class="receipt">
+        <h5>Base LLM 단독 사용</h5>
+        <div class="rtotal"><span>환각률</span><span>약 32%</span></div>
+      </div>
+      <div class="receipt hi">
+        <h5>온톨로지 결합 시</h5>
+        <div class="rtotal"><span>환각률</span><span>약 5% 이하</span></div>
+      </div>
+    </div>
+    <div class="safe-box" style="margin-top:20px;"><b>신뢰도 혁신</b> — 온톨로지 결합만으로 환각률이 6배 이상 감소합니다.</div>
+
+    <h3 style="font-size:15px;font-weight:700;margin-top:36px;margin-bottom:4px;">OQL(Ontology Query Language)의 역할</h3>
+    <p class="lede" style="margin-top:0;">인포시즈가 개발한 OQL은 LLM의 자유도를 통제하고 비결정론적 특성을 결정론적 경로로 강제하는 핵심 메커니즘입니다.</p>
+    <div class="usewhen">
+      <span>결정론적 경로 강제 — LLM에게 쿼리 생성 전권을 주지 않고 논리적 검증 레이어를 거치게 함</span>
+      <span>벤더 종속성 탈피 — OQL의 개방성(Open Source 사상)으로 특정 솔루션에 종속되지 않음</span>
+    </div>
+
+    <h3 style="font-size:15px;font-weight:700;margin-top:36px;margin-bottom:4px;">인과관계 추론 (Causal Inference)</h3>
+    <p class="lede" style="margin-top:0;">단순히 유사한 텍스트를 찾아주는 벡터 DB의 한계를 넘어, 온톨로지는 <b>'A의 변화가 B에 미치는 영향'</b>을 논리적으로 추적합니다.</p>
+    <div class="note-box">설비 고장 시 단순 유사 패턴 매칭이 아닌, 밸브와 펌프의 물리적/논리적 연결 관계를 기반으로 정확한 원인을 도출합니다.</div>
+  </div>
+</section>
+
+<section id="semanticlayer" style="background:var(--paper-tint);">
+  <div class="wrap reveal">
+    <div class="kicker">Architecture Strategy</div>
+    <h2 class="title">시멘틱 레이어와 데이터 아키텍처 전략</h2>
+    <p class="lede">기업은 기존 ERP, CRM 등의 레거시를 폐기할 필요가 없습니다. 그 위에 배치된 시멘틱 레이어가 레거시의 복잡한 스키마를 AI가 이해할 수 있는 비즈니스 언어로 변환하는 <b>'중간 통역자'</b> 역할을 수행합니다.</p>
+
+    <h3 style="font-size:15px;font-weight:700;margin-top:36px;margin-bottom:14px;">하이브리드 데이터 전략의 기술적 필연성</h3>
+    <p class="lede" style="margin-top:0;">현재의 LLM 구조는 수만 행의 정형 데이터를 한꺼번에 읽고 처리하지 못하는 한계가 있어, 다음 아키텍처링이 필수적입니다.</p>
+
+    <div class="org-grid">
+      <div class="org-card">
+        <h4>RDB (정형 데이터)</h4>
+        <p style="font-size:12.3px;color:var(--text-muted);margin:0;">시멘틱 레이어가 RDB에서 데이터를 먼저 <b>합산(Aggregation)</b>하거나 전처리하여 AI가 읽기 좋은 형태로 제공</p>
+      </div>
+      <div class="org-card">
+        <h4>Vector DB (유사도)</h4>
+        <p style="font-size:12.3px;color:var(--text-muted);margin:0;">비정형 문서의 유사 맥락 검색</p>
+      </div>
+      <div class="org-card">
+        <h4>Graph DB (관계/위상)</h4>
+        <p style="font-size:12.3px;color:var(--text-muted);margin:0;">객체 간 복잡한 영향도 및 인과관계 분석</p>
+      </div>
+    </div>
+    <div class="note-box" style="margin-top:24px;">이 세 가지 엔진을 비즈니스 질문의 성격에 따라 최적화하여 매니징하는 능력이 곧 AI 서비스의 품질을 결정합니다.</div>
+  </div>
+</section>
+
+<section id="methodology">
+  <div class="wrap reveal">
+    <div class="kicker">Methodology &amp; Governance</div>
+    <h2 class="title">온톨로지 구축 방법론 및 거버넌스</h2>
+    <p class="lede">4단계 구축 프로세스와 검증 사이클입니다.</p>
+
+    <div class="pipeline">
+      <div class="pl-stage s0"><div class="plnum">1</div><div class="plname">문제 정의</div><div class="pldesc">해결하고자 하는 구체적인 비즈니스 퀘스천(Business Question) 선정</div></div>
+      <div class="pl-connector">→</div>
+      <div class="pl-stage s1"><div class="plnum">2</div><div class="plname">데이터 선별</div><div class="pldesc">기준 정보 및 의미론적 연결이 필요한 핵심 데이터 식별</div></div>
+      <div class="pl-connector">→</div>
+      <div class="pl-stage s2"><div class="plnum">3</div><div class="plname">의미 구조화</div><div class="pldesc">개념, 관계 정의 및 비즈니스 공리 주입</div></div>
+      <div class="pl-connector">→</div>
+      <div class="pl-stage s3"><div class="plnum">4 · 핵심</div><div class="plname">검증(Verification) 사이클</div><div class="pldesc">도메인 전문가와 함께 정확성을 반복 검증하여 사람의 지능을 구조화된 시스템으로 전이</div></div>
+    </div>
+
+    <h3 style="font-size:15px;font-weight:700;margin-top:44px;margin-bottom:4px;">조직적 협업 — 암묵지의 디지털화</h3>
+    <p class="lede" style="margin-top:0;">온톨로지 엔지니어와 IT 전문가의 기술력보다 중요한 것은 현업 도메인 전문가의 <b>암묵지(Implicit Knowledge)를 디지털화</b>하는 것입니다. 부서 간 데이터 사일로(Silo)를 해결하기 위해 데이터 오너십을 개방하고, 전사 KPI에 맞춘 공통의 온톨로지 거버넌스를 수립해야 합니다.</p>
+
+    <h3 style="font-size:15px;font-weight:700;margin-top:36px;margin-bottom:4px;">데이터 부채(Data Debt) 해결 전략</h3>
+    <p class="lede" style="margin-top:0;">단순히 수치(Value)만 저장하던 방식에서 벗어나, <b>시공간적 맥락(Temporal &amp; Spatial Context)</b> 데이터를 함께 저장해야 합니다.</p>
+    <div class="danger-box">설비 온도가 100도일 때, 이것이 '정상 가동 중'의 수치인지 '부품 교체 직후'의 수치인지에 따라 AI의 판단은 완전히 달라져야 합니다.</div>
+  </div>
+</section>
+
+<section id="industry" style="background:var(--paper-tint);">
+  <div class="wrap reveal">
+    <div class="kicker">Industry Cases &amp; ROI</div>
+    <h2 class="title">산업별 활용 사례 및 경제적 가치</h2>
+
+    <h3 style="font-size:15px;font-weight:700;margin-bottom:14px;">주요 산업군 적용 사례</h3>
+    <div class="org-grid">
+      <div class="org-card">
+        <h4>금융</h4>
+        <p style="font-size:12.3px;color:var(--text-muted);margin:0;">복잡한 규제 및 약관 변경 시 내부 시스템의 자동 대응, 지능형 언더라이팅(보험 심사)</p>
+      </div>
+      <div class="org-card">
+        <h4>제조</h4>
+        <p style="font-size:12.3px;color:var(--text-muted);margin:0;">반도체 수율 관리, 위험성 평가(HAZOP) 시뮬레이션, 품질 이력 추적(QMS/Traceability) 고도화</p>
+      </div>
+      <div class="org-card">
+        <h4>SCM</h4>
+        <p style="font-size:12.3px;color:var(--text-muted);margin:0;">재고 급증 시 수요 변동, 리드타임, 전략적 판단 등 복합적 인과관계 분석</p>
+      </div>
+    </div>
+
+    <h3 style="font-size:15px;font-weight:700;margin-top:44px;margin-bottom:14px;">ROI 분석: 의사결정 속도 2일에서 10분으로 단축</h3>
+    <div class="receipt-row" style="grid-template-columns:1fr 1fr;">
+      <div class="receipt">
+        <h5>의사결정 소요 시간</h5>
+        <div class="rline"><span>도입 전</span><span>약 2일</span></div>
+        <div class="rtotal"><span>도입 후</span><span>약 10분</span></div>
+      </div>
+      <div class="receipt hi">
+        <h5>설계 검증 리뷰 시간</h5>
+        <div class="rtotal"><span>단축률</span><span>30% 이상</span></div>
+      </div>
+    </div>
+    <div class="usewhen" style="margin-top:20px;">
+      <span>기회비용 혁신 — 단순 비용 절감을 넘어 비즈니스 민첩성(Agility) 확보</span>
+      <span>품질 및 신뢰성 — 의사결정의 명확한 근거(Traceability) 제시</span>
+    </div>
   </div>
 </section>
 
 <section class="summary" id="conclusion">
   <div class="wrap reveal">
     <div class="kicker on-dark">Conclusion</div>
-    <h2 class="title on-dark">마치며 — Tool Calling의 미래와 MCP</h2>
-    <p class="lede on-dark">초기의 Tool Calling은 개발자가 하나하나 함수를 구현하고 LLM에 바인딩하는 복잡한 과정을 거쳐야 했습니다. 하지만 최근에는 <b>MCP(Model Context Protocol)</b>라는 새로운 오픈소스 표준이 등장했습니다.</p>
+    <h2 class="title on-dark">결론 및 미래 전망</h2>
 
-    <div class="recap-list">
-      <div class="recap-item"><span class="num">01</span><span class="rt">MCP를 활용하면 도구를 별도의 서버로 분리해, Claude든 GPT든 상관없이 <b>"플러그 앤 플레이"</b> 방식으로 도구를 손쉽게 공유·연동할 수 있습니다.</span></div>
-      <div class="recap-item"><span class="num">02</span><span class="rt">Tool Calling은 LLM을 단순한 '말동무'에서 실질적인 비즈니스 가치를 창출하는 <b>'디지털 노동자(AI Agent)'</b>로 진화시키는 핵심 심장입니다.</span></div>
+    <h3 class="title on-dark" style="font-size:16px;margin-bottom:16px;">자율 운영 엔진으로의 진화</h3>
+    <p class="lede on-dark">온톨로지는 향후 <b>디지털 트윈(Digital Twin)</b> 및 <b>피지컬 AI(로봇 등)</b>와 결합하여, 스스로 상황을 시뮬레이션하고 최적의 대안을 선택하는 '자율 의사결정 엔진'으로 진화할 것입니다. 이는 기업의 지능을 담당하는 <b>중추신경계</b>가 될 것입니다.</p>
+
+    <h3 class="title on-dark" style="font-size:16px;margin-top:36px;margin-bottom:16px;">전략적 제언 — 당장 시작해야 할 액션 플랜</h3>
+    <p class="lede on-dark">기업 고유의 지식 자산인 <b>소버린 온톨로지(Sovereign Ontology)</b> 구축을 위해 지금 즉시 다음을 실행해야 합니다.</p>
+
+    <div class="impl-tree" style="background:rgba(255,255,255,0.04);">
+      <div class="impl-row"><span class="iq">1 · 핵심 자산 식별</span><span class="ia">보고서·회의록·SOP를 최우선 데이터 자산화 대상으로 선정</span></div>
+      <div class="impl-row"><span class="iq">2 · 전문 파트너십</span><span class="ia">그래프 DB·온톨로지 설계 역량을 갖춘 전문 업체와 협업해 시행착오 최소화</span></div>
+      <div class="impl-row"><span class="iq">3 · 암묵지의 자산화</span><span class="ia">고숙련자의 노하우를 인터뷰·디지털 기록으로 온톨로지 구조에 이식</span></div>
     </div>
 
-    <div class="final-line" style="margin-top:30px;"><b>기억할 것 한 줄</b> — AI 서비스 개발을 계획한다면, 프롬프트 엔지니어링을 넘어 Tool Calling 아키텍처 설계 역량은 선택이 아닌 필수입니다.</div>
+    <div class="final-line" style="margin-top:30px;"><b>기억할 것 한 줄</b> — 암묵지의 자산화는 글로벌 시장에서 대체 불가능한 경쟁 우위가 될 것입니다.</div>
   </div>
 </section>
 
@@ -683,7 +754,7 @@ run_agent(<span class="st">"지금 서울 날씨 어때?"</span>)     <span clas
 
 <footer>
   <div class="wrap">
-    <span>Tool Calling 완벽 가이드 · A10 · AI 에이전트</span>
+    <span>온톨로지 프로젝트 분석 브리핑 · H01 · DB and Ontology</span>
     <a class="totop" href="#top">맨 위로 ↑</a>
   </div>
 </footer>

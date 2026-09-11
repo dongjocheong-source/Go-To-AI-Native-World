@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Agent의 핵심 무기 Tool Calling(도구 호출) 완벽 가이드 — 정의, 구성요소, 장단점, 실습</title>
-<meta name="description" content="Tool Calling의 정의, Function Calling과의 차이, 핵심 구성요소, ReAct 기반 작동 원리, 장단점, 활용 분야, OpenAI API 실습 코드, Tool Calling vs RAG vs 파인튜닝 비교, MCP와의 관계까지 정리한 완벽 가이드">
+<title>AI Agent와 Agentic AI의 차이 완벽 정리 — 정의, 특징 및 장단점, 활용 분야, 실습</title>
+<meta name="description" content="Tool Calling의 정의와 구성요소, AI Agent(단일 에이전트)와 Agentic AI(다중 에이전트)의 활용 차이, 장단점, 활용처, OpenAI/CrewAI 실습 코드, 한눈에 비교표까지 정리한 완벽 가이드">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -19,10 +19,10 @@
     --line:#E7E1FA;
     --text-dark:#1B1730;
     --text-muted:#655F82;
-    --acc-a:#2563EB;
-    --acc-a-ink:#173E99;
-    --acc-b:#059669;
-    --acc-b-ink:#054F35;
+    --acc-a:#0E9488;
+    --acc-a-ink:#065048;
+    --acc-b:#C2255C;
+    --acc-b-ink:#7A1640;
     --acc-c:#8880B0;
     --acc-c-ink:#3A3560;
     --danger:#D6455B;
@@ -323,8 +323,8 @@
 
 
   .hero-simple{
-    background:radial-gradient(circle at 18% 22%, rgba(37,99,235,0.22), transparent 45%),
-               radial-gradient(circle at 84% 18%, rgba(5,150,105,0.18), transparent 45%),
+    background:radial-gradient(circle at 18% 22%, rgba(14,148,136,0.2), transparent 45%),
+               radial-gradient(circle at 84% 18%, rgba(194,37,92,0.2), transparent 45%),
                linear-gradient(180deg,var(--ink) 0%, var(--ink-deep) 100%);
     color:var(--paper);min-height:92vh;display:flex;align-items:center;overflow:hidden;padding:120px 0 64px;
   }
@@ -439,13 +439,13 @@
 
 <header class="nav" id="siteNav">
   <div class="wrap">
-    <div class="brand"><span class="dot2"><span></span><span></span></span> Tool Calling 완벽 가이드 · A10 · AI 에이전트</div>
+    <div class="brand"><span class="dot2"><span></span><span></span></span> AI Agent vs Agentic AI · A10 · AI 에이전트</div>
     <nav class="links">
       <a href="#overview">개요</a>
-      <a href="#components">구성요소</a>
-      <a href="#howitworks">작동원리</a>
+      <a href="#toolcalling">ToolCalling</a>
+      <a href="#diff">활용차이</a>
       <a href="#proscons">장단점</a>
-      <a href="#usecases">활용분야</a>
+      <a href="#usecases">활용처</a>
       <a href="#implementation">실습</a>
       <a href="#comparison">비교</a>
     </nav>
@@ -454,28 +454,45 @@
 </header>
 
 <div class="mobile-menu" id="mobileMenu">
-  <a href="#overview">Tool Calling이란</a>
-  <a href="#components">핵심 구성요소</a>
-  <a href="#howitworks">작동 원리 (Step-by-Step)</a>
+  <a href="#overview">개념 및 정의</a>
+  <a href="#toolcalling">Tool Calling 구성요소</a>
+  <a href="#diff">활용 방식의 차이</a>
   <a href="#proscons">특징 및 장단점</a>
-  <a href="#usecases">주요 활용 분야</a>
-  <a href="#implementation">[실습] 날씨 에이전트 구축</a>
-  <a href="#comparison">Tool Calling vs RAG vs 파인튜닝</a>
-  <a href="#conclusion">마치며 · MCP</a>
+  <a href="#usecases">활용되는 곳</a>
+  <a href="#implementation">[실습] 두 방식 구현 코드</a>
+  <a href="#comparison">한눈에 비교</a>
+  <a href="#conclusion">마치며</a>
 </div>
 <button class="mobile-close" id="mobileClose">×</button>
 
 <main>
 
-<section class="hero-simple" id="top">
-  <div class="wrap">
-    <div class="eyebrow">A10 · AI Basic · AI 에이전트의 핵심 무기</div>
-    <h1>AI Agent의 핵심 무기<br><span class="accent-word">Tool Calling(도구 호출)</span> 완벽 가이드</h1>
-    <p class="sub">"오늘 서울 날씨 어때?", "이메일 좀 보내줘" — LLM은 텍스트 창에 갇혀 실시간 데이터를 모르고, 실제로 메일을 보낼 수도 없습니다. 두뇌(AI)가 외부 세계와 상호작용할 수 있도록 '손과 발'을 달아주는 핵심 기술, Tool Calling을 정리합니다.</p>
-    <div class="chip-row">
-      <a class="chip" href="#howitworks">6단계 작동원리</a>
-      <a class="chip" href="#implementation">날씨 에이전트 실습</a>
-      <a class="chip" href="#comparison">RAG·파인튜닝과 비교</a>
+<section class="hero" id="top">
+  <div class="hero-split">
+    <div class="hero-panel pa">
+      <div>
+        <div class="plabel">AI Agent</div>
+        <div class="psub">단일 에이전트 · 1인 프리랜서</div>
+      </div>
+    </div>
+    <div class="hero-panel pb">
+      <div>
+        <div class="plabel">Agentic AI</div>
+        <div class="psub">다중 에이전트 · IT 회사</div>
+      </div>
+    </div>
+    <div class="hero-vs-mark">VS</div>
+  </div>
+  <div class="hero-copy">
+    <div class="wrap">
+      <div class="eyebrow">A10 · AI 에이전트 · 심화 비교</div>
+      <h1>AI Agent와 Agentic AI의 차이 완벽 정리</h1>
+      <p class="sub">두 패러다임이 텍스트 창을 벗어나 실제 시스템(웹, DB, API)과 상호작용하게 해주는 결정적 기술이 바로 <b>Tool Calling(도구 호출)</b>입니다. 두 시스템에서 Tool Calling이 어떻게 다르게 작동하는지, 파이썬 실전 코드로 비교합니다.</p>
+      <div class="chip-row">
+        <a class="chip" href="#toolcalling">Tool Calling이란</a>
+        <a class="chip" href="#implementation">단일 vs 멀티 실습코드</a>
+        <a class="chip" href="#comparison">비교표</a>
+      </div>
     </div>
   </div>
 </section>
@@ -483,54 +500,62 @@
 
 <section id="overview">
   <div class="wrap reveal">
-    <div class="kicker">Overview</div>
-    <h2 class="title">Tool Calling이란?</h2>
-    <p class="lede">LLM이 사용자의 자연어 입력을 분석해, 목적 달성을 위해 <b>미리 정의된 외부 도구(API, 함수, DB 검색 등)를 자율적으로 선택하고 실행할 수 있도록 하는 메커니즘</b>입니다. LLM이 "어떤 도구를, 어떤 파라미터로 실행해야 하는지"를 JSON 형태의 구조화된 데이터로 출력합니다.</p>
+    <div class="kicker">Definitions</div>
+    <h2 class="title">개념 및 정의</h2>
+    <p class="lede">Tool Calling(과거 명칭: Function Calling)은 LLM이 사용자 요청을 분석해, 자신의 내재된 지식만으로 해결할 수 없는 문제를 만났을 때 <b>외부 도구를 자율적으로 선택·실행할 파라미터를 생성하는 메커니즘</b>입니다. Tool Calling을 사용하는 주체에 따라 시스템의 명칭과 스케일이 달라집니다.</p>
 
-    <h3 style="font-size:15px;font-weight:700;margin-top:44px;margin-bottom:14px;">Function Calling과의 차이점</h3>
     <div class="compare-2">
       <div class="cc-card">
-        <h4>Function Calling</h4>
-        <p class="small">2023년 OpenAI가 처음 도입한 개념. 개발자가 정의한 '특정 함수'를 호출하도록 LLM이 인자값을 만들어주는 기능입니다.</p>
+        <h4>AI Agent · 단일 에이전트 기반</h4>
+        <p class="small">LLM을 두뇌로 삼아 특정 도구들을 쥐여주고 <b>단일 작업</b>을 수행하게 만든 독립적 개체. 주로 ReAct 루프(생각→도구 호출→관찰)를 반복합니다.<br><br><b>비유</b> — 도구를 잘 다루는 유능한 1인 프리랜서</p>
       </div>
       <div class="cc-card b">
-        <h4>Tool Calling (상위 개념)</h4>
-        <p class="small">Function Calling을 포함하는 상위 개념. 사용자 정의 함수뿐 아니라 웹 브라우징, 코드 실행기, 파일 시스템 접근 등 다양한 형태의 '도구'를 호출하는 현대적·확장된 개념입니다.</p>
+        <h4>Agentic AI · 다중 에이전트 기반</h4>
+        <p class="small">단일 에이전트의 한계를 넘어, <b>여러 전문 에이전트</b>가 역할을 분담하고 협력해 복잡한 장기 목표를 달성하는 시스템. 자율적 계획, 자기 반성, 메모리 공유, 오케스트레이션이 포함됩니다.<br><br><b>비유</b> — 기획자·개발자·디자이너·QA가 모여 일하는 하나의 IT 회사</p>
       </div>
     </div>
   </div>
 </section>
 
-<section id="components" style="background:var(--paper-tint);">
+<section id="toolcalling" style="background:var(--paper-tint);">
   <div class="wrap reveal">
-    <div class="kicker">Architecture</div>
-    <h2 class="title">핵심 구성요소</h2>
-    <p class="lede">Tool Calling이 포함된 시스템은 다음 요소들이 유기적으로 맞물려 루프(Loop)를 형성합니다.</p>
+    <div class="kicker">Core Mechanism</div>
+    <h2 class="title">Tool Calling의 구성요소 및 작동 원리</h2>
 
     <div class="feat-list">
-      <div class="feat-item"><div class="fi" style="background:var(--acc-a);">1</div><div><b>Tool Definition (도구 정의 스키마)</b><span>"내가 가진 도구는 이런 것들이고, 이런 규칙으로 써야 해"를 알려주는 설명서. JSON Schema로 이름·설명·필수 입력값 등을 정의합니다.</span></div></div>
-      <div class="feat-item"><div class="fi" style="background:var(--acc-a);">2</div><div><b>LLM (추론 엔진)</b><span>사용자 요청과 도구 정의서를 비교 분석해, 도구가 필요한지 판단하고 실행 파라미터를 생성합니다.</span></div></div>
-      <div class="feat-item"><div class="fi" style="background:var(--acc-b);">3</div><div><b>Tool Executor (도구 실행기)</b><span>LLM이 반환한 JSON을 받아 실제로 코드를 실행하거나 외부 API를 호출하는 애플리케이션 백엔드 계층</span></div></div>
-      <div class="feat-item"><div class="fi" style="background:var(--acc-b);">4</div><div><b>Orchestrator (에이전트 루프)</b><span>사용자 입력 → LLM의 도구 호출 판단 → 도구 실행 → 결과를 다시 LLM에 전달 → 최종 답변 생성의 전체 흐름을 제어</span></div></div>
+      <div class="feat-item"><div class="fi" style="background:var(--acc-a);">1</div><div><b>Tool Definition (도구 정의 스키마)</b><span>LLM에게 "이 도구는 이런 기능, 이런 입력값이 필요해"를 알려주는 JSON Schema 설명서</span></div></div>
+      <div class="feat-item"><div class="fi" style="background:var(--acc-a);">2</div><div><b>LLM (추론 엔진)</b><span>사용자 입력과 도구 명세서를 바탕으로 어떤 도구를 호출할지(혹은 안 할지) 자율 판단</span></div></div>
+      <div class="feat-item"><div class="fi" style="background:var(--acc-b);">3</div><div><b>Orchestrator / Agent Loop</b><span>LLM의 도구 호출 명령(JSON)을 파싱해 실제 코드를 실행하고, 결과값을 다시 LLM에 주입하는 통제 시스템</span></div></div>
+      <div class="feat-item"><div class="fi" style="background:var(--acc-b);">4</div><div><b>Tool Executor (도구 실행기)</b><span>외부 API 연동, DB 쿼리 실행, 파이썬 코드 실행 등 물리적 동작을 처리</span></div></div>
     </div>
   </div>
 </section>
 
-<section id="howitworks">
+<section id="diff">
   <div class="wrap reveal">
-    <div class="kicker">ReAct-based</div>
-    <h2 class="title">작동 원리 (Step-by-Step)</h2>
-    <p class="lede">ReAct(Reasoning + Acting) 패턴을 기반으로 한 Tool Calling의 흐름입니다.</p>
+    <div class="kicker">Different Usage</div>
+    <h2 class="title">Tool Calling 활용 방식의 차이</h2>
+    <p class="lede">동일한 Tool Calling 기술이지만, 두 시스템에서는 사용 방식과 철학이 다릅니다.</p>
 
-    <div class="trig-box">
-      <ol>
-        <li><b>사용자 요청</b> — "현재 애플(AAPL) 주가가 얼마야?"</li>
-        <li><b>LLM의 추론(Thought)</b> — "내 학습 데이터에는 실시간 주가 정보가 없네. get_stock_price 도구를 써야겠다. ticker: 'AAPL'로 설정하자."</li>
-        <li><b>도구 호출 요청(Action)</b> — LLM이 텍스트 대신 <code>{"name":"get_stock_price","arguments":{"ticker":"AAPL"}}</code> JSON을 출력</li>
-        <li><b>도구 실행</b> — 오케스트레이터가 JSON을 가로채 실제 주가 조회 API를 실행</li>
-        <li><b>결과 관찰(Observation)</b> — API 실행 결과(예: <code>{"price":150.25}</code>)를 다시 LLM에 전달</li>
-        <li><b>최종 응답 생성</b> — "현재 애플의 주가는 $150.25입니다."</li>
-      </ol>
+    <div class="alt-card" style="border-top:4px solid var(--acc-a);">
+      <span class="alt-tag" style="background:rgba(14,148,136,0.12);color:var(--acc-a-ink);">직렬 · 단일 목적</span>
+      <h3>AI Agent에서의 Tool Calling</h3>
+      <p class="lede" style="margin-top:0;"><b>구조</b> — 1개의 LLM이 모든 도구 목록을 들고 있습니다. <b>작동 방식</b> — 사용자가 질문하면 해당 LLM이 "날씨 API를 쓸까? 검색을 할까?" 스스로 판단해 호출합니다.</p>
+      <div class="danger-box"><b>한계</b> — 도구가 10개, 20개로 늘어나면 LLM이 어떤 도구를 써야 할지 혼란(선택 오류)을 겪으며, 복잡한 다단계 논리 작업에서 길을 잃기 쉽습니다.</div>
+    </div>
+
+    <div class="alt-card" style="border-top:4px solid var(--acc-b);">
+      <span class="alt-tag" style="background:rgba(194,37,92,0.12);color:var(--acc-b-ink);">분산 · 역할 기반</span>
+      <h3>Agentic AI에서의 Tool Calling</h3>
+      <p class="lede" style="margin-top:0;"><b>구조</b> — 도구들을 성격에 맞게 분류해 특정 에이전트에게만 전담시킵니다 (예: 리서치 에이전트=웹 검색, 분석 에이전트=코드 실행).</p>
+      <div class="pipeline" style="margin-top:20px;">
+        <div class="pl-stage s0"><div class="plnum">1</div><div class="plname">매니저 에이전트</div><div class="pldesc">목표를 하위 태스크로 쪼갬</div></div>
+        <div class="pl-connector">→</div>
+        <div class="pl-stage s1"><div class="plnum">2</div><div class="plname">전문 에이전트</div><div class="pldesc">할당된 도구만 사용해 결과 도출</div></div>
+        <div class="pl-connector">→</div>
+        <div class="pl-stage s3"><div class="plnum">3</div><div class="plname">평가(Critic) 에이전트</div><div class="pldesc">결과 검증, 틀리면 재호출 지시 (Self-Correction)</div></div>
+      </div>
+      <div class="safe-box"><b>장점</b> — 도구 선택 오류가 극적으로 줄고, 여러 도구를 병렬 호출해 소프트웨어 자동 개발·시장 조사 리포트 같은 거대 프로젝트를 완수할 수 있습니다.</div>
     </div>
   </div>
 </section>
@@ -542,14 +567,15 @@
     <div class="pc-grid">
       <div class="pc-card pro">
         <h4>✅ 장점</h4>
-        <div class="pc-item"><span class="n">·</span><div><b>LLM 능력의 무한한 확장</b><span>실시간 검색, 복잡한 수학 연산, 파일 조작, 이메일·슬랙 연동이 가능해짐</span></div></div>
-        <div class="pc-item"><span class="n">·</span><div><b>환각 방지</b><span>모르는 사실을 지어내는 대신 외부 도구(검색, RAG)로 검증된 팩트 기반 답변</span></div></div>
-        <div class="pc-item"><span class="n">·</span><div><b>모듈식 확장성</b><span>재학습 없이 새 도구(API) 등록만으로 능력이 계속 늘어남</span></div></div>
+        <div class="pc-item"><span class="n">·</span><div><b>할루시네이션 극복</b><span>모르는 지식을 지어내지 않고 Tool Calling으로 최신 정보·정확한 계산 결과를 가져옴</span></div></div>
+        <div class="pc-item"><span class="n">·</span><div><b>시스템 확장성</b><span>재학습 없이 새 도구(API)만 등록하면 됨</span></div></div>
+        <div class="pc-item"><span class="n">·</span><div><b>초자동화</b><span>DB 변경, 이메일 발송 등 실제 시스템 상태 변화까지 가능</span></div></div>
       </div>
       <div class="pc-card con">
         <h4>❌ 단점</h4>
-        <div class="pc-item"><span class="n">·</span><div><b>비용 및 지연 시간 증가</b><span>LLM→도구 실행→LLM의 여러 번 핑퐁(Round-trip)으로 응답 속도 저하, 토큰 비용 증가</span></div></div>
-        <div class="pc-item"><span class="n">·</span><div><b>보안 위험</b><span>LLM이 생성한 파라미터로 실제 코드가 실행되므로, 프롬프트 인젝션으로 <code>delete_all_data()</code> 같은 도구가 실행될 위험. 철저한 입력 검증·샌드박싱 필수</span></div></div>
+        <div class="pc-item"><span class="n">·</span><div><b>비용 및 지연 시간 증가</b><span>도구 호출→결과 수신→재추론의 Round-trip으로 속도 저하, 토큰 비용 상승</span></div></div>
+        <div class="pc-item"><span class="n">·</span><div><b>오류 전파</b><span>Agentic AI에서는 한 에이전트의 실패가 다음 에이전트로 전달되어 워크플로우 전체를 망칠 수 있음</span></div></div>
+        <div class="pc-item"><span class="n">·</span><div><b>보안 리스크</b><span>프롬프트 인젝션으로 민감 데이터 삭제 도구가 호출될 위험, 엄격한 권한 제어 필요</span></div></div>
       </div>
     </div>
   </div>
@@ -558,19 +584,15 @@
 <section id="usecases">
   <div class="wrap reveal">
     <div class="kicker">Use Cases</div>
-    <h2 class="title">주요 활용 분야</h2>
-    <div class="org-grid">
-      <div class="org-card">
-        <h4>대화형 커머스 · CS 챗봇</h4>
-        <ul><li>"배송 언제 와?" → 내부 DB 조회 도구</li><li>반품 처리 API 호출로 환불 자동화</li></ul>
+    <h2 class="title">활용되는 곳</h2>
+    <div class="compare-2">
+      <div class="cc-card">
+        <h4>AI Agent (단일 에이전트)</h4>
+        <p class="small"><b>고객 지원 챗봇</b> — "배송 언제 와?" → 주문 DB 조회 도구 호출.<br><b>개인 비서</b> — "오늘 우산 챙겨야 해?" → 날씨 API 도구 호출.</p>
       </div>
-      <div class="org-card">
-        <h4>데이터 분석 에이전트</h4>
-        <ul><li>CSV 업로드 + 분석 요청</li><li>Code Interpreter 도구로 차트 생성</li></ul>
-      </div>
-      <div class="org-card">
-        <h4>자율적 리서치 비서</h4>
-        <ul><li>여러 번 웹 검색 도구 호출</li><li>종합해 시장 동향 보고서 작성</li></ul>
+      <div class="cc-card b">
+        <h4>Agentic AI (다중 에이전트)</h4>
+        <p class="small"><b>자동화된 SW 개발</b>(예: Devin) — 기획→코더(IDE 도구)→테스터(Shell 도구).<br><b>투자 리포트 자동화</b> — 데이터수집→재무분석→작가 에이전트 협업.</p>
       </div>
     </div>
   </div>
@@ -579,70 +601,77 @@
 <section id="implementation" style="background:var(--paper-tint);">
   <div class="wrap reveal">
     <div class="kicker">[실습]</div>
-    <h2 class="title">Python으로 Tool Calling 에이전트 직접 구축하기</h2>
-    <p class="lede">OpenAI API로 LLM이 '날씨 조회 도구'를 스스로 판단하고 호출하는 완전한 Agent Loop를 구현합니다.</p>
+    <h2 class="title">직접 구축하는 과정</h2>
 
-    <div class="code-block">
-      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">setup.sh</div></div>
-      <pre><code>pip install openai python-dotenv</code></pre>
-    </div>
-
-    <div class="code-block">
-      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">tool_calling_agent.py</div></div>
-      <pre><code><span class="kw">import</span> os, json
+    <div class="alt-card" style="border-top:4px solid var(--acc-a);">
+      <h3><span class="tag a" style="margin-right:8px;">AI Agent</span>단일 에이전트 Tool Calling (OpenAI API)</h3>
+      <p class="lede" style="margin-top:0;">하나의 LLM이 날씨 도구를 직접 호출하는 가장 기본적인 형태입니다.</p>
+      <div class="code-block">
+        <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">simple_ai_agent.py</div></div>
+        <pre><code><span class="kw">import</span> json
 <span class="kw">from</span> openai <span class="kw">import</span> OpenAI
+client = OpenAI(api_key=<span class="st">"your-api-key"</span>)
 
-client = OpenAI(api_key=os.getenv(<span class="st">"OPENAI_API_KEY"</span>))
+<span class="cm"># 1. 실제 실행될 함수</span>
+<span class="kw">def</span> get_weather(location):
+    <span class="kw">return</span> json.dumps({<span class="st">"location"</span>: location, <span class="st">"temperature"</span>: <span class="st">"22°C"</span>, <span class="st">"condition"</span>: <span class="st">"Sunny"</span>})
 
-<span class="cm"># 1. 실제 실행될 함수 (도구 구현)</span>
-<span class="kw">def</span> get_current_weather(location: <span class="fn">str</span>, unit: <span class="fn">str</span> = <span class="st">"celsius"</span>) -&gt; <span class="fn">str</span>:
-    <span class="cm"># 실제로는 외부 날씨 API를 호출. 여기서는 모의 데이터 반환</span>
-    mock_db = {<span class="st">"서울"</span>: {<span class="st">"temperature"</span>: <span class="fn">22</span>, <span class="st">"condition"</span>: <span class="st">"맑음"</span>},
-               <span class="st">"런던"</span>: {<span class="st">"temperature"</span>: <span class="fn">18</span>, <span class="st">"condition"</span>: <span class="st">"비"</span>}}
-    info = mock_db.get(location, {<span class="st">"temperature"</span>: <span class="fn">20</span>, <span class="st">"condition"</span>: <span class="st">"알 수 없음"</span>})
-    info[<span class="st">"location"</span>] = location; info[<span class="st">"unit"</span>] = unit
-    <span class="kw">return</span> json.dumps(info, ensure_ascii=<span class="kw">False</span>)
-
-<span class="cm"># 2. 도구 명세서 (JSON Schema)</span>
-tools_definition = [{<span class="st">"type"</span>: <span class="st">"function"</span>, <span class="st">"function"</span>: {
-    <span class="st">"name"</span>: <span class="st">"get_current_weather"</span>,
-    <span class="st">"description"</span>: <span class="st">"특정 도시의 현재 날씨와 기온 정보를 가져옵니다."</span>,
+<span class="cm"># 2. 도구 스키마 정의</span>
+tools = [{<span class="st">"type"</span>: <span class="st">"function"</span>, <span class="st">"function"</span>: {
+    <span class="st">"name"</span>: <span class="st">"get_weather"</span>, <span class="st">"description"</span>: <span class="st">"특정 지역의 현재 날씨를 가져옵니다."</span>,
     <span class="st">"parameters"</span>: {<span class="st">"type"</span>: <span class="st">"object"</span>,
-        <span class="st">"properties"</span>: {<span class="st">"location"</span>: {<span class="st">"type"</span>: <span class="st">"string"</span>}, <span class="st">"unit"</span>: {<span class="st">"type"</span>: <span class="st">"string"</span>, <span class="st">"enum"</span>: [<span class="st">"celsius"</span>,<span class="st">"fahrenheit"</span>]}},
-        <span class="st">"required"</span>: [<span class="st">"location"</span>]}
+        <span class="st">"properties"</span>: {<span class="st">"location"</span>: {<span class="st">"type"</span>: <span class="st">"string"</span>}}, <span class="st">"required"</span>: [<span class="st">"location"</span>]}
 }}]
 
-<span class="cm"># 3. 에이전트 루프 (Orchestrator)</span>
-<span class="kw">def</span> run_agent(user_prompt: <span class="fn">str</span>):
-    messages = [{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: user_prompt}]
-    response = client.chat.completions.create(
-        model=<span class="st">"gpt-4o-mini"</span>, messages=messages,
-        tools=tools_definition, tool_choice=<span class="st">"auto"</span>
-    )
+<span class="cm"># 3. Agent 실행: LLM 호출 → 도구 호출 판단 → 실행 → 최종 답변</span>
+<span class="kw">def</span> simple_ai_agent(user_query):
+    messages = [{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: user_query}]
+    response = client.chat.completions.create(model=<span class="st">"gpt-4o-mini"</span>, messages=messages, tools=tools)
     msg = response.choices[<span class="fn">0</span>].message
-
     <span class="kw">if</span> msg.tool_calls:
         messages.append(msg)
         <span class="kw">for</span> tc <span class="kw">in</span> msg.tool_calls:
             args = json.loads(tc.function.arguments)
-            result = get_current_weather(location=args.get(<span class="st">"location"</span>), unit=args.get(<span class="st">"unit"</span>, <span class="st">"celsius"</span>))
-            messages.append({<span class="st">"tool_call_id"</span>: tc.id, <span class="st">"role"</span>: <span class="st">"tool"</span>,
-                              <span class="st">"name"</span>: tc.function.name, <span class="st">"content"</span>: result})
+            result = get_weather(args[<span class="st">"location"</span>])
+            messages.append({<span class="st">"role"</span>: <span class="st">"tool"</span>, <span class="st">"tool_call_id"</span>: tc.id, <span class="st">"name"</span>: tc.function.name, <span class="st">"content"</span>: result})
         final = client.chat.completions.create(model=<span class="st">"gpt-4o-mini"</span>, messages=messages)
-        <span class="fn">print</span>(f<span class="st">"🤖 {final.choices[0].message.content}"</span>)
-    <span class="kw">else</span>:
-        <span class="fn">print</span>(f<span class="st">"🤖 {msg.content}"</span>)
+        <span class="kw">return</span> final.choices[<span class="fn">0</span>].message.content
 
-run_agent(<span class="st">"안녕! 넌 누구야?"</span>)        <span class="cm"># 도구 호출 불필요</span>
-run_agent(<span class="st">"지금 서울 날씨 어때?"</span>)     <span class="cm"># 도구 호출 필요</span></code></pre>
+<span class="fn">print</span>(simple_ai_agent(<span class="st">"오늘 서울 날씨 어때?"</span>))</code></pre>
+      </div>
     </div>
 
-    <div class="out-block">
-      <span class="arrow">▶</span> 👤 "안녕! 넌 누구야?"<br>
-      &nbsp;&nbsp;🤖 "안녕하세요! 저는 여러분의 질문에 답변하고 도움을 드리는 AI 어시스턴트입니다."<br><br>
-      &nbsp;&nbsp;👤 "지금 서울 날씨 어때?"<br>
-      &nbsp;&nbsp;[시스템 로그] 🛠️ 도구 실행 중: get_current_weather(location='서울')<br>
-      &nbsp;&nbsp;🤖 "현재 서울의 날씨는 맑으며, 기온은 섭씨 22도입니다."
+    <div class="alt-card" style="border-top:4px solid var(--acc-b);">
+      <h3><span class="tag b" style="margin-right:8px;">Agentic AI</span>멀티 에이전트 Tool Calling (CrewAI)</h3>
+      <p class="lede" style="margin-top:0;">여러 에이전트가 각자의 전용 도구를 가지고 협력하는 구조입니다.</p>
+      <div class="code-block">
+        <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">crewai_multi_agent.py</div></div>
+        <pre><code><span class="cm"># pip install crewai langchain-openai duckduckgo-search</span>
+<span class="kw">from</span> crewai <span class="kw">import</span> Agent, Task, Crew, Process
+<span class="kw">from</span> langchain_community.tools <span class="kw">import</span> DuckDuckGoSearchRun
+<span class="kw">from</span> langchain_openai <span class="kw">import</span> ChatOpenAI
+
+llm = ChatOpenAI(model=<span class="st">"gpt-4o-mini"</span>)
+search_tool = DuckDuckGoSearchRun()
+
+<span class="cm"># 리서처: 검색 도구만 가짐</span>
+researcher = Agent(role=<span class="st">'수석 리서처'</span>, goal=<span class="st">'주제에 대해 최신 데이터를 수집한다.'</span>,
+                    tools=[search_tool], llm=llm, verbose=<span class="kw">True</span>)
+
+<span class="cm"># 작가: 도구 없이 추론과 글쓰기만 담당</span>
+writer = Agent(role=<span class="st">'테크 라이터'</span>, goal=<span class="st">'수집한 데이터로 블로그 글을 작성한다.'</span>,
+                tools=[], llm=llm, verbose=<span class="kw">True</span>)
+
+task1 = Task(description=<span class="st">'2026년 AI 트렌드를 검색하고 키워드 3가지 정리'</span>,
+             expected_output=<span class="st">'키워드 3가지와 요약'</span>, agent=researcher)
+task2 = Task(description=<span class="st">'리서치 결과로 블로그 포스팅 작성'</span>,
+             expected_output=<span class="st">'Markdown 블로그 포스트'</span>, agent=writer)
+
+crew = Crew(agents=[researcher, writer], tasks=[task1, task2], process=Process.sequential)
+result = crew.kickoff()
+<span class="fn">print</span>(result)</code></pre>
+      </div>
+      <div class="note-box"><b>코드 설명</b> — researcher 에이전트만 검색 도구(Tool Calling)를 사용하고, 그 결과를 writer 에이전트에게 넘깁니다. 도구 호출 정확도와 결과물 퀄리티가 비약적으로 상승합니다.</div>
     </div>
   </div>
 </section>
@@ -650,32 +679,27 @@ run_agent(<span class="st">"지금 서울 날씨 어때?"</span>)     <span clas
 <section id="comparison">
   <div class="wrap reveal">
     <div class="kicker">At a Glance</div>
-    <h2 class="title">한눈에 비교: Tool Calling vs RAG vs 파인튜닝</h2>
+    <h2 class="title">한눈에 비교</h2>
     <div class="cmp-table-wrap">
       <table class="cmp-table">
-        <tr><th>비교 항목</th><th class="col-a">Tool Calling</th><th>RAG</th><th class="col-b">Fine-Tuning</th></tr>
-        <tr><td>핵심 목적</td><td>'행동(Action)'을 수행</td><td>'지식(Knowledge)'을 참고</td><td>'뇌 구조(가중치)' 자체를 변경</td></tr>
-        <tr><td>작동 방식</td><td>API 호출, DB 쓰기, 코드 실행</td><td>벡터 DB 검색 후 프롬프트에 삽입</td><td>특정 도메인 데이터셋으로 재학습</td></tr>
-        <tr><td>데이터 실시간성</td><td>최상 (실시간 API 즉시 조회)</td><td>높음 (DB 업데이트 주기에 따름)</td><td>낮음 (학습 시점에 고정)</td></tr>
-        <tr><td>주요 사용처</td><td>날씨/주식 조회, 예약, 자동화</td><td>사내 문서 검색, 매뉴얼 QA</td><td>말투 학습, 도메인 용어 체득</td></tr>
+        <tr><th>비교 항목</th><th class="col-a">AI Agent</th><th class="col-b">Agentic AI</th></tr>
+        <tr><td>운영 구조</td><td>1개의 LLM이 모든 도구를 판단·호출</td><td>N개의 전문 에이전트가 전용 도구만 호출</td></tr>
+        <tr><td>자율성 수준</td><td>중간 (단일 목표 달성에 집중)</td><td>매우 높음 (목표 분해, 협업, 수정)</td></tr>
+        <tr><td>도구 호출 복잡도</td><td>도구 많아질수록 선택 오류 증가</td><td>역할 분리로 선택 오류 최소화</td></tr>
+        <tr><td>주요 프레임워크</td><td>LangChain, OpenAI Functions</td><td>CrewAI, AutoGen, LangGraph</td></tr>
+        <tr><td>적합한 태스크</td><td>단순 반복, 명확한 단일 기능</td><td>복잡한 장기 프로젝트</td></tr>
+        <tr><td>에러 대응</td><td>멈추거나 환각 발생 가능</td><td>Critic 에이전트가 검증해 재호출</td></tr>
       </table>
     </div>
-    <div class="note-box" style="margin-top:20px;"><b>상호 관계</b> — RAG 시스템을 실행하기 위한 '도구' 중 하나로 Tool Calling을 사용할 수 있습니다 (융합 가능).</div>
   </div>
 </section>
 
 <section class="summary" id="conclusion">
   <div class="wrap reveal">
     <div class="kicker on-dark">Conclusion</div>
-    <h2 class="title on-dark">마치며 — Tool Calling의 미래와 MCP</h2>
-    <p class="lede on-dark">초기의 Tool Calling은 개발자가 하나하나 함수를 구현하고 LLM에 바인딩하는 복잡한 과정을 거쳐야 했습니다. 하지만 최근에는 <b>MCP(Model Context Protocol)</b>라는 새로운 오픈소스 표준이 등장했습니다.</p>
-
-    <div class="recap-list">
-      <div class="recap-item"><span class="num">01</span><span class="rt">MCP를 활용하면 도구를 별도의 서버로 분리해, Claude든 GPT든 상관없이 <b>"플러그 앤 플레이"</b> 방식으로 도구를 손쉽게 공유·연동할 수 있습니다.</span></div>
-      <div class="recap-item"><span class="num">02</span><span class="rt">Tool Calling은 LLM을 단순한 '말동무'에서 실질적인 비즈니스 가치를 창출하는 <b>'디지털 노동자(AI Agent)'</b>로 진화시키는 핵심 심장입니다.</span></div>
-    </div>
-
-    <div class="final-line" style="margin-top:30px;"><b>기억할 것 한 줄</b> — AI 서비스 개발을 계획한다면, 프롬프트 엔지니어링을 넘어 Tool Calling 아키텍처 설계 역량은 선택이 아닌 필수입니다.</div>
+    <h2 class="title on-dark">마치며</h2>
+    <p class="lede on-dark">AI 기술은 프롬프트에 대답만 하던 '생성형 AI'를 넘어, 스스로 도구를 사용해 행동하는 <b>AI Agent</b> 시대로, 그리고 이제는 여러 AI가 회사를 차려 일하는 <b>Agentic AI</b> 시대로 진화하고 있습니다.</p>
+    <div class="final-line"><b>기억할 것 한 줄</b> — "단순한 AI Agent를 만들 것인가, 에이전트들이 협력하는 Agentic AI를 설계할 것인가?"를 먼저 고민하고 그에 맞게 Tool Calling 아키텍처를 설계하세요.</div>
   </div>
 </section>
 
@@ -683,7 +707,7 @@ run_agent(<span class="st">"지금 서울 날씨 어때?"</span>)     <span clas
 
 <footer>
   <div class="wrap">
-    <span>Tool Calling 완벽 가이드 · A10 · AI 에이전트</span>
+    <span>AI Agent vs Agentic AI · A10 · AI 에이전트</span>
     <a class="totop" href="#top">맨 위로 ↑</a>
   </div>
 </footer>

@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Agent의 핵심 무기 Tool Calling(도구 호출) 완벽 가이드 — 정의, 구성요소, 장단점, 실습</title>
-<meta name="description" content="Tool Calling의 정의, Function Calling과의 차이, 핵심 구성요소, ReAct 기반 작동 원리, 장단점, 활용 분야, OpenAI API 실습 코드, Tool Calling vs RAG vs 파인튜닝 비교, MCP와의 관계까지 정리한 완벽 가이드">
+<title>프롬프트 엔지니어링 실전 설계 꿀팁 1 — 4가지 국룰과 5대 기본 작업</title>
+<meta name="description" content="좋은 프롬프트를 설계하는 4가지 핵심 팁(간단히 시작, 구체성·구분자, 긍정문, 페르소나)과 요약·추출·분류·Q&amp;A·코드생성 5대 기본 작업을 실전 예시로 정리한 시리즈 2편">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -19,10 +19,10 @@
     --line:#E7E1FA;
     --text-dark:#1B1730;
     --text-muted:#655F82;
-    --acc-a:#2563EB;
-    --acc-a-ink:#173E99;
-    --acc-b:#059669;
-    --acc-b-ink:#054F35;
+    --acc-a:#F2A93B;
+    --acc-a-ink:#7A5200;
+    --acc-b:#3E7BFA;
+    --acc-b-ink:#1B3E99;
     --acc-c:#8880B0;
     --acc-c-ink:#3A3560;
     --danger:#D6455B;
@@ -323,8 +323,8 @@
 
 
   .hero-simple{
-    background:radial-gradient(circle at 18% 22%, rgba(37,99,235,0.22), transparent 45%),
-               radial-gradient(circle at 84% 18%, rgba(5,150,105,0.18), transparent 45%),
+    background:radial-gradient(circle at 18% 22%, rgba(242,169,59,0.18), transparent 45%),
+               radial-gradient(circle at 84% 18%, rgba(62,123,250,0.24), transparent 45%),
                linear-gradient(180deg,var(--ink) 0%, var(--ink-deep) 100%);
     color:var(--paper);min-height:92vh;display:flex;align-items:center;overflow:hidden;padding:120px 0 64px;
   }
@@ -439,29 +439,33 @@
 
 <header class="nav" id="siteNav">
   <div class="wrap">
-    <div class="brand"><span class="dot2"><span></span><span></span></span> Tool Calling 완벽 가이드 · A10 · AI 에이전트</div>
+    <div class="brand"><span class="dot2"><span></span><span></span></span> 프롬프트 엔지니어링 시리즈 2/5 · 실전 기초 편</div>
     <nav class="links">
-      <a href="#overview">개요</a>
-      <a href="#components">구성요소</a>
-      <a href="#howitworks">작동원리</a>
-      <a href="#proscons">장단점</a>
-      <a href="#usecases">활용분야</a>
-      <a href="#implementation">실습</a>
-      <a href="#comparison">비교</a>
+      <a href="#rule1">간단히시작</a>
+      <a href="#rule2">구체성</a>
+      <a href="#rule3">긍정문</a>
+      <a href="#rule4">페르소나</a>
+      <a href="#summarize">요약</a>
+      <a href="#extract">추출</a>
+      <a href="#classify">분류</a>
+      <a href="#qa">Q&A</a>
+      <a href="#code">코드생성</a>
     </nav>
     <button class="hamburger" id="hamBtn" aria-label="메뉴 열기"><span></span><span></span><span></span></button>
   </div>
 </header>
 
 <div class="mobile-menu" id="mobileMenu">
-  <a href="#overview">Tool Calling이란</a>
-  <a href="#components">핵심 구성요소</a>
-  <a href="#howitworks">작동 원리 (Step-by-Step)</a>
-  <a href="#proscons">특징 및 장단점</a>
-  <a href="#usecases">주요 활용 분야</a>
-  <a href="#implementation">[실습] 날씨 에이전트 구축</a>
-  <a href="#comparison">Tool Calling vs RAG vs 파인튜닝</a>
-  <a href="#conclusion">마치며 · MCP</a>
+  <a href="#rule1">국룰 1 · 간단히 시작</a>
+  <a href="#rule2">국룰 2 · 구체성·구분자</a>
+  <a href="#rule3">국룰 3 · 긍정문</a>
+  <a href="#rule4">국룰 4 · 페르소나</a>
+  <a href="#summarize">요약</a>
+  <a href="#extract">정보 추출</a>
+  <a href="#classify">텍스트 분류</a>
+  <a href="#qa">질의응답</a>
+  <a href="#code">코드 생성</a>
+  <a href="#summary">5대 작업 요약표</a>
 </div>
 <button class="mobile-close" id="mobileClose">×</button>
 
@@ -469,213 +473,237 @@
 
 <section class="hero-simple" id="top">
   <div class="wrap">
-    <div class="eyebrow">A10 · AI Basic · AI 에이전트의 핵심 무기</div>
-    <h1>AI Agent의 핵심 무기<br><span class="accent-word">Tool Calling(도구 호출)</span> 완벽 가이드</h1>
-    <p class="sub">"오늘 서울 날씨 어때?", "이메일 좀 보내줘" — LLM은 텍스트 창에 갇혀 실시간 데이터를 모르고, 실제로 메일을 보낼 수도 없습니다. 두뇌(AI)가 외부 세계와 상호작용할 수 있도록 '손과 발'을 달아주는 핵심 기술, Tool Calling을 정리합니다.</p>
-    <div class="chip-row">
-      <a class="chip" href="#howitworks">6단계 작동원리</a>
-      <a class="chip" href="#implementation">날씨 에이전트 실습</a>
-      <a class="chip" href="#comparison">RAG·파인튜닝과 비교</a>
+    <div class="eyebrow">A07 · AI Basic · Prompt Engineering 시리즈</div>
+    <h1>실전 설계 꿀팁 1<br><span class="accent-word">좋은 프롬프트의 4가지 국룰</span></h1>
+    <p class="sub">AI가 엉뚱한 답을 내놓는다면, 90%는 AI가 아닌 '우리의 지시'가 모호하기 때문입니다. 명확한 지시를 위한 4가지 핵심 팁과, 현업에서 가장 많이 쓰이는 요약·추출·분류·Q&amp;A·코드생성 5대 기본 작업을 제로샷 프롬프트로 마스터합니다.</p>
+    <div class="series-badge">
+      <div class="series-dots"><span></span><span class="on"></span><span></span><span></span><span></span></div>
+      <span>프롬프트 엔지니어링 시리즈 · <b>2 / 5</b> · 실전 기초 편</span>
     </div>
   </div>
 </section>
 
 
-<section id="overview">
+<section id="rule1">
   <div class="wrap reveal">
-    <div class="kicker">Overview</div>
-    <h2 class="title">Tool Calling이란?</h2>
-    <p class="lede">LLM이 사용자의 자연어 입력을 분석해, 목적 달성을 위해 <b>미리 정의된 외부 도구(API, 함수, DB 검색 등)를 자율적으로 선택하고 실행할 수 있도록 하는 메커니즘</b>입니다. LLM이 "어떤 도구를, 어떤 파라미터로 실행해야 하는지"를 JSON 형태의 구조화된 데이터로 출력합니다.</p>
-
-    <h3 style="font-size:15px;font-weight:700;margin-top:44px;margin-bottom:14px;">Function Calling과의 차이점</h3>
-    <div class="compare-2">
-      <div class="cc-card">
-        <h4>Function Calling</h4>
-        <p class="small">2023년 OpenAI가 처음 도입한 개념. 개발자가 정의한 '특정 함수'를 호출하도록 LLM이 인자값을 만들어주는 기능입니다.</p>
-      </div>
-      <div class="cc-card b">
-        <h4>Tool Calling (상위 개념)</h4>
-        <p class="small">Function Calling을 포함하는 상위 개념. 사용자 정의 함수뿐 아니라 웹 브라우징, 코드 실행기, 파일 시스템 접근 등 다양한 형태의 '도구'를 호출하는 현대적·확장된 개념입니다.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="components" style="background:var(--paper-tint);">
-  <div class="wrap reveal">
-    <div class="kicker">Architecture</div>
-    <h2 class="title">핵심 구성요소</h2>
-    <p class="lede">Tool Calling이 포함된 시스템은 다음 요소들이 유기적으로 맞물려 루프(Loop)를 형성합니다.</p>
-
-    <div class="feat-list">
-      <div class="feat-item"><div class="fi" style="background:var(--acc-a);">1</div><div><b>Tool Definition (도구 정의 스키마)</b><span>"내가 가진 도구는 이런 것들이고, 이런 규칙으로 써야 해"를 알려주는 설명서. JSON Schema로 이름·설명·필수 입력값 등을 정의합니다.</span></div></div>
-      <div class="feat-item"><div class="fi" style="background:var(--acc-a);">2</div><div><b>LLM (추론 엔진)</b><span>사용자 요청과 도구 정의서를 비교 분석해, 도구가 필요한지 판단하고 실행 파라미터를 생성합니다.</span></div></div>
-      <div class="feat-item"><div class="fi" style="background:var(--acc-b);">3</div><div><b>Tool Executor (도구 실행기)</b><span>LLM이 반환한 JSON을 받아 실제로 코드를 실행하거나 외부 API를 호출하는 애플리케이션 백엔드 계층</span></div></div>
-      <div class="feat-item"><div class="fi" style="background:var(--acc-b);">4</div><div><b>Orchestrator (에이전트 루프)</b><span>사용자 입력 → LLM의 도구 호출 판단 → 도구 실행 → 결과를 다시 LLM에 전달 → 최종 답변 생성의 전체 흐름을 제어</span></div></div>
-    </div>
-  </div>
-</section>
-
-<section id="howitworks">
-  <div class="wrap reveal">
-    <div class="kicker">ReAct-based</div>
-    <h2 class="title">작동 원리 (Step-by-Step)</h2>
-    <p class="lede">ReAct(Reasoning + Acting) 패턴을 기반으로 한 Tool Calling의 흐름입니다.</p>
+    <div class="kicker">국룰 01</div>
+    <h2 class="title">시작은 간단하게 (Start Simple)</h2>
+    <p class="lede">프롬프트 엔지니어링은 '한 방'에 끝내는 작업이 아니라 <b>반복적인(iterative) 과정</b>입니다. 처음부터 완벽한 프롬프트를 만들려다 지시·문맥·예시를 다 섞어 넣어 복잡성만 늘어나는 함정에 빠지기 쉽습니다.</p>
 
     <div class="trig-box">
+      <h5>점진적으로 살 붙이기</h5>
       <ol>
-        <li><b>사용자 요청</b> — "현재 애플(AAPL) 주가가 얼마야?"</li>
-        <li><b>LLM의 추론(Thought)</b> — "내 학습 데이터에는 실시간 주가 정보가 없네. get_stock_price 도구를 써야겠다. ticker: 'AAPL'로 설정하자."</li>
-        <li><b>도구 호출 요청(Action)</b> — LLM이 텍스트 대신 <code>{"name":"get_stock_price","arguments":{"ticker":"AAPL"}}</code> JSON을 출력</li>
-        <li><b>도구 실행</b> — 오케스트레이터가 JSON을 가로채 실제 주가 조회 API를 실행</li>
-        <li><b>결과 관찰(Observation)</b> — API 실행 결과(예: <code>{"price":150.25}</code>)를 다시 LLM에 전달</li>
-        <li><b>최종 응답 생성</b> — "현재 애플의 주가는 $150.25입니다."</li>
+        <li><b>시도:</b> "AI로 돈 버는 법 5가지 알려줘" → 너무 광범위한 답</li>
+        <li><b>개선:</b> "1인 창작자가 'AI 글쓰기 도구'를 활용해 수익을 내는 구체적인 방법 5가지" → 범위 좁히기</li>
+        <li><b>결과 분석:</b> 여전히 추상적</li>
+        <li><b>개선:</b> "너는 월 1천만원을 버는 AI 콘텐츠 마케터야. 'Notion AI'와 'ChatGPT'로 블로그 글을 쓰고 전자책으로 수익화하는 단계별 워크플로우" → 페르소나 + 구체적 지시</li>
       </ol>
     </div>
+    <div class="note-box">간단하게 시작해서 점진적으로 살을 붙여나가는 것이 현업 워크플로우의 핵심입니다.</div>
   </div>
 </section>
 
-<section id="proscons" style="background:var(--paper-tint);">
+<section id="rule2" style="background:var(--paper-tint);">
   <div class="wrap reveal">
-    <div class="kicker">Trade-offs</div>
-    <h2 class="title">특징 및 장단점</h2>
-    <div class="pc-grid">
-      <div class="pc-card pro">
-        <h4>✅ 장점</h4>
-        <div class="pc-item"><span class="n">·</span><div><b>LLM 능력의 무한한 확장</b><span>실시간 검색, 복잡한 수학 연산, 파일 조작, 이메일·슬랙 연동이 가능해짐</span></div></div>
-        <div class="pc-item"><span class="n">·</span><div><b>환각 방지</b><span>모르는 사실을 지어내는 대신 외부 도구(검색, RAG)로 검증된 팩트 기반 답변</span></div></div>
-        <div class="pc-item"><span class="n">·</span><div><b>모듈식 확장성</b><span>재학습 없이 새 도구(API) 등록만으로 능력이 계속 늘어남</span></div></div>
-      </div>
-      <div class="pc-card con">
-        <h4>❌ 단점</h4>
-        <div class="pc-item"><span class="n">·</span><div><b>비용 및 지연 시간 증가</b><span>LLM→도구 실행→LLM의 여러 번 핑퐁(Round-trip)으로 응답 속도 저하, 토큰 비용 증가</span></div></div>
-        <div class="pc-item"><span class="n">·</span><div><b>보안 위험</b><span>LLM이 생성한 파라미터로 실제 코드가 실행되므로, 프롬프트 인젝션으로 <code>delete_all_data()</code> 같은 도구가 실행될 위험. 철저한 입력 검증·샌드박싱 필수</span></div></div>
-      </div>
+    <div class="kicker">국룰 02</div>
+    <h2 class="title">명령은 구체적으로, 구분자는 명확하게</h2>
+    <p class="lede">AI는 '알아서' 해주지 않습니다. 지시가 상세할수록 결과는 '미친' 듯이 좋아집니다.</p>
+
+    <div class="path-chip-row">
+      <span class="path-chip">👎 "광고 문구 써줘"</span>
+      <span class="path-arrow">→</span>
+      <span class="path-chip">👍 "30대 직장인 타겟", "인스타그램 광고", "2개 작성"</span>
     </div>
-  </div>
-</section>
 
-<section id="usecases">
-  <div class="wrap reveal">
-    <div class="kicker">Use Cases</div>
-    <h2 class="title">주요 활용 분야</h2>
-    <div class="org-grid">
-      <div class="org-card">
-        <h4>대화형 커머스 · CS 챗봇</h4>
-        <ul><li>"배송 언제 와?" → 내부 DB 조회 도구</li><li>반품 처리 API 호출로 환불 자동화</li></ul>
-      </div>
-      <div class="org-card">
-        <h4>데이터 분석 에이전트</h4>
-        <ul><li>CSV 업로드 + 분석 요청</li><li>Code Interpreter 도구로 차트 생성</li></ul>
-      </div>
-      <div class="org-card">
-        <h4>자율적 리서치 비서</h4>
-        <ul><li>여러 번 웹 검색 도구 호출</li><li>종합해 시장 동향 보고서 작성</li></ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="implementation" style="background:var(--paper-tint);">
-  <div class="wrap reveal">
-    <div class="kicker">[실습]</div>
-    <h2 class="title">Python으로 Tool Calling 에이전트 직접 구축하기</h2>
-    <p class="lede">OpenAI API로 LLM이 '날씨 조회 도구'를 스스로 판단하고 호출하는 완전한 Agent Loop를 구현합니다.</p>
+    <p class="lede" style="margin-top:24px;">특히 지시·문맥·입력 데이터를 명확히 분리하는 것이 중요합니다. <code>###</code>이나 <code>&lt;tag&gt;</code> 같은 구분자를 쓰는 것이 "국룰"입니다.</p>
 
     <div class="code-block">
-      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">setup.sh</div></div>
-      <pre><code>pip install openai python-dotenv</code></pre>
-    </div>
+      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">separator_example.txt</div></div>
+      <pre><code><span class="kw">### 지시 ###</span>
+아래 '제품 정보'를 바탕으로, 30대 직장인 타겟의 인스타그램 광고 문구 2개를 작성해 줘.
 
+<span class="kw">### 제품 정보 ###</span>
+- 제품명: 노이즈 캔슬링 무선 이어폰 '사일런트 2.0'
+- 특징: AI 기반 주변 소음 차단, 30시간 재생, 생활 방수
+
+<span class="kw">### 출력 형식 ###</span>
+- 1안: (출근길 지하철 컨셉)
+- 2안: (업무 집중 컨셉)</code></pre>
+    </div>
+    <div class="note-box">구분자를 사용하면 AI가 "어디까지가 지시이고 어디부터가 데이터인지" 명확하게 파악해 오류를 줄일 수 있습니다.</div>
+  </div>
+</section>
+
+<section id="rule3">
+  <div class="wrap reveal">
+    <div class="kicker">국룰 03</div>
+    <h2 class="title">'하지 말 것' 대신 '해야 할 것'</h2>
+    <p class="lede">AI는 '부정문'보다 '긍정문'을 훨씬 잘 알아듣습니다. "X는 하지 마"라고 하면, 오히려 AI가 X에 꽂혀서(focus) X를 수행하는 경우가 많습니다.</p>
+
+    <div class="compare-2">
+      <div class="cc-card">
+        <h4>👎 '하지 말 것' 초점</h4>
+        <div class="flow">스포일러·오래된 영화 금지</div>
+        <p class="small">"손님에게 스포일러가 될 수 있는 줄거리를 말하지 마. 너무 오래된 영화는 말하지 마." → AI가 2000년 이전 영화나 줄거리를 말할 위험이 여전히 있음.</p>
+      </div>
+      <div class="cc-card b">
+        <h4>👍 '해야 할 것' 초점</h4>
+        <div class="flow">형식·범위를 긍정문으로 명시</div>
+        <p class="small">"항상 2010년 이후 개봉 영화 중에서 추천해야 해. 답변은 반드시 '영화 제목 (개봉연도)' 형식으로만." → 결과: "인사이드 아웃 (2015)"</p>
+      </div>
+    </div>
+    <div class="note-box">'해야 할 것'과 '출력 형식'을 명확히 지정해 AI가 다른 행동을 할 여지를 차단하는 것이 훨씬 효과적입니다.</div>
+  </div>
+</section>
+
+<section id="rule4" style="background:var(--paper-tint);">
+  <div class="wrap reveal">
+    <div class="kicker">국룰 04</div>
+    <h2 class="title">페르소나(역할) 부여하기</h2>
+    <p class="lede">가장 간단하면서도 강력한 팁입니다. AI에게 '역할'을 부여하면 그 역할에 맞는 톤·어휘·지식 수준으로 답변 퀄리티가 수직 상승합니다.</p>
+
+    <div class="scen-grid">
+      <div class="scen-card">
+        <div class="scen-head"><div><span class="scen-num">👎</span> <span class="scen-title">역할 없는 질문</span></div></div>
+        <div class="scen-code">Q: "객체 지향 프로그래밍(OOP)에 대해 설명해 줘."
+A: 객체 지향 프로그래밍은 컴퓨터 프로그래밍 패러다임 중 하나로...
+(이하 딱딱한 전공서적 내용)</div>
+      </div>
+      <div class="scen-card">
+        <div class="scen-head"><div><span class="scen-num">👍</span> <span class="scen-title">명확한 페르소나 부여</span></div></div>
+        <div class="scen-code">Q: "너는 15년 차 시니어 개발자(테크 리드)야.
+신입 개발자에게 OOP를 '붕어빵 틀과 붕어빵'처럼
+현실 세계의 비유로 설명해 줘."
+
+A: "좋은 질문이에요, 주니어님. 쉽게 말해
+'붕어빵 틀(Class)'과 '붕어빵(Object)'의 관계예요..."</div>
+      </div>
+    </div>
+    <div class="note-box">페르소나 부여는 현업 프롬프트의 '기본기'입니다.</div>
+  </div>
+</section>
+
+<section id="summarize">
+  <div class="wrap reveal">
+    <div class="kicker">기본 작업 01</div>
+    <h2 class="title">요약하기 (Summarization)</h2>
+    <p class="lede">LLM이 가장 잘하는 작업 중 하나입니다. '길이', '대상', '목적'을 명시하는 것이 중요합니다.</p>
     <div class="code-block">
-      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">tool_calling_agent.py</div></div>
-      <pre><code><span class="kw">import</span> os, json
-<span class="kw">from</span> openai <span class="kw">import</span> OpenAI
+      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">summarize.txt</div></div>
+      <pre><code><span class="kw">### 지시 ###</span>
+아래 [텍스트]를 <span class="st">초등학생이 이해할 수 있도록</span> 3줄 요약해 줘.
+'기후 변화'와 '온실가스'라는 단어는 꼭 포함해 줘.
 
-client = OpenAI(api_key=os.getenv(<span class="st">"OPENAI_API_KEY"</span>))
-
-<span class="cm"># 1. 실제 실행될 함수 (도구 구현)</span>
-<span class="kw">def</span> get_current_weather(location: <span class="fn">str</span>, unit: <span class="fn">str</span> = <span class="st">"celsius"</span>) -&gt; <span class="fn">str</span>:
-    <span class="cm"># 실제로는 외부 날씨 API를 호출. 여기서는 모의 데이터 반환</span>
-    mock_db = {<span class="st">"서울"</span>: {<span class="st">"temperature"</span>: <span class="fn">22</span>, <span class="st">"condition"</span>: <span class="st">"맑음"</span>},
-               <span class="st">"런던"</span>: {<span class="st">"temperature"</span>: <span class="fn">18</span>, <span class="st">"condition"</span>: <span class="st">"비"</span>}}
-    info = mock_db.get(location, {<span class="st">"temperature"</span>: <span class="fn">20</span>, <span class="st">"condition"</span>: <span class="st">"알 수 없음"</span>})
-    info[<span class="st">"location"</span>] = location; info[<span class="st">"unit"</span>] = unit
-    <span class="kw">return</span> json.dumps(info, ensure_ascii=<span class="kw">False</span>)
-
-<span class="cm"># 2. 도구 명세서 (JSON Schema)</span>
-tools_definition = [{<span class="st">"type"</span>: <span class="st">"function"</span>, <span class="st">"function"</span>: {
-    <span class="st">"name"</span>: <span class="st">"get_current_weather"</span>,
-    <span class="st">"description"</span>: <span class="st">"특정 도시의 현재 날씨와 기온 정보를 가져옵니다."</span>,
-    <span class="st">"parameters"</span>: {<span class="st">"type"</span>: <span class="st">"object"</span>,
-        <span class="st">"properties"</span>: {<span class="st">"location"</span>: {<span class="st">"type"</span>: <span class="st">"string"</span>}, <span class="st">"unit"</span>: {<span class="st">"type"</span>: <span class="st">"string"</span>, <span class="st">"enum"</span>: [<span class="st">"celsius"</span>,<span class="st">"fahrenheit"</span>]}},
-        <span class="st">"required"</span>: [<span class="st">"location"</span>]}
-}}]
-
-<span class="cm"># 3. 에이전트 루프 (Orchestrator)</span>
-<span class="kw">def</span> run_agent(user_prompt: <span class="fn">str</span>):
-    messages = [{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: user_prompt}]
-    response = client.chat.completions.create(
-        model=<span class="st">"gpt-4o-mini"</span>, messages=messages,
-        tools=tools_definition, tool_choice=<span class="st">"auto"</span>
-    )
-    msg = response.choices[<span class="fn">0</span>].message
-
-    <span class="kw">if</span> msg.tool_calls:
-        messages.append(msg)
-        <span class="kw">for</span> tc <span class="kw">in</span> msg.tool_calls:
-            args = json.loads(tc.function.arguments)
-            result = get_current_weather(location=args.get(<span class="st">"location"</span>), unit=args.get(<span class="st">"unit"</span>, <span class="st">"celsius"</span>))
-            messages.append({<span class="st">"tool_call_id"</span>: tc.id, <span class="st">"role"</span>: <span class="st">"tool"</span>,
-                              <span class="st">"name"</span>: tc.function.name, <span class="st">"content"</span>: result})
-        final = client.chat.completions.create(model=<span class="st">"gpt-4o-mini"</span>, messages=messages)
-        <span class="fn">print</span>(f<span class="st">"🤖 {final.choices[0].message.content}"</span>)
-    <span class="kw">else</span>:
-        <span class="fn">print</span>(f<span class="st">"🤖 {msg.content}"</span>)
-
-run_agent(<span class="st">"안녕! 넌 누구야?"</span>)        <span class="cm"># 도구 호출 불필요</span>
-run_agent(<span class="st">"지금 서울 날씨 어때?"</span>)     <span class="cm"># 도구 호출 필요</span></code></pre>
-    </div>
-
-    <div class="out-block">
-      <span class="arrow">▶</span> 👤 "안녕! 넌 누구야?"<br>
-      &nbsp;&nbsp;🤖 "안녕하세요! 저는 여러분의 질문에 답변하고 도움을 드리는 AI 어시스턴트입니다."<br><br>
-      &nbsp;&nbsp;👤 "지금 서울 날씨 어때?"<br>
-      &nbsp;&nbsp;[시스템 로그] 🛠️ 도구 실행 중: get_current_weather(location='서울')<br>
-      &nbsp;&nbsp;🤖 "현재 서울의 날씨는 맑으며, 기온은 섭씨 22도입니다."
+<span class="kw">### 텍스트 ###</span>
+"산업 혁명 이후 인간의 활동, 특히 화석 연료의 연소는
+대기 중 이산화탄소(CO2) 농도를 급격히 증가시켰습니다. ..."</code></pre>
     </div>
   </div>
 </section>
 
-<section id="comparison">
+<section id="extract" style="background:var(--paper-tint);">
   <div class="wrap reveal">
-    <div class="kicker">At a Glance</div>
-    <h2 class="title">한눈에 비교: Tool Calling vs RAG vs 파인튜닝</h2>
+    <div class="kicker">기본 작업 02</div>
+    <h2 class="title">정보 추출 (Information Extraction)</h2>
+    <p class="lede">정형화되지 않은 텍스트에서 특정 정보만 뽑아내는, 현업 활용도 1순위 기술입니다. JSON Mode를 못 쓸 경우 출력 형식을 명시하는 것이 "국룰"입니다.</p>
+    <div class="code-block">
+      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">extract.txt</div></div>
+      <pre><code><span class="kw">### 지시 ###</span>
+아래 이메일 본문에서 '프로젝트명', '청구 금액(숫자만)', '담당자 이름'을
+추출해서, 지정된 JSON 형식으로 출력해 줘. 정보가 없으면 "N/A"로 표시해.
+
+<span class="kw">### 이메일 본문 ###</span>
+"'차세대 AI 모델 개발(Project Alpha)' 건 관련 11월분 작업 비용
+(총 3,500,000원)에 대한 세금계산서 발행 요청드립니다.
+문의는 박영희 매니저에게 주시면 됩니다."
+
+<span class="kw">### 출력 형식 ###</span>
+{ "project_name": "...", "invoice_amount": ..., "manager_name": "..." }</code></pre>
+    </div>
+  </div>
+</section>
+
+<section id="classify">
+  <div class="wrap reveal">
+    <div class="kicker">기본 작업 03</div>
+    <h2 class="title">텍스트 분류 (Text Classification)</h2>
+    <p class="lede">수천 개의 고객 리뷰나 이메일을 '뚝딱' 분류할 수 있습니다. 감정 분석, 스팸 필터링, 의도 파악(Intent)에 사용됩니다.</p>
+    <div class="code-block">
+      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">classify.txt</div></div>
+      <pre><code><span class="kw">### 지시 ###</span>
+[고객 리뷰]를 읽고 [분류 기준]에 따라 가장 적절한 카테고리 1개만 골라서 답해.
+
+<span class="kw">### 고객 리뷰 ###</span>
+"이 신형 키보드 타건감은 정말 예술인데,
+배송이 일주일이나 걸린 건 정말 최악이었어요."
+
+<span class="kw">### 분류 기준 ###</span>
+- 긍정 (제품에만 만족) / 부정 (배송에만 불만)
+- 복합 (제품 만족 + 배송 불만) / 중립 (의견 없음)</code></pre>
+    </div>
+  </div>
+</section>
+
+<section id="qa" style="background:var(--paper-tint);">
+  <div class="wrap reveal">
+    <div class="kicker">기본 작업 04</div>
+    <h2 class="title">질의응답 (Q&amp;A)</h2>
+    <p class="lede">모델에게 '문맥(Context)'을 함께 제공해 그 안에서만 답변하도록 제한하는 방식입니다 — LLM '환각'을 방지하는 가장 기초적인 방법입니다.</p>
+    <div class="code-block">
+      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">qa.txt</div></div>
+      <pre><code><span class="kw">### 지시 ###</span>
+[문맥]을 읽고 [질문]에 대해서만 짧게 답변해.
+문맥에 답이 없으면 "정보 없음"이라고 답해야 해.
+
+<span class="kw">### 문맥 ###</span>
+"세종대왕은 1418년부터 1450년까지 조선을 다스렸으며,
+1443년 훈민정음을 창제했습니다. 장영실은 자격루와
+측우기를 발명했습니다."
+
+<span class="kw">### 질문 ###</span>
+"장영실이 훈민정음을 창제했는가?"</code></pre>
+    </div>
+  </div>
+</section>
+
+<section id="code">
+  <div class="wrap reveal">
+    <div class="kicker">기본 작업 05</div>
+    <h2 class="title">코드 생성 (Code Generation)</h2>
+    <p class="lede">MySQL 쿼리부터 파이썬, HTML/CSS까지. 구체적인 요구사항을 '주석'이나 '지시문'으로 명확하게 전달하는 것이 좋습니다.</p>
+    <div class="code-block">
+      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">codegen.txt</div></div>
+      <pre><code><span class="kw">### 지시 ###</span>
+웹 페이지에 'myButton'이라는 ID를 가진 버튼이 있다.
+이 버튼을 클릭하면, 'message' ID를 가진 &lt;p&gt; 태그의 텍스트가
+'버튼이 클릭되었습니다!'로 바뀌는 자바스크립트 코드를 작성해 줘.</code></pre>
+    </div>
+  </div>
+</section>
+
+<section id="summary" style="background:var(--paper-tint);">
+  <div class="wrap reveal">
+    <div class="kicker">Quick Reference</div>
+    <h2 class="title">한눈에 비교: 프롬프트 기초 5대 작업</h2>
     <div class="cmp-table-wrap">
       <table class="cmp-table">
-        <tr><th>비교 항목</th><th class="col-a">Tool Calling</th><th>RAG</th><th class="col-b">Fine-Tuning</th></tr>
-        <tr><td>핵심 목적</td><td>'행동(Action)'을 수행</td><td>'지식(Knowledge)'을 참고</td><td>'뇌 구조(가중치)' 자체를 변경</td></tr>
-        <tr><td>작동 방식</td><td>API 호출, DB 쓰기, 코드 실행</td><td>벡터 DB 검색 후 프롬프트에 삽입</td><td>특정 도메인 데이터셋으로 재학습</td></tr>
-        <tr><td>데이터 실시간성</td><td>최상 (실시간 API 즉시 조회)</td><td>높음 (DB 업데이트 주기에 따름)</td><td>낮음 (학습 시점에 고정)</td></tr>
-        <tr><td>주요 사용처</td><td>날씨/주식 조회, 예약, 자동화</td><td>사내 문서 검색, 매뉴얼 QA</td><td>말투 학습, 도메인 용어 체득</td></tr>
+        <tr><th>작업</th><th class="col-a">핵심 목표</th><th class="col-b">설계 꿀팁</th></tr>
+        <tr><td>요약</td><td>긴 텍스트 압축</td><td>'대상'과 '길이' 명시 (예: 초등학생용 3줄)</td></tr>
+        <tr><td>추출</td><td>특정 정보만 뽑기</td><td>'출력 형식(JSON)' 강제, 없으면 "N/A" 지시</td></tr>
+        <tr><td>분류</td><td>카테고리 매핑</td><td>'분류 기준'을 모호하지 않게 정의</td></tr>
+        <tr><td>질의응답</td><td>질문에 대한 답</td><td>'문맥'을 제공해 범위 제한 (환각 방지)</td></tr>
+        <tr><td>코드 생성</td><td>코드 작성/변환</td><td>'주석'으로 로직 상세 설명, 언어/라이브러리 지정</td></tr>
       </table>
     </div>
-    <div class="note-box" style="margin-top:20px;"><b>상호 관계</b> — RAG 시스템을 실행하기 위한 '도구' 중 하나로 Tool Calling을 사용할 수 있습니다 (융합 가능).</div>
   </div>
 </section>
 
-<section class="summary" id="conclusion">
+<section class="summary" id="next">
   <div class="wrap reveal">
-    <div class="kicker on-dark">Conclusion</div>
-    <h2 class="title on-dark">마치며 — Tool Calling의 미래와 MCP</h2>
-    <p class="lede on-dark">초기의 Tool Calling은 개발자가 하나하나 함수를 구현하고 LLM에 바인딩하는 복잡한 과정을 거쳐야 했습니다. 하지만 최근에는 <b>MCP(Model Context Protocol)</b>라는 새로운 오픈소스 표준이 등장했습니다.</p>
-
-    <div class="recap-list">
-      <div class="recap-item"><span class="num">01</span><span class="rt">MCP를 활용하면 도구를 별도의 서버로 분리해, Claude든 GPT든 상관없이 <b>"플러그 앤 플레이"</b> 방식으로 도구를 손쉽게 공유·연동할 수 있습니다.</span></div>
-      <div class="recap-item"><span class="num">02</span><span class="rt">Tool Calling은 LLM을 단순한 '말동무'에서 실질적인 비즈니스 가치를 창출하는 <b>'디지털 노동자(AI Agent)'</b>로 진화시키는 핵심 심장입니다.</span></div>
-    </div>
-
-    <div class="final-line" style="margin-top:30px;"><b>기억할 것 한 줄</b> — AI 서비스 개발을 계획한다면, 프롬프트 엔지니어링을 넘어 Tool Calling 아키텍처 설계 역량은 선택이 아닌 필수입니다.</div>
+    <div class="kicker on-dark">Next</div>
+    <h2 class="title on-dark">다음 편 예고</h2>
+    <p class="lede on-dark">여기서 다룬 '제로샷(Zero-shot)' 방식은 분류 기준이 애매하거나 복잡한 문제(수학, 다단계 추론)를 풀기엔 한계가 명확합니다.</p>
+    <div class="final-line"><b>다음 편(3/5)</b> — 프롬프트 엔지니어링의 '꽃', 퓨샷(Few-shot)과 생각의 사슬(Chain-of-Thought, CoT)을 마스터합니다.</div>
   </div>
 </section>
 
@@ -683,7 +711,7 @@ run_agent(<span class="st">"지금 서울 날씨 어때?"</span>)     <span clas
 
 <footer>
   <div class="wrap">
-    <span>Tool Calling 완벽 가이드 · A10 · AI 에이전트</span>
+    <span>프롬프트 엔지니어링 시리즈 2/5 · 실전 기초 편</span>
     <a class="totop" href="#top">맨 위로 ↑</a>
   </div>
 </footer>

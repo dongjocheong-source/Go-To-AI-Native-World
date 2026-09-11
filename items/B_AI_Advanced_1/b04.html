@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Agent의 핵심 무기 Tool Calling(도구 호출) 완벽 가이드 — 정의, 구성요소, 장단점, 실습</title>
-<meta name="description" content="Tool Calling의 정의, Function Calling과의 차이, 핵심 구성요소, ReAct 기반 작동 원리, 장단점, 활용 분야, OpenAI API 실습 코드, Tool Calling vs RAG vs 파인튜닝 비교, MCP와의 관계까지 정리한 완벽 가이드">
+<title>루프 엔지니어링(Loop Engineering)에 대해 자세히 알아보자! — 개요 및 정의, 구성요소, 특징 및 장단점, 구축</title>
+<meta name="description" content="루프 엔지니어링의 정의, 자동화·워크트리·스킬·커넥터·서브에이전트·외부메모리 5대 핵심 부품, 장단점, Claude Code로 L1→L2→L3 점진적 도입하는 실전 구축(SKILL.md, progress.md, reviewer.md, /loop, /goal), 오픈소스 CLI 도구, 프롬프트 엔지니어링과의 비교까지 정리한 완벽 가이드">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -19,10 +19,10 @@
     --line:#E7E1FA;
     --text-dark:#1B1730;
     --text-muted:#655F82;
-    --acc-a:#2563EB;
-    --acc-a-ink:#173E99;
-    --acc-b:#059669;
-    --acc-b-ink:#054F35;
+    --acc-a:#059669;
+    --acc-a-ink:#065F46;
+    --acc-b:#7C2D92;
+    --acc-b-ink:#4A1B58;
     --acc-c:#8880B0;
     --acc-c-ink:#3A3560;
     --danger:#D6455B;
@@ -319,12 +319,85 @@
   .ref-card .rc-text b{display:block;font-size:13.5px;color:var(--ink);margin-bottom:2px;}
   .ref-card .rc-arrow{color:var(--acc-b);font-size:16px;flex-shrink:0;}
 
+  .hero-panel .ptag{
+    display:inline-block;margin-top:14px;padding:5px 14px;border-radius:14px;
+    background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.22);
+    font-size:11px;font-weight:700;letter-spacing:.5px;position:relative;z-index:2;
+  }
+
+  /* ===== LLM 동작원리 — token demo, vector space, transformer stack, heatmap, prob bars ===== */
+  .tok-demo{background:var(--ink-deep);border-radius:var(--radius);padding:26px 28px;margin-top:28px;}
+  .tok-line{font-family:var(--mono);font-size:13px;color:#B8B0DE;margin-bottom:10px;}
+  .tok-line .hi{color:#E4DEFF;}
+  .tok-row{display:flex;flex-wrap:wrap;gap:9px;margin:16px 0;}
+  .tok-chip{padding:7px 14px;border-radius:8px;font-family:var(--mono);font-weight:600;font-size:13px;border:1px solid;}
+  .tok-chip.c0{background:rgba(13,148,136,0.16);color:#5EEAD4;border-color:rgba(13,148,136,0.4);}
+  .tok-chip.c1{background:rgba(217,119,6,0.16);color:#FCD34D;border-color:rgba(217,119,6,0.4);}
+  .tok-chip.c2{background:rgba(217,119,6,0.16);color:#FCD34D;border-color:rgba(217,119,6,0.4);}
+  .tok-chip.c3{background:rgba(13,148,136,0.16);color:#5EEAD4;border-color:rgba(13,148,136,0.4);}
+  .tok-chip.c4{background:rgba(217,119,6,0.16);color:#FCD34D;border-color:rgba(217,119,6,0.4);}
+  .tok-ids{font-family:var(--mono);font-size:13px;color:#E4DEFF;background:var(--ink-2);border-radius:8px;padding:11px 16px;display:inline-block;}
+
+  .embed-wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:24px;align-items:stretch;margin-top:28px;}
+  .vecspace{background:var(--paper-tint);border:1px solid var(--line);border-radius:var(--radius);position:relative;min-height:320px;overflow:hidden;}
+  .vecspace .axis{position:absolute;background:var(--line);}
+  .word-dot{position:absolute;transform:translate(-50%,-50%);font-family:var(--mono);font-size:12px;padding:6px 12px;border-radius:20px;border:1.4px solid;white-space:nowrap;font-weight:600;}
+  .word-dot.wa{background:rgba(13,148,136,0.1);color:var(--acc-a-ink);border-color:var(--acc-a);}
+  .word-dot.wb{background:rgba(217,119,6,0.1);color:var(--acc-b-ink);border-color:var(--acc-b);}
+  .word-dot.wc{background:rgba(124,58,237,0.1);color:#5B21B6;border-color:#8B5CF6;}
+  .embed-notes{display:flex;flex-direction:column;gap:16px;justify-content:center;}
+  .embed-notes .n{border-left:3px solid var(--acc-a);padding-left:16px;}
+  .embed-notes .n b{display:block;font-size:13.5px;margin-bottom:3px;color:var(--ink);}
+  .embed-notes .n span{font-size:12.6px;color:var(--text-muted);}
+
+  .tf-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:28px;max-width:420px;margin-left:auto;margin-right:auto;}
+  .tf-cap{font-family:var(--mono);font-size:11.5px;color:var(--text-muted);text-align:center;}
+  .tf-block{width:100%;border:1px solid var(--line);border-radius:10px;background:var(--paper-tint);padding:13px;text-align:center;}
+  .tf-block .l1{font-size:13px;font-weight:700;color:var(--acc-a-ink);}
+  .tf-block .l2{font-size:11.5px;color:var(--text-muted);margin-top:3px;}
+  .tf-repeat{font-family:var(--mono);font-size:11.5px;color:var(--acc-b-ink);font-weight:700;text-align:center;padding:2px 0;}
+  .tf-notes{margin-top:32px;display:flex;flex-direction:column;gap:16px;max-width:640px;margin-left:auto;margin-right:auto;}
+  .tf-notes .n b{display:block;color:var(--ink);font-weight:700;font-size:13.5px;margin-bottom:3px;}
+  .tf-notes .n p{margin:0;color:var(--text-muted);font-size:12.6px;}
+
+  .attn-wrap{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:28px;align-items:start;}
+  .qkv .row{display:flex;gap:14px;margin-bottom:14px;align-items:baseline;}
+  .qkv .k{font-family:var(--mono);font-size:12.5px;width:58px;flex-shrink:0;font-weight:700;}
+  .qkv .row:nth-child(1) .k{color:var(--acc-a-ink);}
+  .qkv .row:nth-child(2) .k{color:#8B5CF6;}
+  .qkv .row:nth-child(3) .k{color:var(--acc-b-ink);}
+  .qkv .v{font-size:12.8px;color:var(--text-muted);}
+  table.heat{border-collapse:collapse;width:100%;font-family:var(--mono);}
+  table.heat th{font-size:11px;color:var(--text-muted);font-weight:500;padding:6px;text-align:center;}
+  table.heat td.lab{font-size:11.5px;color:var(--text-muted);text-align:right;padding-right:10px;white-space:nowrap;}
+  table.heat td.cell{width:48px;height:40px;text-align:center;font-size:12px;font-weight:700;border-radius:6px;border:2px solid var(--paper);}
+  .heat-cap{font-family:var(--mono);font-size:11px;color:var(--text-muted);margin-top:12px;}
+
+  .prob-wrap{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:28px;align-items:center;}
+  .prompt-box{font-family:var(--mono);font-size:15px;background:var(--paper-tint);border:1px solid var(--line);border-radius:10px;padding:15px 18px;margin-bottom:22px;}
+  .prompt-box .blank{color:var(--acc-a-ink);border-bottom:2px solid var(--acc-a);padding:0 16px;font-weight:700;}
+  .bar{margin-bottom:12px;}
+  .bar .bl{display:flex;justify-content:space-between;font-size:12.8px;margin-bottom:5px;}
+  .bar .bl .pct{font-family:var(--mono);color:var(--text-muted);}
+  .bar .track{height:11px;background:var(--paper-tint);border-radius:6px;overflow:hidden;}
+  .bar .fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--acc-a-ink),var(--acc-a));}
+  ol.steps{counter-reset:s;list-style:none;padding:0;margin:0;}
+  ol.steps li{counter-increment:s;position:relative;padding:11px 0 11px 46px;border-bottom:1px solid var(--line);font-size:13.3px;color:var(--text-muted);}
+  ol.steps li:last-child{border-bottom:none;}
+  ol.steps li::before{content:counter(s,decimal-leading-zero);position:absolute;left:0;top:11px;font-family:var(--mono);font-size:11px;color:var(--acc-a-ink);border:1px solid var(--acc-a);border-radius:6px;padding:2px 7px;}
+  ol.steps li b{color:var(--ink);font-weight:700;}
+
+  @media(max-width:900px){
+    .embed-wrap,.attn-wrap,.prob-wrap{grid-template-columns:1fr;}
+  }
+
   /* ===== RLHF guide additions ===== */
 
 
+
   .hero-simple{
-    background:radial-gradient(circle at 18% 22%, rgba(37,99,235,0.22), transparent 45%),
-               radial-gradient(circle at 84% 18%, rgba(5,150,105,0.18), transparent 45%),
+    background:radial-gradient(circle at 18% 22%, rgba(5,150,105,0.22), transparent 45%),
+               radial-gradient(circle at 84% 18%, rgba(124,45,146,0.2), transparent 45%),
                linear-gradient(180deg,var(--ink) 0%, var(--ink-deep) 100%);
     color:var(--paper);min-height:92vh;display:flex;align-items:center;overflow:hidden;padding:120px 0 64px;
   }
@@ -439,29 +512,26 @@
 
 <header class="nav" id="siteNav">
   <div class="wrap">
-    <div class="brand"><span class="dot2"><span></span><span></span></span> Tool Calling 완벽 가이드 · A10 · AI 에이전트</div>
+    <div class="brand"><span class="dot2"><span></span><span></span></span> 루프 엔지니어링 완벽 가이드 · A14 · AI Basic</div>
     <nav class="links">
       <a href="#overview">개요</a>
-      <a href="#components">구성요소</a>
-      <a href="#howitworks">작동원리</a>
+      <a href="#components">5대부품</a>
       <a href="#proscons">장단점</a>
-      <a href="#usecases">활용분야</a>
-      <a href="#implementation">실습</a>
+      <a href="#implementation">실전구축</a>
       <a href="#comparison">비교</a>
+      <a href="#conclusion">마치며</a>
     </nav>
     <button class="hamburger" id="hamBtn" aria-label="메뉴 열기"><span></span><span></span><span></span></button>
   </div>
 </header>
 
 <div class="mobile-menu" id="mobileMenu">
-  <a href="#overview">Tool Calling이란</a>
-  <a href="#components">핵심 구성요소</a>
-  <a href="#howitworks">작동 원리 (Step-by-Step)</a>
+  <a href="#overview">루프 엔지니어링이란</a>
+  <a href="#components">루프를 이루는 5대 핵심 부품</a>
   <a href="#proscons">특징 및 장단점</a>
-  <a href="#usecases">주요 활용 분야</a>
-  <a href="#implementation">[실습] 날씨 에이전트 구축</a>
-  <a href="#comparison">Tool Calling vs RAG vs 파인튜닝</a>
-  <a href="#conclusion">마치며 · MCP</a>
+  <a href="#implementation">[실전] Claude Code 루프 구축</a>
+  <a href="#comparison">프롬프트 vs 루프 엔지니어링</a>
+  <a href="#conclusion">마치며</a>
 </div>
 <button class="mobile-close" id="mobileClose">×</button>
 
@@ -469,13 +539,13 @@
 
 <section class="hero-simple" id="top">
   <div class="wrap">
-    <div class="eyebrow">A10 · AI Basic · AI 에이전트의 핵심 무기</div>
-    <h1>AI Agent의 핵심 무기<br><span class="accent-word">Tool Calling(도구 호출)</span> 완벽 가이드</h1>
-    <p class="sub">"오늘 서울 날씨 어때?", "이메일 좀 보내줘" — LLM은 텍스트 창에 갇혀 실시간 데이터를 모르고, 실제로 메일을 보낼 수도 없습니다. 두뇌(AI)가 외부 세계와 상호작용할 수 있도록 '손과 발'을 달아주는 핵심 기술, Tool Calling을 정리합니다.</p>
+    <div class="eyebrow">A14 · AI Basic · 2026년 AI 엔지니어링 새 패러다임</div>
+    <h1>루프 엔지니어링<br><span class="accent-word">(Loop Engineering)</span>이란 무엇인가</h1>
+    <p class="sub">"저는 더 이상 AI에게 프롬프트를 치지 않습니다. 제 일은 AI가 스스로 일감을 찾고 수정하게 만드는 '루프(Loop)'를 짜는 것입니다." — 구글 엔지니어링 디렉터 Addy Osmani. 사람이 매번 프롬프트를 입력하던 역할을 AI 자동화 시스템으로 대체하는 방법론, 그 5대 구성요소와 Claude Code 실전 구축까지 정리합니다.</p>
     <div class="chip-row">
-      <a class="chip" href="#howitworks">6단계 작동원리</a>
-      <a class="chip" href="#implementation">날씨 에이전트 실습</a>
-      <a class="chip" href="#comparison">RAG·파인튜닝과 비교</a>
+      <a class="chip" href="#components">5대 핵심 부품 + 메모리</a>
+      <a class="chip" href="#implementation">L1→L2→L3 점진적 도입</a>
+      <a class="chip" href="#comparison">프롬프트 vs 루프</a>
     </div>
   </div>
 </section>
@@ -484,18 +554,28 @@
 <section id="overview">
   <div class="wrap reveal">
     <div class="kicker">Overview</div>
-    <h2 class="title">Tool Calling이란?</h2>
-    <p class="lede">LLM이 사용자의 자연어 입력을 분석해, 목적 달성을 위해 <b>미리 정의된 외부 도구(API, 함수, DB 검색 등)를 자율적으로 선택하고 실행할 수 있도록 하는 메커니즘</b>입니다. LLM이 "어떤 도구를, 어떤 파라미터로 실행해야 하는지"를 JSON 형태의 구조화된 데이터로 출력합니다.</p>
+    <h2 class="title">루프 엔지니어링의 개요 및 정의</h2>
+    <p class="lede">AI 에이전트가 한 번 대답하고 끝나는 것이 아니라, <b>①작업을 계획하고 → ②코드를 짜고 → ③결과를 검증하고 → ④오류를 수정하는</b> '피드백 사이클(Loop)'을 스스로 반복하다가, 사람이 정해둔 '종료 조건'을 달성했을 때만 멈추도록 시스템 전체를 설계하는 기술입니다.</p>
 
-    <h3 style="font-size:15px;font-weight:700;margin-top:44px;margin-bottom:14px;">Function Calling과의 차이점</h3>
-    <div class="compare-2">
+    <div class="pipeline">
+      <div class="pl-stage s0"><div class="plnum">①</div><div class="plname">계획</div><div class="pldesc">Plan</div></div>
+      <div class="pl-connector">→</div>
+      <div class="pl-stage s1"><div class="plnum">②</div><div class="plname">코드 작성</div><div class="pldesc">Code</div></div>
+      <div class="pl-connector">→</div>
+      <div class="pl-stage s2"><div class="plnum">③</div><div class="plname">결과 검증</div><div class="pldesc">Verify</div></div>
+      <div class="pl-connector">→</div>
+      <div class="pl-stage s3"><div class="plnum">④</div><div class="plname">오류 수정</div><div class="pldesc">Fix</div></div>
+    </div>
+    <div class="note-box">④에서 다시 ①~③으로 <b>루프</b>가 반복되다가, 종료 조건(예: 모든 테스트 통과)을 달성하면 멈춥니다.</div>
+
+    <div class="compare-2" style="margin-top:32px;">
       <div class="cc-card">
-        <h4>Function Calling</h4>
-        <p class="small">2023년 OpenAI가 처음 도입한 개념. 개발자가 정의한 '특정 함수'를 호출하도록 LLM이 인자값을 만들어주는 기능입니다.</p>
+        <h4>비유 — 세탁기 / 건조기</h4>
+        <p class="small">매 분마다 "물 더 넣어, 10분 더 돌려"라고 지시하지 않습니다. "건조도 100%가 되면 멈춰"라고 세팅만 해두면 기계가 스스로 판단하며 돌아갑니다. 루프 엔지니어링이 바로 AI라는 건조기를 설계하는 작업입니다.</p>
       </div>
       <div class="cc-card b">
-        <h4>Tool Calling (상위 개념)</h4>
-        <p class="small">Function Calling을 포함하는 상위 개념. 사용자 정의 함수뿐 아니라 웹 브라우징, 코드 실행기, 파일 시스템 접근 등 다양한 형태의 '도구'를 호출하는 현대적·확장된 개념입니다.</p>
+        <h4>나의 역할 변화</h4>
+        <p class="small">프롬프트를 치는 <b>'실행자(Maker)'</b>에서, 루프를 세팅하고 최종 결과를 확인하는 <b>'감독관(Manager)'</b>으로 역할이 180도 바뀝니다.</p>
       </div>
     </div>
   </div>
@@ -504,73 +584,36 @@
 <section id="components" style="background:var(--paper-tint);">
   <div class="wrap reveal">
     <div class="kicker">Architecture</div>
-    <h2 class="title">핵심 구성요소</h2>
-    <p class="lede">Tool Calling이 포함된 시스템은 다음 요소들이 유기적으로 맞물려 루프(Loop)를 형성합니다.</p>
+    <h2 class="title">루프를 이루는 5대 핵심 부품 (+ 메모리)</h2>
+    <p class="lede">단순한 챗봇을 '스스로 일하는 루프'로 진화시키려면 다음 6가지 부품이 필요합니다. 과거에는 파이썬으로 다 짜야 했지만, 현재는 Claude Code나 Codex 같은 최신 AI 툴에 모두 내장되어 있습니다.</p>
 
     <div class="feat-list">
-      <div class="feat-item"><div class="fi" style="background:var(--acc-a);">1</div><div><b>Tool Definition (도구 정의 스키마)</b><span>"내가 가진 도구는 이런 것들이고, 이런 규칙으로 써야 해"를 알려주는 설명서. JSON Schema로 이름·설명·필수 입력값 등을 정의합니다.</span></div></div>
-      <div class="feat-item"><div class="fi" style="background:var(--acc-a);">2</div><div><b>LLM (추론 엔진)</b><span>사용자 요청과 도구 정의서를 비교 분석해, 도구가 필요한지 판단하고 실행 파라미터를 생성합니다.</span></div></div>
-      <div class="feat-item"><div class="fi" style="background:var(--acc-b);">3</div><div><b>Tool Executor (도구 실행기)</b><span>LLM이 반환한 JSON을 받아 실제로 코드를 실행하거나 외부 API를 호출하는 애플리케이션 백엔드 계층</span></div></div>
-      <div class="feat-item"><div class="fi" style="background:var(--acc-b);">4</div><div><b>Orchestrator (에이전트 루프)</b><span>사용자 입력 → LLM의 도구 호출 판단 → 도구 실행 → 결과를 다시 LLM에 전달 → 최종 답변 생성의 전체 흐름을 제어</span></div></div>
+      <div class="feat-item"><div class="fi" style="background:var(--acc-a);">1</div><div><b>자동화 (Automations) — 심장 박동</b><span>매일 아침 7시, 사람이 없어도 AI가 GitHub에 접속해 어제 실패한 테스트나 새로 열린 이슈를 읽고 할 일을 스스로 발굴(Discovery)합니다.</span></div></div>
+      <div class="feat-item"><div class="fi" style="background:var(--acc-a);">2</div><div><b>워크트리 (Worktrees) — 독립된 책상</b><span>AI 여러 마리를 동시에 돌리면 같은 코드를 뜯어고치다 충돌이 납니다. 각 AI에게 섞이지 않는 독립된 작업 공간(git worktree)을 내어줍니다.</span></div></div>
+      <div class="feat-item"><div class="fi" style="background:var(--acc-a);">3</div><div><b>스킬 (Skills) — 인수인계 노트</b><span>AI는 세션이 켜질 때마다 백지상태입니다. SKILL.md 파일에 규칙을 한 번만 적어두면 AI가 매 작업마다 스스로 읽고 시작합니다.</span></div></div>
+      <div class="feat-item"><div class="fi" style="background:var(--acc-b);">4</div><div><b>커넥터 (Connectors/Plugins) — 손과 발</b><span>Slack에 알림을 보내고, Jira 티켓 상태를 변경하고, GitHub PR을 열 수 있도록 외부 서비스와 AI를 연결하는 다리(MCP 프로토콜 등)입니다.</span></div></div>
+      <div class="feat-item"><div class="fi" style="background:var(--acc-b);">5</div><div><b>★ 서브 에이전트 (Sub-agents) — 가장 중요</b><span>코드를 짜는 AI(Maker)와 검사하는 AI(Checker)를 강제로 분리합니다. AI는 자신이 짠 코드를 후하게 평가하는 편향(Self-bias)이 있어, 역할 분리가 루프의 신뢰도를 결정합니다.</span></div></div>
+      <div class="feat-item"><div class="fi" style="background:var(--acc-b);">6</div><div><b>외부 메모리 (Memory)</b><span>AI의 기억력(Context)은 휘발되므로, "어디까지 했고 무엇이 남았는지"를 progress.md 같은 마크다운 파일에 지속적으로 기록하게 만듭니다.</span></div></div>
     </div>
   </div>
 </section>
 
-<section id="howitworks">
-  <div class="wrap reveal">
-    <div class="kicker">ReAct-based</div>
-    <h2 class="title">작동 원리 (Step-by-Step)</h2>
-    <p class="lede">ReAct(Reasoning + Acting) 패턴을 기반으로 한 Tool Calling의 흐름입니다.</p>
-
-    <div class="trig-box">
-      <ol>
-        <li><b>사용자 요청</b> — "현재 애플(AAPL) 주가가 얼마야?"</li>
-        <li><b>LLM의 추론(Thought)</b> — "내 학습 데이터에는 실시간 주가 정보가 없네. get_stock_price 도구를 써야겠다. ticker: 'AAPL'로 설정하자."</li>
-        <li><b>도구 호출 요청(Action)</b> — LLM이 텍스트 대신 <code>{"name":"get_stock_price","arguments":{"ticker":"AAPL"}}</code> JSON을 출력</li>
-        <li><b>도구 실행</b> — 오케스트레이터가 JSON을 가로채 실제 주가 조회 API를 실행</li>
-        <li><b>결과 관찰(Observation)</b> — API 실행 결과(예: <code>{"price":150.25}</code>)를 다시 LLM에 전달</li>
-        <li><b>최종 응답 생성</b> — "현재 애플의 주가는 $150.25입니다."</li>
-      </ol>
-    </div>
-  </div>
-</section>
-
-<section id="proscons" style="background:var(--paper-tint);">
+<section id="proscons">
   <div class="wrap reveal">
     <div class="kicker">Trade-offs</div>
     <h2 class="title">특징 및 장단점</h2>
     <div class="pc-grid">
       <div class="pc-card pro">
         <h4>✅ 장점</h4>
-        <div class="pc-item"><span class="n">·</span><div><b>LLM 능력의 무한한 확장</b><span>실시간 검색, 복잡한 수학 연산, 파일 조작, 이메일·슬랙 연동이 가능해짐</span></div></div>
-        <div class="pc-item"><span class="n">·</span><div><b>환각 방지</b><span>모르는 사실을 지어내는 대신 외부 도구(검색, RAG)로 검증된 팩트 기반 답변</span></div></div>
-        <div class="pc-item"><span class="n">·</span><div><b>모듈식 확장성</b><span>재학습 없이 새 도구(API) 등록만으로 능력이 계속 늘어남</span></div></div>
+        <div class="pc-item"><span class="n">·</span><div><b>무인 자동화의 극치</b><span>퇴근 후에도 AI가 밤새 버그를 찾고 코드를 수정하며 테스트를 돌립니다.</span></div></div>
+        <div class="pc-item"><span class="n">·</span><div><b>표준화된 프로세스</b><span>Skills 설정을 통해 주니어 개발자가 오더라도 AI가 회사의 표준 코딩 컨벤션을 100% 강제하여 작업합니다.</span></div></div>
+        <div class="pc-item"><span class="n">·</span><div><b>시간 레버리지</b><span>사람은 "무엇을 할 것인가"와 "최종 승인"에만 시간을 쏟으면 되므로 생산성이 기하급수적으로 늘어납니다.</span></div></div>
       </div>
       <div class="pc-card con">
-        <h4>❌ 단점</h4>
-        <div class="pc-item"><span class="n">·</span><div><b>비용 및 지연 시간 증가</b><span>LLM→도구 실행→LLM의 여러 번 핑퐁(Round-trip)으로 응답 속도 저하, 토큰 비용 증가</span></div></div>
-        <div class="pc-item"><span class="n">·</span><div><b>보안 위험</b><span>LLM이 생성한 파라미터로 실제 코드가 실행되므로, 프롬프트 인젝션으로 <code>delete_all_data()</code> 같은 도구가 실행될 위험. 철저한 입력 검증·샌드박싱 필수</span></div></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="usecases">
-  <div class="wrap reveal">
-    <div class="kicker">Use Cases</div>
-    <h2 class="title">주요 활용 분야</h2>
-    <div class="org-grid">
-      <div class="org-card">
-        <h4>대화형 커머스 · CS 챗봇</h4>
-        <ul><li>"배송 언제 와?" → 내부 DB 조회 도구</li><li>반품 처리 API 호출로 환불 자동화</li></ul>
-      </div>
-      <div class="org-card">
-        <h4>데이터 분석 에이전트</h4>
-        <ul><li>CSV 업로드 + 분석 요청</li><li>Code Interpreter 도구로 차트 생성</li></ul>
-      </div>
-      <div class="org-card">
-        <h4>자율적 리서치 비서</h4>
-        <ul><li>여러 번 웹 검색 도구 호출</li><li>종합해 시장 동향 보고서 작성</li></ul>
+        <h4>❌ 단점 및 한계</h4>
+        <div class="pc-item"><span class="n">·</span><div><b>토큰 비용 폭발</b><span>AI가 자기들끼리 대화하며 무한 루프에 빠지면 하룻밤 새 수백만 원의 API 요금이 청구될 수 있습니다 (반드시 예산 상한선 설계 필요).</span></div></div>
+        <div class="pc-item"><span class="n">·</span><div><b>이해 부채 (Comprehension Debt)</b><span>코드가 너무 빨리 만들어지면, 개발자가 자기 회사의 코드가 어떻게 돌아가는지 이해하지 못하는 사태가 벌어집니다.</span></div></div>
+        <div class="pc-item"><span class="n">·</span><div><b>인지적 항복 (Cognitive Surrender)</b><span>AI가 가져온 결과를 귀찮아서 무비판적으로 승인(Merge)해버리면 제품의 품질이 서서히 무너집니다.</span></div></div>
       </div>
     </div>
   </div>
@@ -578,104 +621,149 @@
 
 <section id="implementation" style="background:var(--paper-tint);">
   <div class="wrap reveal">
-    <div class="kicker">[실습]</div>
-    <h2 class="title">Python으로 Tool Calling 에이전트 직접 구축하기</h2>
-    <p class="lede">OpenAI API로 LLM이 '날씨 조회 도구'를 스스로 판단하고 호출하는 완전한 Agent Loop를 구현합니다.</p>
+    <div class="kicker">[실전]</div>
+    <h2 class="title">Claude Code를 활용한 루프 엔지니어링 구축</h2>
+    <p class="lede">코딩 에이전트에게 "알아서 다 고쳐줘"라고 처음부터 통째로 맡기는 것은 비용 폭발과 품질 저하를 부르는 지름길입니다. 진정한 루프 엔지니어링은 <b>점진적 도입(L1 → L2 → L3)</b>과 <b>역할의 완벽한 분리(Maker vs Checker)</b>를 통해 통제 가능한 자율 시스템을 만드는 것입니다.</p>
+
+    <h3 style="font-size:15px;font-weight:700;margin-top:36px;margin-bottom:14px;">리스크를 줄이는 점진적 도입 전략</h3>
+    <div class="cmp-table-wrap">
+      <table class="cmp-table">
+        <tr><th>단계</th><th class="col-a">내용</th><th>승인/개입</th></tr>
+        <tr><td>L1 · Report-only</td><td>AI가 문제를 발견하고 정리해서 보고만 함. 자동 수정 없음</td><td>사람이 행동 패턴을 관찰</td></tr>
+        <tr><td>L2 · Assisted fixes</td><td>AI가 수정안을 제안하고 코드를 작성</td><td>적용 전 반드시 사람의 승인</td></tr>
+        <tr><td>L3 · Unattended</td><td>안전성이 검증된 허용 목록(Allow-list) 작업만</td><td>야간 무인 자동 진행</td></tr>
+      </table>
+    </div>
+
+    <h3 style="font-size:15px;font-weight:700;margin-top:44px;margin-bottom:4px;">Step 1 · 스킬(Skill)부터 이식하기</h3>
+    <p class="lede" style="margin-top:0;">AI가 세션이 바뀔 때마다 프로젝트 룰을 까먹지 않도록, 자주 하는 작업을 <code>.claude/skills/</code>에 SKILL.md 파일로 박아 넣습니다.</p>
+    <div class="code-block">
+      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">.claude/skills/daily-triage/SKILL.md</div></div>
+      <pre><code><span class="cm"># Daily Triage Skill</span>
+
+<span class="cm">## 목적</span>
+매일 아침 저장소 상태를 점검하고 처리할 일을 추린다.
+
+<span class="cm">## 작업 순서</span>
+1. 어제 이후의 CI 실패 로그를 읽는다.
+2. 열린 이슈 중 `bug` 라벨을 확인한다.
+3. 최근 24시간 커밋을 훑는다.
+4. 처리할 가치가 있는 항목을 `progress.md`에 기록한다.
+
+<span class="cm">## 출력 형식</span>
+## [날짜] triage
+- [ ] 항목 (우선순위: high/mid/low)
+- 근거: [이유 작성]
+
+<span class="cm">## 절대 규칙</span>
+- 확신이 없는 항목은 반드시 "확인 필요"로 표시할 것.
+- 이미 `progress.md`에 존재하는 항목은 중복해서 기록하지 않는다.</code></pre>
+    </div>
+
+    <h3 style="font-size:15px;font-weight:700;margin-top:36px;margin-bottom:4px;">Step 2 · 상태 파일(Memory) 만들기</h3>
+    <p class="lede" style="margin-top:0;">에이전트는 실행이 끝나면 모든 것을 잊어버립니다. <b>"에이전트는 잊어도, 저장소는 잊지 않는다."</b></p>
+    <div class="code-block">
+      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">progress.md</div></div>
+      <pre><code><span class="cm"># 진행 상황</span>
+
+<span class="cm">## 완료</span>
+- [x] auth 모듈 테스트 추가 (2026-06-28)
+
+<span class="cm">## 진행 중</span>
+- [ ] 결제 API 타임아웃 버그 (워크트리: fix-payment-timeout)
+
+<span class="cm">## 대기</span>
+- [ ] 로그 레벨 설정 리팩터</code></pre>
+    </div>
+
+    <h3 style="font-size:15px;font-weight:700;margin-top:36px;margin-bottom:4px;">Step 3 · 서브에이전트 분리하기 ★핵심★</h3>
+    <p class="lede" style="margin-top:0;">자기가 짠 코드를 자기가 채점하면 무조건 후하게 점수(Self-bias)를 줍니다. <code>.claude/agents/</code>에 평가자 에이전트를 정의합니다.</p>
+    <div class="code-block">
+      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">.claude/agents/reviewer.md</div></div>
+      <pre><code><span class="cm"># Reviewer Agent</span>
+
+<span class="cm">## 역할</span>
+다른 에이전트가 작성한 코드를 비판적으로 검토한다. **너는 절대 코드를 직접 쓰지 않는다.**
+
+<span class="cm">## 검토 기준</span>
+1. 프로젝트 스킬(SKILL.md)의 코딩 컨벤션 준수 여부
+2. 기존 테스트 코드의 통과 여부
+3. 엣지 케이스(Edge case) 처리 여부
+4. 보안 취약점 (입력값 검증, 시크릿 키 노출 등)
+
+<span class="cm">## 출력 형식</span>
+- 통과/실패 판정 명시
+- 실패 시: 구체적인 수정 요구사항을 작성하여 작성자(Maker) 에이전트에게 반환할 것.</code></pre>
+    </div>
+
+    <h3 style="font-size:15px;font-weight:700;margin-top:36px;margin-bottom:4px;">Step 4 · 오토메이션으로 부품 묶기 (/loop &amp; /goal)</h3>
+    <p class="lede" style="margin-top:0;">조립된 부품들을 Claude Code의 내장 명령어로 실행합니다. 도입 단계(L1 → L2)에 따라 명령어가 다릅니다.</p>
 
     <div class="code-block">
-      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">setup.sh</div></div>
-      <pre><code>pip install openai python-dotenv</code></pre>
+      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">L1 — 관찰 및 보고만</div></div>
+      <pre><code><span class="cm"># 매일(1d) 스킬을 실행하고 마크다운에 기록만 하도록 지시</span>
+/loop 1d <span class="st">"daily-triage 스킬을 실행하고 progress.md에 기록만 해줘. 절대 코드를 수정하지 마."</span></code></pre>
     </div>
+
+    <p class="lede">며칠 관찰 후 AI의 분류가 정확하다면, <code>/goal</code> 명령어로 종료 조건(Stop Condition)이 달성될 때까지 무한 반복하는 진짜 루프를 가동합니다.</p>
+    <div class="code-block">
+      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">L2 — 수정 및 검증 루프 가동</div></div>
+      <pre><code>/goal <span class="st">"progress.md의 'high' 우선순위 항목에 대해 격리된 워크트리(worktree)를 열고 수정안을 작성해.
+그 후 reviewer 에이전트에게 검토를 받고, 통과하면 PR(Pull Request)을 열어줘.
+단, Merge는 절대 하지 마.
+[종료 조건]: 모든 테스트 코드가 통과하고 lint 에러가 0이 되면 완료된 것으로 간주하고 멈춰."</span></code></pre>
+    </div>
+    <div class="note-box"><b>💡 실무 핵심 포인트</b> — <code>/goal</code> 명령어의 가장 중요한 점은 <b>'기계가 판별할 수 있는 명확한 종료 조건(예: 테스트 통과, 린트 클린)'</b>을 주는 것입니다. "코드가 좋아 보이면 멈춰"라고 지시하면 검사 모델이 판단하지 못해 토큰(비용)만 태우며 무한 루프에 빠지게 됩니다.</div>
+
+    <h3 style="font-size:15px;font-weight:700;margin-top:44px;margin-bottom:14px;">생산성을 극대화하는 오픈소스 CLI 도구</h3>
+    <p class="lede" style="margin-top:0;">매 프로젝트마다 처음부터 세팅하는 건 비효율적입니다. <code>cobusgreyling/loop-engineering</code> 공개 저장소의 CLI 도구로 구축 속도를 높일 수 있습니다.</p>
 
     <div class="code-block">
-      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">tool_calling_agent.py</div></div>
-      <pre><code><span class="kw">import</span> os, json
-<span class="kw">from</span> openai <span class="kw">import</span> OpenAI
+      <div class="code-head"><div class="dots"><span></span><span></span><span></span></div><div class="fname">loop-engineering-cli.sh</div></div>
+      <pre><code><span class="cm"># ① 스타터 스캐폴딩 — 루프 뼈대 자동 생성</span>
+npx @cobusgreyling/loop-init . --pattern daily-triage --tool claude
 
-client = OpenAI(api_key=os.getenv(<span class="st">"OPENAI_API_KEY"</span>))
+<span class="cm"># ② 토큰 비용 추정기 — 비용 폭탄 방지</span>
+npx @cobusgreyling/loop-cost --pattern daily-triage --level L1
 
-<span class="cm"># 1. 실제 실행될 함수 (도구 구현)</span>
-<span class="kw">def</span> get_current_weather(location: <span class="fn">str</span>, unit: <span class="fn">str</span> = <span class="st">"celsius"</span>) -&gt; <span class="fn">str</span>:
-    <span class="cm"># 실제로는 외부 날씨 API를 호출. 여기서는 모의 데이터 반환</span>
-    mock_db = {<span class="st">"서울"</span>: {<span class="st">"temperature"</span>: <span class="fn">22</span>, <span class="st">"condition"</span>: <span class="st">"맑음"</span>},
-               <span class="st">"런던"</span>: {<span class="st">"temperature"</span>: <span class="fn">18</span>, <span class="st">"condition"</span>: <span class="st">"비"</span>}}
-    info = mock_db.get(location, {<span class="st">"temperature"</span>: <span class="fn">20</span>, <span class="st">"condition"</span>: <span class="st">"알 수 없음"</span>})
-    info[<span class="st">"location"</span>] = location; info[<span class="st">"unit"</span>] = unit
-    <span class="kw">return</span> json.dumps(info, ensure_ascii=<span class="kw">False</span>)
-
-<span class="cm"># 2. 도구 명세서 (JSON Schema)</span>
-tools_definition = [{<span class="st">"type"</span>: <span class="st">"function"</span>, <span class="st">"function"</span>: {
-    <span class="st">"name"</span>: <span class="st">"get_current_weather"</span>,
-    <span class="st">"description"</span>: <span class="st">"특정 도시의 현재 날씨와 기온 정보를 가져옵니다."</span>,
-    <span class="st">"parameters"</span>: {<span class="st">"type"</span>: <span class="st">"object"</span>,
-        <span class="st">"properties"</span>: {<span class="st">"location"</span>: {<span class="st">"type"</span>: <span class="st">"string"</span>}, <span class="st">"unit"</span>: {<span class="st">"type"</span>: <span class="st">"string"</span>, <span class="st">"enum"</span>: [<span class="st">"celsius"</span>,<span class="st">"fahrenheit"</span>]}},
-        <span class="st">"required"</span>: [<span class="st">"location"</span>]}
-}}]
-
-<span class="cm"># 3. 에이전트 루프 (Orchestrator)</span>
-<span class="kw">def</span> run_agent(user_prompt: <span class="fn">str</span>):
-    messages = [{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: user_prompt}]
-    response = client.chat.completions.create(
-        model=<span class="st">"gpt-4o-mini"</span>, messages=messages,
-        tools=tools_definition, tool_choice=<span class="st">"auto"</span>
-    )
-    msg = response.choices[<span class="fn">0</span>].message
-
-    <span class="kw">if</span> msg.tool_calls:
-        messages.append(msg)
-        <span class="kw">for</span> tc <span class="kw">in</span> msg.tool_calls:
-            args = json.loads(tc.function.arguments)
-            result = get_current_weather(location=args.get(<span class="st">"location"</span>), unit=args.get(<span class="st">"unit"</span>, <span class="st">"celsius"</span>))
-            messages.append({<span class="st">"tool_call_id"</span>: tc.id, <span class="st">"role"</span>: <span class="st">"tool"</span>,
-                              <span class="st">"name"</span>: tc.function.name, <span class="st">"content"</span>: result})
-        final = client.chat.completions.create(model=<span class="st">"gpt-4o-mini"</span>, messages=messages)
-        <span class="fn">print</span>(f<span class="st">"🤖 {final.choices[0].message.content}"</span>)
-    <span class="kw">else</span>:
-        <span class="fn">print</span>(f<span class="st">"🤖 {msg.content}"</span>)
-
-run_agent(<span class="st">"안녕! 넌 누구야?"</span>)        <span class="cm"># 도구 호출 불필요</span>
-run_agent(<span class="st">"지금 서울 날씨 어때?"</span>)     <span class="cm"># 도구 호출 필요</span></code></pre>
+<span class="cm"># ③ 루프 준비도 오딧(Audit) 점검</span>
+npx @cobusgreyling/loop-audit . --suggest</code></pre>
     </div>
 
-    <div class="out-block">
-      <span class="arrow">▶</span> 👤 "안녕! 넌 누구야?"<br>
-      &nbsp;&nbsp;🤖 "안녕하세요! 저는 여러분의 질문에 답변하고 도움을 드리는 AI 어시스턴트입니다."<br><br>
-      &nbsp;&nbsp;👤 "지금 서울 날씨 어때?"<br>
-      &nbsp;&nbsp;[시스템 로그] 🛠️ 도구 실행 중: get_current_weather(location='서울')<br>
-      &nbsp;&nbsp;🤖 "현재 서울의 날씨는 맑으며, 기온은 섭씨 22도입니다."
-    </div>
+    <div class="safe-box"><b>마무리 요약</b> — 실전에서 Claude Code로 루프를 짤 때는 <b>1) SKILL.md로 컨텍스트를 고정</b>하고, <b>2) progress.md로 기억을 외부에 저장</b>하며, <b>3) reviewer.md를 통해 검증자를 철저히 분리</b>하는 것이 핵심입니다. 여기에 /goal 명령어로 명확한 종료 조건을 걸어두면, 자는 동안에도 AI가 안전하게 버그를 고치고 PR을 올려두는 완벽한 자율 시스템이 완성됩니다.</div>
   </div>
 </section>
 
 <section id="comparison">
   <div class="wrap reveal">
     <div class="kicker">At a Glance</div>
-    <h2 class="title">한눈에 비교: Tool Calling vs RAG vs 파인튜닝</h2>
+    <h2 class="title">한눈에 비교: 프롬프트 엔지니어링 vs 루프 엔지니어링</h2>
     <div class="cmp-table-wrap">
       <table class="cmp-table">
-        <tr><th>비교 항목</th><th class="col-a">Tool Calling</th><th>RAG</th><th class="col-b">Fine-Tuning</th></tr>
-        <tr><td>핵심 목적</td><td>'행동(Action)'을 수행</td><td>'지식(Knowledge)'을 참고</td><td>'뇌 구조(가중치)' 자체를 변경</td></tr>
-        <tr><td>작동 방식</td><td>API 호출, DB 쓰기, 코드 실행</td><td>벡터 DB 검색 후 프롬프트에 삽입</td><td>특정 도메인 데이터셋으로 재학습</td></tr>
-        <tr><td>데이터 실시간성</td><td>최상 (실시간 API 즉시 조회)</td><td>높음 (DB 업데이트 주기에 따름)</td><td>낮음 (학습 시점에 고정)</td></tr>
-        <tr><td>주요 사용처</td><td>날씨/주식 조회, 예약, 자동화</td><td>사내 문서 검색, 매뉴얼 QA</td><td>말투 학습, 도메인 용어 체득</td></tr>
+        <tr><th>구분</th><th>프롬프트 엔지니어링<br><span style="font-weight:400;color:var(--text-muted);">2022~2024</span></th><th class="col-a">루프 엔지니어링<br><span style="font-weight:400;color:var(--text-muted);">2025~2026</span></th></tr>
+        <tr><td>주요 행동</td><td>"이 코드를 이렇게 저렇게 고쳐줘"</td><td>"테스트가 100% 통과할 때까지 고쳐봐"</td></tr>
+        <tr><td>작업 단위</td><td>한 번의 턴 (단발성)</td><td>완료될 때까지 무한 반복 (재귀적)</td></tr>
+        <tr><td>나의 역할</td><td>실행자 (Maker)</td><td>감독관 (Manager/Reviewer)</td></tr>
+        <tr><td>검증 주체</td><td>내가 직접 코드를 읽고 채점</td><td>보조 AI(서브 에이전트)가 1차 채점</td></tr>
+        <tr><td>필수 도구</td><td>ChatGPT 창</td><td>Claude Code, Codex, GitHub Actions</td></tr>
       </table>
     </div>
-    <div class="note-box" style="margin-top:20px;"><b>상호 관계</b> — RAG 시스템을 실행하기 위한 '도구' 중 하나로 Tool Calling을 사용할 수 있습니다 (융합 가능).</div>
   </div>
 </section>
 
 <section class="summary" id="conclusion">
   <div class="wrap reveal">
     <div class="kicker on-dark">Conclusion</div>
-    <h2 class="title on-dark">마치며 — Tool Calling의 미래와 MCP</h2>
-    <p class="lede on-dark">초기의 Tool Calling은 개발자가 하나하나 함수를 구현하고 LLM에 바인딩하는 복잡한 과정을 거쳐야 했습니다. 하지만 최근에는 <b>MCP(Model Context Protocol)</b>라는 새로운 오픈소스 표준이 등장했습니다.</p>
+    <h2 class="title on-dark">마치며 — '시작 버튼'만 누르는 사람이 되지 마세요</h2>
+    <p class="lede on-dark">루프 엔지니어링은 우리에게 엄청난 자유를 줍니다. 하지만 구글의 Addy Osmani는 다음과 같은 뼈 있는 경고를 남겼습니다.</p>
 
-    <div class="recap-list">
-      <div class="recap-item"><span class="num">01</span><span class="rt">MCP를 활용하면 도구를 별도의 서버로 분리해, Claude든 GPT든 상관없이 <b>"플러그 앤 플레이"</b> 방식으로 도구를 손쉽게 공유·연동할 수 있습니다.</span></div>
-      <div class="recap-item"><span class="num">02</span><span class="rt">Tool Calling은 LLM을 단순한 '말동무'에서 실질적인 비즈니스 가치를 창출하는 <b>'디지털 노동자(AI Agent)'</b>로 진화시키는 핵심 심장입니다.</span></div>
+    <div class="quote-box" style="background:rgba(255,255,255,0.04);border-left-color:var(--acc-a);">
+      <p style="color:#E4DEFF;">"루프를 설계하십시오. 단, 그저 '시작(Go)' 버튼만 누르는 구경꾼이 아니라, 끝까지 코드의 품질을 책임지는 '진짜 엔지니어'로 남을 작정으로 설계하십시오."</p>
     </div>
 
-    <div class="final-line" style="margin-top:30px;"><b>기억할 것 한 줄</b> — AI 서비스 개발을 계획한다면, 프롬프트 엔지니어링을 넘어 Tool Calling 아키텍처 설계 역량은 선택이 아닌 필수입니다.</div>
+    <p class="lede on-dark">루프는 우리를 타이핑의 고통에서 해방시켜 주지만, "이 코드가 우리 서비스에 올라가도 안전한가?"를 최종적으로 검토하고 승인하는 것은 영원히 인간의 몫입니다.</p>
+
+    <div class="final-line" style="margin-top:24px;"><b>기억할 것 한 줄</b> — AI가 스스로 일감을 찾고 고치는 이 강력한 시스템을 업무에 도입해보세요. 단, 첫 시작은 거창한 자동화가 아니라 귀찮은 에러 로그를 요약해주는 작은 스킬(SKILL.md) 한 장부터 시작하는 것을 추천합니다 🚀</div>
   </div>
 </section>
 
@@ -683,7 +771,7 @@ run_agent(<span class="st">"지금 서울 날씨 어때?"</span>)     <span clas
 
 <footer>
   <div class="wrap">
-    <span>Tool Calling 완벽 가이드 · A10 · AI 에이전트</span>
+    <span>루프 엔지니어링 완벽 가이드 · A14 · AI Basic</span>
     <a class="totop" href="#top">맨 위로 ↑</a>
   </div>
 </footer>
