@@ -100,25 +100,24 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
 - D09_AI_Tool_Reference 
 ---
 
-## [E] AI Fluency
-- E01_AI_Fluency_Framework_Foundations
-- E02_AI Capabilities and Limitations
-- E03_Teaching-AI-fluency
+## [E] Claude강좌
+- E01_ClaudeProduct_Claude-101
+- E02_ClaudeProduct_Claude-code-101
+- E03_ClaudeProduct_Claude-work
+- E04_ClaudeProduct_claude-platform
+- E05_claude-code-in-action
+- E06_mcp-Introduction
+- E07_mcp-advanced-topics
+- E08_subagents-introduction
+- E09_ai-native-sdlc-playbook
+- E10_agent-skills-introduction
 ---
 
-## [F] Claude강좌
-- F01_ClaudeProduct_Claude-101
-- F02_ClaudeProduct_Claude-code-101
-- F03_ClaudeProduct_Claude-work
-- F04_ClaudeProduct_claude-platform
-- F05_claude-code-in-action
-- F06_mcp-Introduction
-- F07_mcp-advanced-topics
-- F08_subagents-introduction
-- F09_ai-native-sdlc-playbook
-- F10_agent-skills-introduction
+## [F] AI Fluency
+- F01_AI_Fluency_Framework_Foundations
+- F02_AI Capabilities and Limitations
+- F03_Teaching-AI-fluency
 ---
-
 
 ## [G] AI 활용
 - G01_LLM-WiKi
