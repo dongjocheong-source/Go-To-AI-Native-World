@@ -30,7 +30,7 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
 - A13_AGI_ASI
 ---
 
-## [B]  AI Advanced
+## [B]  AI Advanced#1
 - B01_AI발전역사       
 - B02_프롬프트엔지니어링 
   - B02a - 프롬프트 엔지니어링이란 무엇인가 — 개념, 배경, LLM 핵심 파라미터
@@ -53,60 +53,51 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
   - B08e - MCP vs Skill
   - B08f - Hook vs Skill
   - B08g - Prompt_vs_skill_vs_agent
-- B09_영상관련기술
-- B10_온톨로지(Ontology)
-  - B10a_온톨로지(Ontology)란 무엇인가
-  - B10b_온톨로지(Ontology) 프로젝트 분석
-- B11_On-Premise LLM 
-  - B11a_[AILLM] 온프레미스AI(On-premise AI) 완벽가이드
-  - B11b_[AILLM] Docker + vLLM으로 Gemma4 31B 모델 서빙하기
-  - B11c_[AILLM] Docker로 vLLM 모델 서빙 및 서버 구축
-  - B11d_[Docker] AI 개발을 위한 Docker 완벽가이드
-- B12_[AIPython] 온디바이스AI(On-Device AI)에 대해 자세히 알아보자!
-- B13_[AILLM] Inference와 Reasoning (추론) 완벽 가이드
-- B14_자연어이해
-  - B14a_[AINLP] NLP(자연어 처리)란 무엇인가
-  - B14b_[AILLM] 자연어 이해(NLU)란 무엇일까
-  - B14c_[AIASR] ASR(자동 음성 인식)이란 무엇인가
-- B15_NLP
-  - B15a_[AINLP] 임베딩(Embedding)이란
-  - B15b_[AINLP] 최신 임베딩 모델과 원리
-  - B15c_[AINLP] Embedding 실습 및 Vector DB 맛보기
- ---
- 
-## [C]  AI_Tool
-- C01_대화채팅(ChatGPT,Claude,Gemini)
-  - C01a - Full comparison - Chat AI Tools 
-  - C01b - Comparison - ChatGPT vs Gemini vs Claude
-  - C01c - Claude Intro
-  - C01d - Claude 아티팩트
-- C02_리서치(NotebookLM,Perplexity)
-  - C02a - NotebookLM 2.0 달라진 7가지
-  - C02b - Perplexity AI 특장점 상세 정리
-  - C02c - NotebookLM vs Perplexity 비교 분석
-- C03_이미지_디자인(Claude Design, Nano Banana)
-  - C03a - Claude Design 특장점 상세 분석
-  - C03b - Nano Banana AI 특장점 상세 정리
-  - C03c - Nano Banana vs Claude Design 비교 분석
-- C04_코드_빌드(Claude Code, Replit, Cursor)
-- C05_영상(Higgsfield, CapCut)
-- C06_오디오_보이스(Suno, ElevenLabs)
-- C07_자동화에이전트(n8n, Zapier, Make)
-- C08_문서_생산성(Notion AI, Obsidian)
-- C09_AI_Tool_Reference 
 ---
 
-## [D] Claude강좌
-- D01_ClaudeProduct_Claude-101
-- D02_ClaudeProduct_Claude-code-101
-- D03_ClaudeProduct_Claude-work
-- D04_ClaudeProduct_claude-platform
-- D05_claude-code-in-action
-- D06_mcp-Introduction
-- D07_mcp-advanced-topics
-- D08_subagents-introduction
-- D09_ai-native-sdlc-playbook
-- D10_agent-skills-introduction
+## [C]  AI Advanced#2
+- C01_영상관련기술
+- C02_온톨로지(Ontology)
+  - B10a_온톨로지(Ontology)란 무엇인가
+  - B10b_온톨로지(Ontology) 프로젝트 분석
+- C03_On-Premise LLM 
+  - C03a_[AILLM] 온프레미스AI(On-premise AI) 완벽가이드
+  - C03b_[AILLM] Docker + vLLM으로 Gemma4 31B 모델 서빙하기
+  - C03c_[AILLM] Docker로 vLLM 모델 서빙 및 서버 구축
+  - C03d_[Docker] AI 개발을 위한 Docker 완벽가이드
+- C04_[AIPython] 온디바이스AI(On-Device AI)에 대해 자세히 알아보자!
+- C05_[AILLM] Inference와 Reasoning (추론) 완벽 가이드
+- C06_자연어이해
+  - C06a_[AINLP] NLP(자연어 처리)란 무엇인가
+  - C06b_[AILLM] 자연어 이해(NLU)란 무엇일까
+  - C06c_[AIASR] ASR(자동 음성 인식)이란 무엇인가
+- C07_NLP
+  - C07a_[AINLP] 임베딩(Embedding)이란
+  - C07b_[AINLP] 최신 임베딩 모델과 원리
+  - C07c_[AINLP] Embedding 실습 및 Vector DB 맛보기
+ ---
+
+ 
+## [D]  AI_Tool
+- D01_대화채팅(ChatGPT,Claude,Gemini)
+  - D01a - Full comparison - Chat AI Tools 
+  - D01b - Comparison - ChatGPT vs Gemini vs Claude
+  - D01c - Claude Intro
+  - D01d - Claude 아티팩트
+- D02_리서치(NotebookLM,Perplexity)
+  - D02a - NotebookLM 2.0 달라진 7가지
+  - D02b - Perplexity AI 특장점 상세 정리
+  - D02c - NotebookLM vs Perplexity 비교 분석
+- D03_이미지_디자인(Claude Design, Nano Banana)
+  - D03a - Claude Design 특장점 상세 분석
+  - D03b - Nano Banana AI 특장점 상세 정리
+  - D03c - Nano Banana vs Claude Design 비교 분석
+- D04_코드_빌드(Claude Code, Replit, Cursor)
+- D05_영상(Higgsfield, CapCut)
+- D06_오디오_보이스(Suno, ElevenLabs)
+- D07_자동화에이전트(n8n, Zapier, Make)
+- D08_문서_생산성(Notion AI, Obsidian)
+- D09_AI_Tool_Reference 
 ---
 
 ## [E] AI Fluency
@@ -115,22 +106,36 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
 - E03_Teaching-AI-fluency
 ---
 
-## [F] AI 활용
-- F01_LLM-WiKi
-    - F01a - LLM-Wiki-Architecture
-    - F01b - LLM-Wiki-Approach
-    - F01c - LLM-Wiki-Introduction
-    - F01d - LLM-Wiki-with-Obsidian
-- F02_Graphify-Intro  
-- F03_LLM Wiki + Graphify
-    - F03a - Graphify-blueprint
-    - F03b - LLM-Wiki -with-Graphify
-- F04_2nd_Brain
-- F05_LLM-Wiki + NotebookLM
-- F06_바이브코딩
-    - F06a_Vibecoding-PRD-Guide
-    - F06b_Vibecoding-Trend-2026
-- F07_Gemini + Playwright
+## [F] Claude강좌
+- F01_ClaudeProduct_Claude-101
+- F02_ClaudeProduct_Claude-code-101
+- F03_ClaudeProduct_Claude-work
+- F04_ClaudeProduct_claude-platform
+- F05_claude-code-in-action
+- F06_mcp-Introduction
+- F07_mcp-advanced-topics
+- F08_subagents-introduction
+- F09_ai-native-sdlc-playbook
+- F10_agent-skills-introduction
+---
+
+
+## [G] AI 활용
+- G01_LLM-WiKi
+    - G01a - LLM-Wiki-Architecture
+    - G01b - LLM-Wiki-Approach
+    - G01c - LLM-Wiki-Introduction
+    - G01d - LLM-Wiki-with-Obsidian
+- G02_Graphify-Intro  
+- G03_LLM Wiki + Graphify
+    - G03a - Graphify-blueprint
+    - G03b - LLM-Wiki -with-Graphify
+- G04_2nd_Brain
+- G05_LLM-Wiki + NotebookLM
+- G06_바이브코딩
+    - G06a_Vibecoding-PRD-Guide
+    - G06b_Vibecoding-Trend-2026
+- G07_Gemini + Playwright
 ---
 
 ## [H] 데이터베이스
