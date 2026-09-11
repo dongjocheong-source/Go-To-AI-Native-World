@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>에이전틱 AI 구축 기초 — 강의별 실습 프롬프트 모음</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<style>
+  :root{
+    --bg:#0b0e14;
+    --surface:#121826;
+    --surface-2:#182031;
+    --border:#242e42;
+    --border-soft:#1a2233;
+    --text:#e9edf5;
+    --text-dim:#8d99b0;
+    --text-faint:#57647d;
+    --cyan:#5fe3d0;
+    --violet:#a48cf7;
+    --amber:#f2b544;
+    --rose:#f2789a;
+    --mono:'JetBrains Mono', ui-monospace, monospace;
+    --sans:'Pretendard Variable','Pretendard', 'Space Grotesk', -apple-system, sans-serif;
+    --disp:'Space Grotesk','Pretendard Variable', sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:
+      radial-gradient(1100px 600px at 85% -10%, rgba(164,140,247,0.10), transparent 60%),
+      radial-gradient(900px 500px at 0% 10%, rgba(95,227,208,0.08), transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  a{color:var(--cyan); text-decoration:none;}
+  ::selection{background:rgba(95,227,208,0.25);}
+
+  /* ---------- Layout ---------- */
+  .shell{display:grid; grid-template-columns:250px 1fr; max-width:1180px; margin:0 auto;}
+  @media (max-width:880px){ .shell{grid-template-columns:1fr;} }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    position:sticky; top:0; align-self:start; height:100vh;
+    padding:32px 18px 32px 28px;
+    border-right:1px solid var(--border-soft);
+    display:flex; flex-direction:column; gap:28px;
+  }
+  @media (max-width:880px){
+    .sidebar{position:static; height:auto; border-right:none; border-bottom:1px solid var(--border-soft); padding:24px 20px;}
+  }
+  .brand{display:flex; flex-direction:column; gap:4px;}
+  .brand .tag{
+    font-family:var(--mono); font-size:11px; letter-spacing:.14em; color:var(--cyan);
+    text-transform:uppercase;
+  }
+  .brand .name{font-family:var(--disp); font-weight:700; font-size:18px; letter-spacing:-0.01em;}
+
+  nav.lecnav{display:flex; flex-direction:column; gap:2px;}
+  nav.lecnav a{
+    display:flex; align-items:baseline; gap:10px;
+    padding:9px 10px; border-radius:8px;
+    color:var(--text-dim); font-size:13.5px;
+    border-left:2px solid transparent;
+    transition:background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  nav.lecnav a .num{font-family:var(--mono); font-size:11px; color:var(--text-faint);}
+  nav.lecnav a:hover{background:var(--surface); color:var(--text);}
+  nav.lecnav a.active{background:var(--surface-2); color:var(--text); border-left-color:var(--cyan);}
+  nav.lecnav a.active .num{color:var(--cyan);}
+
+  .sidebar-foot{margin-top:auto; font-family:var(--mono); font-size:11px; color:var(--text-faint); line-height:1.7;}
+  .sidebar-foot .blink{display:inline-block; width:7px; height:13px; background:var(--cyan); vertical-align:-2px; animation:blink 1.1s steps(1) infinite;}
+  @keyframes blink{50%{opacity:0;}}
+
+  /* ---------- Main ---------- */
+  main{padding:0 28px 100px; min-width:0;}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:56px 0 40px; border-bottom:1px solid var(--border-soft);}
+  .hero .eyebrow{
+    font-family:var(--mono); font-size:12px; color:var(--amber); letter-spacing:.08em;
+    display:flex; align-items:center; gap:8px; margin-bottom:18px;
+  }
+  .hero .eyebrow::before{content:''; width:6px; height:6px; border-radius:50%; background:var(--amber); box-shadow:0 0 8px var(--amber);}
+  .hero h1{
+    font-family:var(--disp); font-weight:700; font-size:clamp(30px,4.2vw,44px);
+    letter-spacing:-0.02em; line-height:1.15; margin-bottom:10px;
+  }
+  .hero h1 span{color:var(--cyan);}
+  .hero p.lead{color:var(--text-dim); font-size:15.5px; max-width:640px; margin-bottom:28px;}
+
+  .hero-grid{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+  @media (max-width:760px){ .hero-grid{grid-template-columns:1fr;} }
+
+  .info-table{border:1px solid var(--border); border-radius:12px; overflow:hidden; background:var(--surface);}
+  .info-table .row{display:grid; grid-template-columns:110px 1fr; border-top:1px solid var(--border);}
+  .info-table .row:first-child{border-top:none;}
+  .info-table .k{padding:12px 14px; font-size:12.5px; color:var(--text-faint); font-family:var(--mono); background:var(--surface-2);}
+  .info-table .v{padding:12px 14px; font-size:13.5px; color:var(--text);}
+
+  .term{
+    border:1px solid var(--border); border-radius:12px; background:#0d121c;
+    font-family:var(--mono); font-size:12.5px; overflow:hidden;
+  }
+  .term .term-bar{
+    display:flex; gap:6px; padding:10px 14px; border-bottom:1px solid var(--border-soft);
+    background:var(--surface-2);
+  }
+  .term .dot{width:9px; height:9px; border-radius:50%;}
+  .term .dot:nth-child(1){background:#f2789a;}
+  .term .dot:nth-child(2){background:#f2b544;}
+  .term .dot:nth-child(3){background:#5fe3d0;}
+  .term pre{padding:16px 16px 18px; color:var(--text-dim); white-space:pre; overflow-x:auto; line-height:1.75;}
+  .term pre .agent{color:var(--violet);}
+  .term pre .sub{color:var(--cyan);}
+  .term pre .skill{color:var(--text-faint);}
+  .term .cursor{display:inline-block; width:7px; height:13px; background:var(--cyan); vertical-align:-2px; animation:blink 1.1s steps(1) infinite;}
+
+  /* ---------- Lecture sections ---------- */
+  .lecture{padding:56px 0; border-bottom:1px solid var(--border-soft); scroll-margin-top:24px;}
+  .lecture:last-child{border-bottom:none;}
+  .lec-head{display:flex; align-items:flex-start; gap:16px; margin-bottom:8px;}
+  .lec-num{
+    font-family:var(--disp); font-weight:700; font-size:34px; color:var(--text-faint);
+    line-height:1;
+  }
+  .lec-titlewrap h2{font-family:var(--disp); font-weight:600; font-size:23px; letter-spacing:-0.01em;}
+  .lec-titlewrap .ep{font-size:13px; color:var(--text-dim); margin-top:6px;}
+  .lec-link{
+    display:inline-flex; align-items:center; gap:6px; margin-top:10px;
+    font-family:var(--mono); font-size:12.5px; color:var(--cyan); border:1px solid var(--border);
+    padding:6px 11px; border-radius:20px; background:var(--surface);
+  }
+  .lec-link:hover{border-color:var(--cyan);}
+  .lec-note{
+    margin-top:18px; padding:14px 16px; border-left:3px solid var(--amber);
+    background:rgba(242,181,68,0.06); border-radius:0 8px 8px 0; font-size:13.5px; color:var(--text-dim);
+  }
+
+  /* plain table (checklist / usage) */
+  .plain-table{margin-top:18px; width:100%; border-collapse:collapse; border:1px solid var(--border); border-radius:10px; overflow:hidden;}
+  .plain-table th{
+    text-align:left; font-family:var(--mono); font-size:11.5px; color:var(--text-faint);
+    text-transform:uppercase; letter-spacing:.05em; background:var(--surface-2);
+    padding:10px 14px; border-bottom:1px solid var(--border);
+  }
+  .plain-table td{padding:12px 14px; font-size:13.5px; border-bottom:1px solid var(--border-soft); color:var(--text);}
+  .plain-table tr:last-child td{border-bottom:none;}
+
+  /* prompt cards */
+  .prompt{
+    margin-top:22px; border:1px solid var(--border); border-radius:12px; background:var(--surface);
+    overflow:hidden; transition:border-color .15s ease;
+  }
+  .prompt:hover{border-color:#31405c;}
+  .prompt-head{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:13px 16px; background:var(--surface-2); border-bottom:1px solid var(--border);
+  }
+  .prompt-head .ph-left{display:flex; align-items:center; gap:10px; min-width:0;}
+  .prompt-id{font-family:var(--mono); font-size:11.5px; color:var(--cyan); flex:none;}
+  .prompt-title{font-size:13.5px; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .copy-btn{
+    flex:none; font-family:var(--mono); font-size:11.5px; color:var(--text-dim);
+    background:transparent; border:1px solid var(--border); border-radius:7px;
+    padding:6px 10px; cursor:pointer; transition:all .15s ease; display:flex; align-items:center; gap:6px;
+  }
+  .copy-btn:hover{color:var(--text); border-color:var(--cyan);}
+  .copy-btn.copied{color:#0b0e14; background:var(--cyan); border-color:var(--cyan);}
+  .prompt-body{padding:16px; font-family:var(--mono); font-size:12.8px; color:var(--text-dim);
+    white-space:pre-wrap; line-height:1.85; overflow-x:auto;}
+  .prompt-body b{color:var(--text); font-weight:600;}
+  .prompt-body .hl{color:var(--violet);}
+
+  /* severity pills for 2-5 */
+  .pill{display:inline-block; font-family:var(--mono); font-size:10.5px; padding:1px 7px; border-radius:10px; margin-left:6px; vertical-align:1px;}
+  .pill.crit{background:rgba(242,120,154,0.15); color:var(--rose); border:1px solid rgba(242,120,154,0.35);}
+  .pill.high{background:rgba(242,181,68,0.15); color:var(--amber); border:1px solid rgba(242,181,68,0.35);}
+  .pill.med{background:rgba(141,153,176,0.15); color:var(--text-dim); border:1px solid var(--border);}
+
+  .subnote{margin-top:12px; font-size:12.5px; color:var(--text-faint);}
+  .subnote code{font-family:var(--mono); background:var(--surface-2); padding:1px 5px; border-radius:4px; color:var(--cyan);}
+
+  footer{padding:40px 28px 60px; text-align:center; color:var(--text-faint); font-family:var(--mono); font-size:11.5px;}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="tag">Course Handout</span>
+      <span class="name">에이전틱 AI 구축 기초</span>
+    </div>
+    <nav class="lecnav" id="lecnav">
+      <a href="#lec1"><span class="num">01</span> 입문 · 설치</a>
+      <a href="#lec2"><span class="num">02</span> MCP · agent.yaml</a>
+      <a href="#lec3"><span class="num">03</span> 경쟁사 분석 · 카피</a>
+      <a href="#lec4"><span class="num">04</span> 서브에이전트 · 확장</a>
+    </nav>
+    <div class="sidebar-foot">
+      수강생 공유용<span class="blink"></span><br>
+      프롬프트만 복사해 사용
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="eyebrow">SEED HANDOUT — 4 LECTURES</div>
+      <h1>에이전틱 AI 구축 기초<br><span>강의별 실습 프롬프트</span> 모음</h1>
+      <p class="lead">영상을 따라 실습할 때 이 문서에서 프롬프트만 복사해 채팅창에 붙여넣으세요. 프롬프트는 강의 진행 순서대로 번호가 매겨져 있습니다. 대괄호 안의 항목은 본인 상황에 맞게 교체하면 됩니다.</p>
+
+      <div class="hero-grid">
+        <div class="info-table">
+          <div class="row"><div class="k">사용 도구</div><div class="v">안티그래비티 (무료 프리뷰)</div></div>
+          <div class="row"><div class="k">작업 폴더</div><div class="v">바탕화면 <code>my_agent/</code></div></div>
+          <div class="row"><div class="k">권장 모델</div><div class="v">기본은 Gemini 3.1 Pro Low, 정밀 작업 시 High</div></div>
+          <div class="row"><div class="k">실행 순서</div><div class="v">1강 → 4강 순서대로, 이전 강 산출물이 다음 강 입력</div></div>
+        </div>
+
+        <div class="term">
+          <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+          <pre><span class="agent">Main_Agent</span>  (오케스트레이터)
+  ├─ <span class="sub">Naver_Agent</span>   → <span class="skill">네이버.md</span>
+  ├─ <span class="sub">Google_Agent</span>  → <span class="skill">구글.md</span>
+  └─ <span class="sub">Meta_Agent</span>    → <span class="skill">메타.md</span>
+
+<span class="skill">$</span> 병렬 위임 → 통합 검수<span class="cursor"></span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 1강 ================= -->
+    <section class="lecture" id="lec1">
+      <div class="lec-head">
+        <div class="lec-num">01</div>
+        <div class="lec-titlewrap">
+          <h2>에이전트 입문과 안티그래비티 설치</h2>
+          <div class="ep">에이전틱 AI 찍먹 강의 1편 — 챗봇 vs 에이전트 차이부터 환경 구축까지 #AI마케팅</div>
+        </div>
+      </div>
+
+      <div class="lec-note">이 강의는 설치 중심으로 별도 프롬프트 없음. 설치 단계만 영상의 STEP 가이드 그대로 따라 진행.</div>
+
+      <table class="plain-table">
+        <thead><tr><th>확인 항목</th><th>명령</th></tr></thead>
+        <tbody>
+          <tr><td>Node.js 설치 확인</td><td>터미널에 <code>node -v</code> 입력, v22 등 버전 출력 시 성공</td></tr>
+          <tr><td>안티그래비티 첫 실행</td><td>다크모드 에디터 화면 확인</td></tr>
+          <tr><td>채팅창 작동 확인</td><td>채팅창에 <b>안녕</b> 입력, 응답 확인</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ================= 2강 ================= -->
+    <section class="lecture" id="lec2">
+      <div class="lec-head">
+        <div class="lec-num">02</div>
+        <div class="lec-titlewrap">
+          <h2>MCP 장착과 agent.yaml</h2>
+          <a class="lec-link" href="https://youtu.be/ndPoNPWhiYE" target="_blank" rel="noopener">▶ youtu.be/ndPoNPWhiYE</a>
+        </div>
+      </div>
+
+      <div class="prompt" id="p2-1">
+        <div class="prompt-head">
+          <div class="ph-left"><span class="prompt-id">2-1</span><span class="prompt-title">노트북LM MCP 설치</span></div>
+          <button class="copy-btn" data-target="p2-1-body">⧉ 복사</button>
+        </div>
+        <div class="prompt-body" id="p2-1-body">아래 깃허브 링크에서 노트북LM MCP를 설치해줘:
+https://github.com/jacob-bd/notebooklm-mcp-cli.git</div>
+      </div>
+
+      <div class="prompt" id="p2-2">
+        <div class="prompt-head">
+          <div class="ph-left"><span class="prompt-id">2-2</span><span class="prompt-title">유튜브 MCP 설치</span></div>
+          <button class="copy-btn" data-target="p2-2-body">⧉ 복사</button>
+        </div>
+        <div class="prompt-body" id="p2-2-body">아래 깃허브 링크에서 유튜브 자막 추출하는 MCP 설치해줘:
+https://github.com/kimtaeyoon83/mcp-server-youtube-transcript.git</div>
+      </div>
+
+      <div class="prompt" id="p2-3">
+        <div class="prompt-head">
+          <div class="ph-left"><span class="prompt-id">2-3</span><span class="prompt-title">유튜브 MCP 작동 테스트</span></div>
+          <button class="copy-btn" data-target="p2-3-body">⧉ 복사</button>
+        </div>
+        <div class="prompt-body" id="p2-3-body">이 유튜브 영상의 자막을 전부 가져와줘: [유튜브 링크]
+
+가져온 자막을 분석해서 다음을 정리해줘:
+1. 영상의 핵심 주장 한 문장
+2. 시청자가 가장 공감할 만한 포인트 3가지</div>
+      </div>
+
+      <div class="prompt" id="p2-4">
+        <div class="prompt-head">
+          <div class="ph-left"><span class="prompt-id">2-4</span><span class="prompt-title">하네스 폴더 구조 생성</span></div>
+          <button class="copy-btn" data-target="p2-4-body">⧉ 복사</button>
+        </div>
+        <div class="prompt-body" id="p2-4-body">바탕화면에 my_agent 폴더를 만들고, 그 안에 아래 구조를 정확히 생성해줘.
+
+my_agent/
+├── @core/
+├── @memory/
+└── 업무/
+    ├── 매체_가이드/
+    └── 결과물/
+
+폴더만 만들고, 파일은 아직 만들지 마.</div>
+      </div>
+
+      <div class="prompt" id="p2-5">
+        <div class="prompt-head">
+          <div class="ph-left"><span class="prompt-id">2-5</span><span class="prompt-title">agent.yaml 한 방 생성</span></div>
+          <button class="copy-btn" data-target="p2-5-body">⧉ 복사</button>
+        </div>
+        <div class="prompt-body" id="p2-5-body">my_agent/@core/ 폴더 안에 agent.yaml 파일을 만들어줘.
+이 파일은 에이전트의 중앙 설정 파일이야.
+아래 7개 섹션을 YAML 형식으로 구성해줘:
+
+0. 계층 정의 (definitions)
+- main_agent: 세션 주체, 오케스트레이터
+- sub_agent: 도메인 격리 세션, 전문가
+- skill: 업무 수행 매뉴얼 (정적 파일)
+
+1. 에이전트 프로필
+- 이름: Marketing_Partner
+- 역할: Performance_Marketing_Expert
+- 핵심 목표: 데이터 기반 마케팅 실행과 전환율 극대화
+
+2. 시스템 파라미터
+- 언어: Korean
+- 톤: Professional, Concise, Direct
+- 출력 형식: Table, List, Step_Guide
+
+3. 절대 규칙 5개
+- SC-001: 인사말, 서론, 사족 출력 금지. 결론부터 제시.
+- SC-002: 답변은 표 또는 번호 리스트만 사용. 서술형 금지.
+- SC-003: 카피 작성 시 첫 문장에 타겟 결핍을 찌르는 단어 필수.
+- SC-004: 데이터 분석 시 수치 먼저, 해석은 한 문장 요약.
+- SC-005: 파일 저장 시 파일명에 YYMMDD 날짜 포함.
+
+4. 사용자 프로필
+- 데이터 기반 의사결정, 배치 처리 선호, 디자인 스타일 premium
+
+5. 자가발전 루프
+- 트리거: 동일 유형 피드백 2회 이상 반복
+- 단계: 즉시 수정 → 구조적 결함 분석 → 규칙 업데이트 안 제안
+
+6. 파일 네이밍 정책
+- 원칙: 업무 산출물은 한국어 파일명
+- 공백 허용
+- 포맷: YYMMDD_프로젝트명_산출물종류.확장자
+
+7. 오케스트레이션 (orchestration)
+- 구조: Main_Agent -> Sub_Agents
+- 서브에이전트 목록: Naver_Agent, Google_Agent, Meta_Agent
+- 정책: 메인 에이전트가 작업을 분해하여 적합한 서브 에이전트에게 할당하고, 각 서브 에이전트는 할당된 매체 가이드 파일을 스킬로 로드하여 참조함
+
+각 섹션마다 구분선 주석을 넣고, 규칙에는 id와 severity를 반드시 포함해줘.
+생성 직후 들여쓰기 오류가 있는지 자체 점검하고 수정해줘.</div>
+        <div style="padding:0 16px 16px;">
+          <span class="subnote">규칙 심각도 표기 예시:
+            <span class="pill crit">SC-001 CRITICAL</span>
+            <span class="pill crit">SC-002 CRITICAL</span>
+            <span class="pill high">SC-003 HIGH</span>
+            <span class="pill high">SC-004 HIGH</span>
+            <span class="pill med">SC-005 MEDIUM</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="prompt" id="p2-6">
+        <div class="prompt-head">
+          <div class="ph-left"><span class="prompt-id">2-6</span><span class="prompt-title">메모리 파일 생성</span></div>
+          <button class="copy-btn" data-target="p2-6-body">⧉ 복사</button>
+        </div>
+        <div class="prompt-body" id="p2-6-body">my_agent/@memory/ 폴더 안에 lessons_learned.md 파일을 만들어줘.
+
+내용:
+# Lessons Learned — 오답 노트
+에이전트의 자가 진단 결과가 자동으로 누적되는 파일입니다.
+수동 편집 금지 — 에이전트만 내용을 추가합니다.
+
+## 기록
+아직 기록 없음</div>
+        <div style="padding:0 16px 18px;">
+          <span class="subnote">
+            <b style="color:var(--text)">Workspace Rules 등록</b> — 좌측 하단 <code>Settings → Customizations → Rules → + Workspace</code> 클릭 후 아래 문장 붙여넣기.
+          </span>
+          <div class="prompt-body" style="margin-top:10px; border:1px solid var(--border); border-radius:8px;">프로젝트 루트의 @core/agent.yaml과 @memory/lessons_learned.md 파일들을 최우선 가이드라인으로 간주할 것. 첫 응답 시작 전에 반드시 해당 파일들의 내용을 읽고, 정의된 페르소나와 과거의 학습 내용을 모든 답변에 엄격히 반영하라.</div>
+        </div>
+      </div>
+
+      <div class="prompt" id="p2-7">
+        <div class="prompt-head">
+          <div class="ph-left"><span class="prompt-id">2-7</span><span class="prompt-title">자동 로드 검증 카피 생성</span></div>
+          <button class="copy-btn" data-target="p2-7-body">⧉ 복사</button>
+        </div>
+        <div class="prompt-body" id="p2-7-body">새로 출시한 보온 텀블러 광고 카피를 만들어줘.
+
+조건:
+- 타겟: 30대 직장인 여성
+- 제품 특징: 12시간 보온, 무게 200그램, 원핸드 오픈
+- 카피 개수: 5개
+- 형식: 표 (카피 / 타겟 결핍 / 소구점)</div>
+      </div>
+    </section>
+
+    <!-- ================= 3강 ================= -->
+    <section class="lecture" id="lec3">
+      <div class="lec-head">
+        <div class="lec-num">03</div>
+        <div class="lec-titlewrap">
+          <h2>경쟁사 분석과 카피 자동화</h2>
+          <a class="lec-link" href="https://youtu.be/LvC9XqSF0po" target="_blank" rel="noopener">▶ youtu.be/LvC9XqSF0po</a>
+        </div>
+      </div>
+
+      <div class="prompt" id="p3-1">
+        <div class="prompt-head">
+          <div class="ph-left"><span class="prompt-id">3-1</span><span class="prompt-title">단일 통합 명령</span></div>
+          <button class="copy-btn" data-target="p3-1-body">⧉ 복사</button>
+        </div>
+        <div class="prompt-body" id="p3-1-body">보온 텀블러 신제품 광고를 위한 주간 기획안 1건을 만들어줘.
+
+입력 자료:
+- 경쟁사 유튜브 영상 1편: [경쟁사 영상 URL]
+- 키워드 검증: 구글 검색으로 보온 텀블러 관련 최근 트렌드 3개 확인
+- 리뷰 결핍: 구글에서 경쟁 제품 리뷰 5건 검색해 공통 결핍 포인트 추출
+
+산출물:
+- 카피 5개, 형식은 표 (카피 / 타겟 결핍 / 소구점)
+- 광고 비주얼 콘셉트 3개, 한 줄씩
+- 위 둘을 묶은 주간 기획안 마크다운 1건
+
+저장 위치:
+- 업무/결과물/[YYMMDD]_보온텀블러_기획안.md
+
+자료 신뢰도가 낮다고 판단되면 검색어를 바꿔 재검색한 뒤 결과를 반영해줘.
+단계는 네가 알아서 분해하고, 진행 상황은 한 줄씩 보고해줘.</div>
+      </div>
+    </section>
+
+    <!-- ================= 4강 ================= -->
+    <section class="lecture" id="lec4">
+      <div class="lec-head">
+        <div class="lec-num">04</div>
+        <div class="lec-titlewrap">
+          <h2>서브에이전트 + 3매체 리퍼포징 + 매체 확장</h2>
+          <a class="lec-link" href="https://youtu.be/RsFtFtY6_9U" target="_blank" rel="noopener">▶ youtu.be/RsFtFtY6_9U</a>
+        </div>
+      </div>
+
+      <div class="prompt" id="p4-1">
+        <div class="prompt-head">
+          <div class="ph-left"><span class="prompt-id">4-1</span><span class="prompt-title">매체 가이드 파일 3개 생성 (서브에이전트 페르소나 정의)</span></div>
+          <button class="copy-btn" data-target="p4-1-body">⧉ 복사</button>
+        </div>
+        <div class="prompt-body" id="p4-1-body">업무/전문가_그룹/ 폴더 안에 아래 6개 파일을 마크다운으로 생성해줘.
+3개는 서브 에이전트([이름]_agent.md), 3개는 스킬([이름].md) 파일이야.
+
+1. 서브 에이전트 페르소나 정의서 (네이버_agent.md, 구글_agent.md, 메타_agent.md)
+파일 상단에 반드시 다음 4개 섹션을 포함해줘:
+## 서브에이전트 페르소나
+- 이름: [매체명]_담당
+- 사용자 상태: [검색 의도 / 무관심 스크롤 등]
+- 톤: [신뢰형 / 명료형 / 자극형 등]
+- 절대 원칙: [이 매체에서 절대 어기면 안 되는 1~2개]
+
+2. 매체별 스킬 매뉴얼 (네이버.md, 구글.md, 메타.md)
+각 매체의 규격(글자 수, 이미지 비율 등)과 필수 체크리스트를 상세히 적어줘.
+각 파일 상단에 "담당: [매체명]"과 "구분: [서브 에이전트 또는 스킬]"을 명시하고 섹션별 구분선을 포함해줘.</div>
+      </div>
+
+      <div class="prompt" id="p4-2">
+        <div class="prompt-head">
+          <div class="ph-left"><span class="prompt-id">4-2</span><span class="prompt-title">시드 아이디어 1건 추출</span></div>
+          <button class="copy-btn" data-target="p4-2-body">⧉ 복사</button>
+        </div>
+        <div class="prompt-body" id="p4-2-body">업무/결과물/[YYMMDD]_보온텀블러_기획안.md 파일을 열어,
+카피 5개 중 30대 직장인 여성에게 가장 반응이 좋을 1건을 골라줘.
+고른 카피와 매칭되는 비주얼 콘셉트 1개를 함께 정리해서
+업무/결과물/[YYMMDD]_보온텀블러_시드.md 파일로 저장해줘.</div>
+      </div>
+
+      <div class="prompt" id="p4-3">
+        <div class="prompt-head">
+          <div class="ph-left"><span class="prompt-id">4-3</span><span class="prompt-title">메인 에이전트가 서브 에이전트 3명에게 동시 위임</span></div>
+          <button class="copy-btn" data-target="p4-3-body">⧉ 복사</button>
+        </div>
+        <div class="prompt-body" id="p4-3-body">너는 메인 에이전트로서 작업을 분배해줘.
+
+입력:
+시드: 업무/결과물/[YYMMDD]_보온텀블러_시드.md
+서브 에이전트 정의: 업무/전문가_그룹/ 폴더의 네이버_agent, 구글_agent, 메타_agent
+스킬 매뉴얼: 업무/전문가_그룹/ 폴더의 네이버, 구글, 메타 (마크다운 파일)
+
+작업 방식:
+1. 각 매체의 _agent.md 파일을 읽어 서브 에이전트의 페르소나로 입혀줘
+2. 네이버_agent, 구글_agent, 메타_agent 3명을 호출해 병렬로 작업하게 해줘
+3. 각 서브 에이전트는 자기 이름과 매칭되는 스킬 파일(네이버.md 등)의 톤과 규격을 완벽히 따라야 해
+4. 메인 에이전트는 마지막에 통합 검수만 수행</div>
+      </div>
+
+      <div class="prompt" id="p4-4">
+        <div class="prompt-head">
+          <div class="ph-left"><span class="prompt-id">4-4</span><span class="prompt-title">신규 매체 확장 리서치 템플릿</span></div>
+          <button class="copy-btn" data-target="p4-4-body">⧉ 복사</button>
+        </div>
+        <div class="prompt-body" id="p4-4-body">신규 매체 가이드를 추가하려고 해. 매체명: [매체명]
+
+다음 정보를 리서치해서 정리해줘:
+
+1. 사용자 문화
+· 주 사용자층 (연령·지역·관심사)
+· 글쓰기 문화 (존댓말 / 반말 / 반존대 / 구어체 / 이모지 사용)
+· 콘텐츠 길이 평균
+· 광고 거부감 수준
+
+2. 매체 규격
+· 이미지 비율과 권장 해상도
+· 영상 길이 제한
+· 글자 수 제한
+· 해시태그·멘션 규칙
+
+3. 톤 가이드
+· 권장 톤 (신뢰형 / 명료형 / 자극형 / 친근형 / 정보형)
+· 절대 원칙 1~2개 (이 매체에서 거부감 일으키는 표현)
+· 첫 문장 후킹 패턴
+
+리서치 방법:
+· 구글 검색으로 매체 공식 광고 가이드 1건 이상 확인
+· 유튜브에서 해당 매체 마케팅 사례 영상 1편 자막 추출 후 분석
+· 결과 신뢰도가 낮으면 검색어를 바꿔 재검색
+
+정리 후 업무/전문가_그룹/[매체명]_가이드.md 파일로 저장해줘.
+(참고: 페르소나는 [매체명]_agent.md로, 스킬은 [매체명].md로 분리해서 저장)
+파일 상단에 서브에이전트 페르소나 섹션을 반드시 포함해줘.</div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>에이전틱 AI 구축 기초 · 강의별 실습 프롬프트 모음 · 수강생 공유용</footer>
+
+<script>
+  // copy to clipboard
+  document.querySelectorAll('.copy-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const target = document.getElementById(btn.dataset.target);
+      const text = target.innerText;
+      const done = ()=>{
+        const original = btn.innerHTML;
+        btn.innerHTML = '✓ 복사됨';
+        btn.classList.add('copied');
+        setTimeout(()=>{ btn.innerHTML = original; btn.classList.remove('copied'); }, 1400);
+      };
+      if(navigator.clipboard && window.isSecureContext){
+        navigator.clipboard.writeText(text).then(done).catch(()=>{fallbackCopy(text, done);});
+      } else {
+        fallbackCopy(text, done);
+      }
+    });
+  });
+  function fallbackCopy(text, cb){
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); }catch(e){}
+    document.body.removeChild(ta);
+    cb();
+  }
+
+  // scroll-spy nav
+  const sections = document.querySelectorAll('.lecture');
+  const navLinks = document.querySelectorAll('#lecnav a');
+  const map = {lec1:0, lec2:1, lec3:2, lec4:3};
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        navLinks.forEach(l=>l.classList.remove('active'));
+        navLinks[map[e.target.id]].classList.add('active');
+      }
+    });
+  }, {rootMargin:'-20% 0px -70% 0px'});
+  sections.forEach(s=>io.observe(s));
+</script>
+</body>
+</html>

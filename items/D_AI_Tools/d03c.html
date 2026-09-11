@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nano Banana vs Claude Design 비교 분석</title>
+<meta name="description" content="Nano Banana와 Claude Design의 기본 포지션, 핵심 철학, Design Process 단계별 역할, Creative Thinking 능력, 영역별 비교, 기업 활용, 생태계 포지셔닝, 최종 평가까지 정리한 비교 가이드">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+
+  :root{
+    --ink:#150F2E;
+    --ink-2:#1E1745;
+    --ink-deep:#0B0820;
+    --paper:#FFFFFF;
+    --paper-tint:#F6F3FF;
+    --line:#E7E1FA;
+    --text-dark:#1B1730;
+    --text-muted:#655F82;
+    --acc-a:#D97757;
+    --acc-a-ink:#8A3A1F;
+    --acc-b:#F5C518;
+    --acc-b-ink:#7A5E00;
+    --acc-c:#8880B0;
+    --acc-c-ink:#3A3560;
+    --danger:#D6455B;
+    --radius:18px;
+    --shadow:0 16px 40px rgba(21,15,46,0.12);
+    --maxw:1140px;
+    --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',Consolas,monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Noto Sans KR','Apple SD Gothic Neo',sans-serif;
+    color:var(--text-dark);
+    background:var(--paper);
+    line-height:1.68;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Noto Serif KR','Noto Sans KR',serif;margin:0;}
+  a{color:inherit;text-decoration:none;}
+  img,svg{display:block;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px;}
+  code{font-family:var(--mono);}
+
+  #progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--acc-a),var(--acc-b),var(--acc-c));z-index:9999;width:0%;transition:width .1s linear;}
+
+  header.nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:18px 0;transition:background .3s ease, padding .3s ease, box-shadow .3s ease;}
+  header.nav .wrap{display:flex;align-items:center;justify-content:space-between;}
+  header.nav.scrolled{background:rgba(21,15,46,0.92);backdrop-filter:blur(10px);padding:12px 0;box-shadow:0 4px 20px rgba(0,0,0,0.18);}
+  .brand{font-weight:900;font-size:15.5px;color:var(--paper);letter-spacing:.3px;display:flex;align-items:center;gap:9px;}
+  .brand .dot2{display:inline-flex;gap:3px;}
+  .brand .dot2 span{width:7px;height:7px;border-radius:50%;display:block;}
+  .brand .dot2 span:nth-child(1){background:var(--acc-a);}
+  .brand .dot2 span:nth-child(2){background:var(--acc-b);}
+  nav.links{display:flex;gap:20px;flex-wrap:wrap;}
+  nav.links a{font-size:13px;font-weight:500;color:#CFC8F2;opacity:.85;transition:opacity .2s,color .2s;}
+  nav.links a:hover{opacity:1;color:var(--acc-b);}
+  .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:6px;}
+  .hamburger span{width:22px;height:2px;background:var(--paper);display:block;}
+  .mobile-menu{display:none;position:fixed;top:0;right:0;bottom:0;width:74%;max-width:300px;background:var(--ink-2);z-index:1100;padding:90px 32px;flex-direction:column;gap:22px;box-shadow:-10px 0 30px rgba(0,0,0,.3);}
+  .mobile-menu.open{display:flex;}
+  .mobile-menu a{color:#DCD6F7;font-size:15px;font-weight:500;}
+  .mobile-close{position:fixed;top:22px;right:6%;z-index:1200;display:none;color:var(--paper);font-size:26px;background:none;border:none;cursor:pointer;}
+
+  section{position:relative;padding:100px 0;scroll-margin-top:84px;}
+  .kicker{font-size:12px;font-weight:700;letter-spacing:3px;color:var(--acc-a);text-transform:uppercase;margin-bottom:14px;}
+  .kicker.on-dark{color:var(--acc-b);}
+  h2.title{font-size:clamp(24px,3.1vw,34px);font-weight:700;color:var(--text-dark);line-height:1.32;}
+  h2.title.on-dark{color:var(--paper);}
+  .lede{font-size:15px;color:var(--text-muted);max-width:740px;margin-top:14px;}
+  .lede.on-dark{color:#CFC8F2;}
+
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in-view{opacity:1;transform:translateY(0);}
+
+  .tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.5px;padding:4px 11px;border-radius:20px;color:#fff;text-transform:uppercase;}
+  .tag.a{background:var(--acc-a);}
+  .tag.b{background:var(--acc-b);color:#fff;}
+  .tag.c{background:var(--acc-c);}
+  .tag.outline-a{background:rgba(0,0,0,0.03);color:var(--acc-a-ink);border:1.4px solid var(--acc-a);}
+  .tag.outline-b{background:rgba(0,0,0,0.03);color:var(--acc-b-ink);border:1.4px solid var(--acc-b);}
+
+  .badge{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:var(--ink);color:var(--paper);font-family:'Noto Serif KR',serif;font-weight:700;font-size:16px;flex-shrink:0;}
+
+  .card{background:var(--paper-tint);border-radius:var(--radius);padding:26px;box-shadow:var(--shadow);}
+  .card.dark{background:var(--ink);color:var(--paper);}
+  .card h3,.card h4{font-size:15px;font-weight:700;margin-bottom:8px;}
+  .card p{font-size:13.2px;color:var(--text-muted);margin:0;}
+  .card.dark p{color:#CFC8F2;}
+  .note-box{background:#FFF6DC;color:#6B4E00;border-radius:var(--radius);padding:18px 24px;font-size:13.8px;margin-top:26px;}
+  .note-box b{color:#8A6300;}
+
+  /* HERO — split VS panels (the signature element) */
+  .hero{color:var(--paper);min-height:100vh;display:flex;flex-direction:column;overflow:hidden;padding-top:84px;}
+  .hero-split{flex:1;display:flex;position:relative;}
+  .hero-panel{flex:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:40px 24px;}
+  .hero-panel.pa{background:linear-gradient(150deg,var(--acc-a) 0%,var(--ink-deep) 78%);}
+  .hero-panel.pb{background:linear-gradient(210deg,var(--acc-b) 0%,var(--ink-deep) 78%);}
+  .hero-panel.pc{background:linear-gradient(180deg,var(--acc-c) 0%,var(--ink-deep) 78%);}
+  .hero-panel .plabel{font-family:'Noto Serif KR',serif;font-weight:700;font-size:clamp(26px,4vw,42px);text-align:center;position:relative;z-index:2;}
+  .hero-panel .psub{font-size:12px;letter-spacing:2px;text-transform:uppercase;opacity:.8;margin-top:10px;text-align:center;position:relative;z-index:2;}
+  .hero-vs-mark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:5;width:64px;height:64px;border-radius:50%;background:var(--ink);border:3px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;font-family:'Noto Serif KR',serif;font-weight:700;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,0.4);}
+  .hero-copy{background:var(--ink-deep);padding:56px 0 60px;}
+  .hero-copy .eyebrow{font-size:12.5px;letter-spacing:4px;font-weight:700;color:var(--acc-b);text-transform:uppercase;margin-bottom:16px;}
+  .hero-copy h1{font-size:clamp(26px,4vw,40px);font-weight:900;line-height:1.32;margin-bottom:16px;}
+  .hero-copy p.sub{font-size:clamp(13.5px,1.5vw,16px);color:#CFC8F2;max-width:760px;margin-bottom:0;}
+  .chip-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px;}
+  .chip{padding:10px 18px;border-radius:30px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);font-size:12.5px;font-weight:500;color:#DCD6F7;transition:background .2s, border-color .2s, transform .2s;}
+  .chip:hover{background:rgba(255,255,255,0.1);transform:translateY(-2px);color:var(--paper);}
+  .scroll-cue{text-align:center;color:#8880B0;opacity:.7;font-size:11.5px;padding-bottom:6px;animation:bob 2s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(6px);}}
+
+  /* compare 2/3 col cards */
+  .compare-2{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:40px;}
+  .compare-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:40px;}
+  .cc-card{border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);border-top:4px solid var(--acc-a);}
+  .cc-card.b{border-top-color:var(--acc-b);}
+  .cc-card.c{border-top-color:var(--acc-c);}
+  .cc-card h4{font-size:14px;font-weight:700;margin:0 0 10px;text-transform:uppercase;letter-spacing:.6px;color:var(--text-muted);}
+  .cc-card .flow{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;margin-bottom:8px;color:var(--ink);}
+  .cc-card p.small{font-size:12.6px;color:var(--text-muted);margin:0;}
+
+  /* comparison table */
+  .cmp-table-wrap{margin-top:36px;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+  .cmp-table{width:100%;border-collapse:collapse;background:var(--paper);}
+  .cmp-table th{padding:15px 18px;font-size:11.5px;font-weight:700;text-align:left;letter-spacing:.5px;text-transform:uppercase;}
+  .cmp-table th:first-child{background:var(--ink);color:var(--paper);width:150px;}
+  .cmp-table th.col-a{background:var(--acc-a);color:#fff;}
+  .cmp-table th.col-b{background:var(--acc-b);color:#fff;}
+  .cmp-table th.col-c{background:var(--acc-c);color:#fff;}
+  .cmp-table td{padding:14px 18px;font-size:12.8px;border-bottom:1px solid var(--line);vertical-align:top;}
+  .cmp-table tr:last-child td{border-bottom:none;}
+  .cmp-table td:first-child{font-weight:700;color:var(--ink);background:var(--paper-tint);}
+
+  /* detail feature list */
+  .feat-list{margin-top:26px;display:flex;flex-direction:column;gap:14px;}
+  .feat-item{display:flex;gap:14px;align-items:flex-start;}
+  .feat-item .fi{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12.5px;color:#fff;flex-shrink:0;margin-top:1px;}
+  .feat-item b{display:block;font-size:14px;margin-bottom:2px;}
+  .feat-item span{font-size:12.8px;color:var(--text-muted);}
+
+  .trig-box{margin-top:28px;background:var(--paper-tint);border-radius:var(--radius);padding:22px 24px;}
+  .trig-box h5{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin:0 0 12px;}
+  .trig-box ol{margin:0;padding-left:20px;}
+  .trig-box li{font-size:13px;margin-bottom:10px;color:var(--text-dark);}
+  .trig-box li:last-child{margin-bottom:0;}
+  .trig-box li b{color:var(--ink);}
+
+  .usewhen{margin-top:22px;display:flex;flex-wrap:wrap;gap:9px;}
+  .usewhen span{font-size:12px;padding:7px 13px;border-radius:20px;background:var(--paper-tint);color:var(--text-dark);}
+  .usewhen span::before{content:'✓ ';font-weight:700;}
+
+  /* scenario cards */
+  .scen-grid{display:flex;flex-direction:column;gap:18px;margin-top:40px;}
+  .scen-card{border-radius:var(--radius);padding:26px 28px;box-shadow:var(--shadow);background:var(--paper);border:1.5px solid var(--line);}
+  .scen-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px;}
+  .scen-num{font-family:'Noto Serif KR',serif;font-size:13px;color:var(--text-muted);font-weight:700;}
+  .scen-title{font-size:15.5px;font-weight:700;color:var(--ink);}
+  .scen-pick{font-size:11.5px;font-weight:700;padding:6px 14px;border-radius:20px;color:#fff;letter-spacing:.3px;}
+  .scen-pick.a{background:var(--acc-a);}
+  .scen-pick.b{background:var(--acc-b);}
+  .scen-pick.c{background:var(--acc-c);}
+  .scen-situ{font-size:13px;color:var(--text-muted);margin-bottom:14px;}
+  .scen-why{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+  .scen-why span{font-size:11.8px;background:var(--paper-tint);color:var(--text-dark);padding:6px 12px;border-radius:16px;}
+  .scen-code{background:var(--ink-deep);border-radius:12px;padding:16px 18px;font-family:var(--mono);font-size:12px;color:#CFC8F2;line-height:1.7;white-space:pre-wrap;}
+
+  /* decision tree */
+  .tree-box{margin-top:40px;background:var(--ink);color:var(--paper);border-radius:var(--radius);padding:32px 34px;box-shadow:var(--shadow);}
+  .tree-box .tq{font-size:14.5px;font-weight:700;margin-bottom:18px;color:var(--paper);}
+  .tree-row{display:flex;gap:16px;align-items:flex-start;margin-bottom:14px;padding-left:8px;}
+  .tree-row:last-child{margin-bottom:0;}
+  .tree-row .tlabel{font-size:11.5px;font-weight:700;padding:5px 12px;border-radius:14px;flex-shrink:0;margin-top:1px;}
+  .tree-row .tlabel.yes{background:rgba(14,163,131,0.2);color:#5EE0BC;}
+  .tree-row .tlabel.no{background:rgba(214,69,91,0.2);color:#F09AA6;}
+  .tree-row .ttext{font-size:13.3px;color:#CFC8F2;}
+  .tree-row .ttext b{color:var(--paper);}
+  .tree-indent{margin-left:44px;}
+
+  .check-2{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:32px;}
+  .check-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:32px;}
+  .check-card{border-radius:var(--radius);padding:24px;background:var(--paper-tint);}
+  .check-card h5{font-size:13.5px;font-weight:700;margin:0 0 14px;display:flex;align-items:center;gap:8px;}
+  .check-card ul{list-style:none;margin:0;padding:0;}
+  .check-card li{font-size:12.8px;color:var(--text-dark);padding:7px 0 7px 26px;position:relative;border-bottom:1px solid var(--line);}
+  .check-card li:last-child{border-bottom:none;}
+  .check-card li::before{content:'☐';position:absolute;left:0;top:6px;color:var(--text-muted);}
+  .check-card .verdict{margin-top:14px;font-size:12px;font-weight:700;color:var(--ink);}
+
+  /* code blocks */
+  .code-block{background:var(--ink-deep);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);margin-top:20px;}
+  .code-head{display:flex;align-items:center;justify-content:space-between;padding:11px 20px;background:var(--ink-2);}
+  .code-head .dots{display:flex;gap:6px;}
+  .code-head .dots span{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,0.2);}
+  .code-head .fname{font-family:var(--mono);font-size:11px;color:#CFC8F2;}
+  pre{margin:0;padding:20px 22px;overflow-x:auto;}
+  pre code{font-family:var(--mono);font-size:12.3px;line-height:1.75;color:#E4DEFF;white-space:pre;}
+  .cm{color:#8880B0;}
+  .kw{color:var(--acc-a);}
+  .st{color:var(--acc-b);}
+  .fn{color:#F2B705;}
+  .example-block{margin-top:36px;}
+  .example-block h4{font-size:14.5px;font-weight:700;display:flex;align-items:center;gap:10px;}
+
+  /* best practices */
+  .bp-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:40px;}
+  .bp-grid.cols-3{grid-template-columns:repeat(3,1fr);}
+  .bp-card{border-radius:var(--radius);padding:26px;box-shadow:var(--shadow);}
+  .bp-card.a{background:rgba(0,0,0,0.02);border-top:4px solid var(--acc-a);}
+  .bp-card.b{background:rgba(0,0,0,0.02);border-top:4px solid var(--acc-b);}
+  .bp-card.c{background:rgba(0,0,0,0.02);border-top:4px solid var(--acc-c);}
+  .bp-card h4{font-size:14.5px;font-weight:700;margin-bottom:16px;}
+  .bp-item{display:flex;gap:12px;margin-bottom:14px;}
+  .bp-item:last-child{margin-bottom:0;}
+  .bp-item .n{font-family:'Noto Serif KR',serif;font-weight:700;font-size:13px;color:var(--text-muted);flex-shrink:0;}
+  .bp-item b{display:block;font-size:13.3px;margin-bottom:2px;}
+  .bp-item span{font-size:12.4px;color:var(--text-muted);}
+
+  /* summary */
+  .summary{background:linear-gradient(180deg,var(--ink-2) 0%, var(--ink-deep) 100%);color:var(--paper);}
+  .recap-list{margin-top:34px;display:flex;flex-direction:column;gap:0;}
+  .recap-item{display:flex;align-items:flex-start;gap:18px;padding:18px 0;border-bottom:1px solid rgba(255,255,255,0.1);}
+  .recap-item:last-child{border-bottom:none;}
+  .recap-item .num{font-family:'Noto Serif KR',serif;font-size:14px;color:var(--acc-b);font-weight:700;width:28px;flex-shrink:0;}
+  .recap-item .rt{font-size:14px;line-height:1.65;color:#E4DEFF;}
+  .final-line{margin-top:30px;padding:20px 24px;border-radius:var(--radius);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);font-size:13.5px;color:#CFC8F2;}
+  .final-line b{color:var(--paper);}
+
+  footer{background:var(--ink-deep);color:#8880B0;padding:34px 0;font-size:12px;}
+  footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+  .totop{border:1px solid rgba(255,255,255,0.2);padding:8px 16px;border-radius:20px;font-size:11.5px;transition:border-color .2s, color .2s;}
+  .totop:hover{border-color:var(--acc-b);color:var(--acc-b);}
+
+  @media(max-width:900px){
+    nav.links{display:none;}
+    .hamburger{display:flex;}
+    .compare-2,.compare-3{grid-template-columns:1fr;}
+    .check-2,.check-3{grid-template-columns:1fr;}
+    .bp-grid{grid-template-columns:1fr;}
+    .hero-split{flex-direction:column;}
+    .hero-vs-mark{position:relative;top:auto;left:auto;transform:none;margin:-32px auto;}
+    section{padding:72px 0;}
+  }
+  @media(max-width:560px){
+    .cmp-table{font-size:11.5px;}
+    .cmp-table th,.cmp-table td{padding:11px 12px;}
+  }
+
+  /* ===== design-analysis page additions ===== */
+
+  .hero-simple{
+    background:radial-gradient(circle at 18% 22%, rgba(217,119,87,0.2), transparent 45%),
+               radial-gradient(circle at 84% 18%, rgba(245,197,24,0.18), transparent 45%),
+               linear-gradient(180deg,var(--ink) 0%, var(--ink-deep) 100%);
+    color:var(--paper);min-height:88vh;display:flex;align-items:center;overflow:hidden;padding:118px 0 64px;
+  }
+  .hero-simple .wrap{position:relative;z-index:2;}
+  .hero-simple .eyebrow{font-size:12.5px;letter-spacing:4px;font-weight:700;color:var(--acc-b);text-transform:uppercase;margin-bottom:18px;}
+  .hero-simple h1{font-size:clamp(28px,4.4vw,46px);font-weight:900;line-height:1.26;margin-bottom:18px;}
+  .hero-simple h1 .accent-word{background:linear-gradient(90deg,var(--acc-a),var(--acc-b));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .hero-simple p.sub{font-size:clamp(14px,1.6vw,17px);color:#CFC8F2;max-width:700px;margin-bottom:0;}
+  .hero-role{
+    display:inline-flex;align-items:center;gap:10px;margin-top:26px;padding:10px 20px;border-radius:30px;
+    background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);font-size:13px;color:#DCD6F7;
+  }
+  .hero-role b{color:var(--paper);}
+
+  /* vertical flow diagram */
+  .flow-pair{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:36px;}
+  .flow-col h4{font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;}
+  .flow-vert{display:flex;flex-direction:column;align-items:stretch;}
+  .flow-step{background:var(--paper-tint);border-radius:12px;padding:13px 18px;font-size:13px;font-weight:600;color:var(--ink);text-align:center;}
+  .flow-step.on-a{background:var(--acc-a);color:#fff;}
+  .flow-step.on-b{background:var(--acc-b);color:#fff;}
+  .flow-arrow-v{text-align:center;font-size:15px;color:var(--text-muted);padding:5px 0;}
+
+  /* single rating bar */
+  .rating-list{display:flex;flex-direction:column;gap:0;margin-top:28px;}
+  .rating-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid var(--line);}
+  .rating-row:last-child{border-bottom:none;}
+  .rating-label{font-size:13.3px;font-weight:600;color:var(--text-dark);}
+  .rating-bar{display:flex;gap:4px;flex-shrink:0;}
+  .rating-bar .seg{width:20px;height:7px;border-radius:4px;background:var(--line);}
+  .rating-bar .seg.filled{background:var(--acc-a);}
+
+  /* dual rating (comparison) */
+  .dual-rating-head{display:grid;grid-template-columns:1fr 120px 120px;gap:14px;padding:0 0 10px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid var(--line);}
+  .dual-rating-head span:nth-child(2){color:var(--acc-a-ink);text-align:center;}
+  .dual-rating-head span:nth-child(3){color:var(--acc-b-ink);text-align:center;}
+  .dual-rating-row{display:grid;grid-template-columns:1fr 120px 120px;gap:14px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line);}
+  .dual-rating-row:last-child{border-bottom:none;}
+  .dual-rating-row .drlabel{font-size:13px;font-weight:600;color:var(--text-dark);}
+  .dual-rating-row .rating-bar{justify-content:center;}
+  .dual-rating-row .rating-bar .seg.filled.a{background:var(--acc-a);}
+  .dual-rating-row .rating-bar .seg.filled.b{background:var(--acc-b);}
+
+  /* role / ecosystem grid */
+  .role-grid{display:flex;flex-direction:column;gap:0;margin-top:28px;}
+  .role-row{display:flex;align-items:center;gap:16px;padding:13px 0;border-bottom:1px solid var(--line);}
+  .role-row:last-child{border-bottom:none;}
+  .role-row .rname{width:150px;flex-shrink:0;font-size:13px;font-weight:700;color:var(--ink);}
+  .role-row .rname.hi-a{color:var(--acc-a-ink);}
+  .role-row .rname.hi-b{color:var(--acc-b-ink);}
+  .role-row .rdesc{font-size:12.8px;color:var(--text-muted);}
+
+  /* org / industry use-case card with two-tool flow */
+  .org-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:36px;}
+  .org-card{border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);background:var(--paper-tint);}
+  .org-card h4{font-size:14px;font-weight:700;margin-bottom:14px;}
+  .org-card .org-tool{font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px;}
+  .org-card .org-tool.a{color:var(--acc-a-ink);}
+  .org-card .org-tool.b{color:var(--acc-b-ink);}
+  .org-card ul{list-style:none;margin:0;padding:0;}
+  .org-card li{font-size:12.3px;color:var(--text-dark);padding:3px 0 3px 16px;position:relative;}
+  .org-card li::before{content:'·';position:absolute;left:0;font-weight:900;color:var(--text-muted);}
+
+  @media(max-width:900px){
+    .flow-pair{grid-template-columns:1fr;}
+    .org-grid{grid-template-columns:1fr;}
+    .dual-rating-head, .dual-rating-row{grid-template-columns:1fr 90px 90px;gap:8px;}
+    .role-row{flex-direction:column;align-items:flex-start;gap:4px;}
+    .role-row .rname{width:auto;}
+  }
+
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<header class="nav" id="siteNav">
+  <div class="wrap">
+    <div class="brand"><span class="dot2"><span></span><span></span></span> Nano Banana vs Claude Design · B03 AI Tool</div>
+    <nav class="links">
+      <a href="#overview">개요</a>
+      <a href="#philosophy">철학차이</a>
+      <a href="#process">프로세스</a>
+      <a href="#ability">능력비교</a>
+      <a href="#domains">영역별비교</a>
+      <a href="#org">기업활용</a>
+      <a href="#ecosystem">생태계</a>
+      <a href="#evaluation">최종평가</a>
+    </nav>
+    <button class="hamburger" id="hamBtn" aria-label="메뉴 열기"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#overview">한 줄 요약 · 포지션</a>
+  <a href="#philosophy">핵심 철학 차이</a>
+  <a href="#process">Design Process 비교</a>
+  <a href="#ability">Creative Thinking · 능력 비교</a>
+  <a href="#domains">Product · UX · Marketing 비교</a>
+  <a href="#org">기업 활용 비교</a>
+  <a href="#ecosystem">생태계 포지셔닝</a>
+  <a href="#evaluation">최종 평가 · 결론</a>
+</div>
+<button class="mobile-close" id="mobileClose">×</button>
+
+<main>
+
+<section class="hero" id="top">
+  <div class="hero-split">
+    <div class="hero-panel pa">
+      <div>
+        <div class="plabel">Claude</div>
+        <div class="psub">Creative Thinking</div>
+      </div>
+    </div>
+    <div class="hero-panel pb">
+      <div>
+        <div class="plabel">Nano Banana</div>
+        <div class="psub">Visual Creation</div>
+      </div>
+    </div>
+    <div class="hero-vs-mark">VS</div>
+  </div>
+  <div class="hero-copy">
+    <div class="wrap">
+      <div class="eyebrow">B03 · AI Tool · Image &amp; Design</div>
+      <h1>Nano Banana vs Claude Design 비교 분석</h1>
+      <p class="sub">Nano Banana는 이미지를 만들고 수정하는 AI Visual Designer이고, Claude는 생각하고 구조화하고 설계하는 AI Design Strategist입니다. 둘은 경쟁 Tool이 아니라 디자인 프로세스의 서로 다른 영역을 담당합니다.</p>
+      <div class="chip-row">
+        <a class="chip" href="#process">Design Process별 적합 Tool</a>
+        <a class="chip" href="#ability">Creative Thinking 비교</a>
+        <a class="chip" href="#evaluation">최종 평가</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section id="overview">
+  <div class="wrap reveal">
+    <div class="kicker">Overview</div>
+    <h2 class="title">기본 포지션 비교</h2>
+
+    <div class="cmp-table-wrap">
+      <table class="cmp-table">
+        <tr><th>항목</th><th class="col-a">Claude</th><th class="col-b">Nano Banana</th></tr>
+        <tr><td>개발사</td><td>Anthropic</td><td>Google</td></tr>
+        <tr><td>핵심 영역</td><td>사고 · 분석 · 문서 · 설계</td><td>이미지 생성 · 편집</td></tr>
+        <tr><td>역할</td><td>AI Design Consultant</td><td>AI Visual Designer</td></tr>
+        <tr><td>입력</td><td>Text + Document</td><td>Text + Image</td></tr>
+        <tr><td>출력</td><td>아이디어 · 전략 · 문서</td><td>이미지 결과물</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="philosophy" style="background:var(--paper-tint);">
+  <div class="wrap reveal">
+    <div class="kicker">Philosophy</div>
+    <h2 class="title">핵심 철학 차이</h2>
+    <p class="lede">Nano Banana는 <b>"보이는 것을 만드는 AI"</b>이고, Claude는 <b>"생각을 발전시키는 AI"</b>입니다.</p>
+
+    <div class="flow-pair"><div class="flow-col"><h4>Nano Banana Workflow</h4><div class="flow-vert"><div class="flow-step on-a">아이디어</div><div class="flow-arrow-v">↓</div><div class="flow-step on-a">Prompt</div><div class="flow-arrow-v">↓</div><div class="flow-step on-a">이미지 생성</div><div class="flow-arrow-v">↓</div><div class="flow-step on-a">수정</div><div class="flow-arrow-v">↓</div><div class="flow-step on-a">완성 Design Asset</div></div></div><div class="flow-col"><h4>Claude Workflow</h4><div class="flow-vert"><div class="flow-step on-b">문제 정의</div><div class="flow-arrow-v">↓</div><div class="flow-step on-b">분석</div><div class="flow-arrow-v">↓</div><div class="flow-step on-b">아이디어 확장</div><div class="flow-arrow-v">↓</div><div class="flow-step on-b">구조화</div><div class="flow-arrow-v">↓</div><div class="flow-step on-b">Design Direction</div></div></div></div>
+
+    <div class="compare-2" style="margin-top:36px;">
+      <div class="cc-card b">
+        <h4>Nano Banana 강점</h4>
+        <p class="small">시각화 · 이미지 변환 · 디자인 반복 · 콘텐츠 제작</p>
+      </div>
+      <div class="cc-card">
+        <h4>Claude 강점</h4>
+        <p class="small">전략 수립 · 디자인 컨셉 정의 · UX 사고 · 논리 검토</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="process">
+  <div class="wrap reveal">
+    <div class="kicker">Design Process</div>
+    <h2 class="title">단계별 적합 Tool</h2>
+
+    <div class="cmp-table-wrap">
+      <table class="cmp-table">
+        <tr><th>단계</th><th class="col-a">적합 Tool</th></tr>
+        <tr><td>Idea 발굴</td><td>Claude</td></tr>
+        <tr><td>Concept 정의</td><td>Claude</td></tr>
+        <tr><td>Design 방향 설정</td><td>Claude</td></tr>
+        <tr><td>Visual 생성</td><td>Nano Banana</td></tr>
+        <tr><td>이미지 수정</td><td>Nano Banana</td></tr>
+        <tr><td>최종 검토</td><td>Claude</td></tr>
+      </table>
+    </div>
+
+    <div class="flow-pair" style="margin-top:44px;">
+      <div class="flow-col">
+        <h4>Nano Banana 활용 — 제품 이미지</h4>
+        <div class="flow-vert"><div class="flow-step on-b">제품 사진</div><div class="flow-arrow-v">↓</div><div class="flow-step on-b">배경 변경</div><div class="flow-arrow-v">↓</div><div class="flow-step on-b">광고 이미지 생성</div></div>
+      </div>
+      <div class="flow-col">
+        <h4>Claude 활용 — 제품 전략</h4>
+        <div class="flow-vert"><div class="flow-step on-a">시장 분석</div><div class="flow-arrow-v">↓</div><div class="flow-step on-a">Claude</div><div class="flow-arrow-v">↓</div><div class="flow-step on-a">Product Concept</div><div class="flow-arrow-v">↓</div><div class="flow-step on-a">Nano Banana</div><div class="flow-arrow-v">↓</div><div class="flow-step on-a">Visual Prototype</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="ability" style="background:var(--paper-tint);">
+  <div class="wrap reveal">
+    <div class="kicker">Ability Comparison</div>
+    <h2 class="title">Creative Thinking 비교</h2>
+    <div class="dual-rating-head"><span>항목</span><span>Nano Banana</span><span>Claude</span></div><div class="dual-rating-row"><span class="drlabel">디자인 아이디어</span><div class="rating-bar"><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg"></span></div><div class="rating-bar"><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span></div></div><div class="dual-rating-row"><span class="drlabel">브랜드 전략</span><div class="rating-bar"><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span></div><div class="rating-bar"><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span></div></div><div class="dual-rating-row"><span class="drlabel">컨셉 개발</span><div class="rating-bar"><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg"></span><span class="seg"></span></div><div class="rating-bar"><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span></div></div><div class="dual-rating-row"><span class="drlabel">스토리텔링</span><div class="rating-bar"><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span></div><div class="rating-bar"><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span></div></div><div class="dual-rating-row"><span class="drlabel">이미지 구현</span><div class="rating-bar"><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg filled a"></span></div><div class="rating-bar"><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span></div></div><div class="dual-rating-row"><span class="drlabel">Prompt 작성</span><div class="rating-bar"><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg"></span></div><div class="rating-bar"><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span></div></div>
+
+    <div class="note-box" style="margin-top:32px;"><b>이미지 생성 능력</b> — Nano Banana는 이미지 생성·편집·스타일 변경·캐릭터 유지·이미지 합성에 강합니다. Claude는 전문 이미지 생성 Tool은 아니지만, 이미지 컨셉 작성·Prompt Engineering·디자인 방향 제안·UX 분석에 강합니다.</div>
+  </div>
+</section>
+
+<section id="domains">
+  <div class="wrap reveal">
+    <div class="kicker">Domain Comparison</div>
+    <h2 class="title">UX/UI · Marketing · Character 영역 비교</h2>
+
+    <h3 style="font-size:15px;font-weight:700;margin-bottom:4px;">UX/UI Design</h3>
+    <div class="cmp-table-wrap" style="margin-top:16px;">
+      <table class="cmp-table">
+        <tr><th>영역</th><th class="col-b">Nano Banana</th><th class="col-a">Claude</th></tr>
+        <tr><td>UI 화면 생성</td><td>★★★★★</td><td>★★★★</td></tr>
+        <tr><td>UX Flow 설계</td><td>★★</td><td>★★★★★</td></tr>
+        <tr><td>User Journey</td><td>★★</td><td>★★★★★</td></tr>
+        <tr><td>Design System</td><td>★★★</td><td>★★★★★</td></tr>
+        <tr><td>Icon 생성</td><td>★★★★★</td><td>★★</td></tr>
+        <tr><td>Prototype 이미지</td><td>★★★★★</td><td>★★★</td></tr>
+      </table>
+    </div>
+
+    <h3 style="font-size:15px;font-weight:700;margin:40px 0 4px;">Marketing Design</h3>
+    <div class="flow-pair">
+      <div class="flow-col">
+        <h4>Nano Banana 강점</h4>
+        <div class="usewhen"><span>광고 이미지</span><span>SNS 콘텐츠</span><span>Banner</span><span>Poster</span></div>
+      </div>
+      <div class="flow-col">
+        <h4>Claude 강점</h4>
+        <div class="usewhen"><span>Campaign Strategy</span><span>Copywriting</span><span>Target 분석</span></div>
+      </div>
+    </div>
+
+    <h3 style="font-size:15px;font-weight:700;margin:40px 0 4px;">Character / Brand Asset</h3>
+    <div class="compare-2">
+      <div class="cc-card b">
+        <h4>Nano Banana</h4>
+        <p class="small">캐릭터 유지 · 다양한 포즈 생성 · 배경 적용 → 브랜드 캐릭터, 게임 캐릭터, 교육 콘텐츠에 활용</p>
+      </div>
+      <div class="cc-card">
+        <h4>Claude</h4>
+        <p class="small">캐릭터 세계관 · Personality 설계 · Story 개발</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="org" style="background:var(--paper-tint);">
+  <div class="wrap reveal">
+    <div class="kicker">Organization</div>
+    <h2 class="title">기업 활용 비교</h2>
+
+    <div class="org-grid">
+      <div class="org-card">
+        <h4>마케팅 조직</h4>
+        <div class="org-tool a">Claude</div>
+        <ul><li>Campaign 전략</li><li>고객 분석</li><li>Message 개발</li></ul>
+        <div class="org-tool b">Nano Banana</div>
+        <ul><li>광고 이미지</li><li>콘텐츠 제작</li><li>Visual Asset</li></ul>
+      </div>
+      <div class="org-card">
+        <h4>디자인 조직</h4>
+        <div class="org-tool a">Claude</div>
+        <ul><li>Design Principle</li><li>UX Strategy</li><li>Concept</li></ul>
+        <div class="org-tool b">Nano Banana</div>
+        <ul><li>Prototype</li><li>Mock-up</li><li>Final Visual</li></ul>
+      </div>
+      <div class="org-card">
+        <h4>R&amp;D 조직</h4>
+        <div class="org-tool a">Claude</div>
+        <ul><li>기술 Concept</li><li>제품 방향성</li></ul>
+        <div class="org-tool b">Nano Banana</div>
+        <ul><li>Product Visualization</li><li>Concept Model</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="ecosystem">
+  <div class="wrap reveal">
+    <div class="kicker">Ecosystem</div>
+    <h2 class="title">AI Design Tool Positioning</h2>
+    <div class="role-grid"><div class="role-row"><span class="rname">ChatGPT</span><span class="rdesc">실행 및 생산성</span></div><div class="role-row"><span class="rname hi-a">Claude</span><span class="rdesc">사고 · 전략 · 설계</span></div><div class="role-row"><span class="rname">Gemini</span><span class="rdesc">지식 · 멀티모달</span></div><div class="role-row"><span class="rname">Perplexity</span><span class="rdesc">조사 · 시장 분석</span></div><div class="role-row"><span class="rname">NotebookLM</span><span class="rdesc">내부 자료 분석</span></div><div class="role-row"><span class="rname hi-b">Nano Banana</span><span class="rdesc">이미지 생성 · 편집</span></div></div>
+
+    <div class="note-box" style="margin-top:32px;"><b>최적 조합 Workflow</b> — Perplexity(시장 조사) → NotebookLM(내부 자료 분석) → Claude(Concept / Strategy) → Nano Banana(Visual Prototype) → ChatGPT(보고서 / Presentation)</div>
+  </div>
+</section>
+
+<section class="summary" id="evaluation">
+  <div class="wrap reveal">
+    <div class="kicker on-dark">Final Evaluation</div>
+    <h2 class="title on-dark">최종 평가</h2>
+
+    <div style="margin-top:32px;background:rgba(255,255,255,0.04);border-radius:var(--radius);padding:8px 24px;">
+      <div class="dual-rating-head"><span>항목</span><span>Nano Banana</span><span>Claude</span></div><div class="dual-rating-row"><span class="drlabel">이미지 생성</span><div class="rating-bar"><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg filled a"></span></div><div class="rating-bar"><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span></div></div><div class="dual-rating-row"><span class="drlabel">이미지 편집</span><div class="rating-bar"><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg filled a"></span></div><div class="rating-bar"><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span></div></div><div class="dual-rating-row"><span class="drlabel">디자인 전략</span><div class="rating-bar"><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg"></span><span class="seg"></span></div><div class="rating-bar"><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span></div></div><div class="dual-rating-row"><span class="drlabel">아이디어 발굴</span><div class="rating-bar"><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg"></span></div><div class="rating-bar"><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span></div></div><div class="dual-rating-row"><span class="drlabel">UX 설계</span><div class="rating-bar"><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg"></span><span class="seg"></span></div><div class="rating-bar"><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span></div></div><div class="dual-rating-row"><span class="drlabel">브랜드 전략</span><div class="rating-bar"><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg"></span><span class="seg"></span></div><div class="rating-bar"><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span></div></div><div class="dual-rating-row"><span class="drlabel">콘텐츠 제작</span><div class="rating-bar"><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg filled a"></span></div><div class="rating-bar"><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg"></span></div></div><div class="dual-rating-row"><span class="drlabel">문서 작성</span><div class="rating-bar"><span class="seg filled a"></span><span class="seg filled a"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span></div><div class="rating-bar"><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span><span class="seg filled b"></span></div></div>
+    </div>
+
+    <div class="recap-list" style="margin-top:12px;">
+      <div class="recap-item"><span class="num">01</span><span class="rt"><b>Claude</b> — 무엇을 만들 것인가를 결정하는 AI Creative Director. 강점: 전략, Concept, UX, Story, Design Direction.</span></div>
+      <div class="recap-item"><span class="num">02</span><span class="rt"><b>Nano Banana</b> — 그것을 실제 이미지로 만드는 AI Visual Designer. 강점: Visual Creation, Image Editing, Prototype, Marketing Asset.</span></div>
+      <div class="recap-item"><span class="num">03</span><span class="rt">기업 DX · 제품 개발 · 마케팅 관점에서, 둘은 경쟁이 아니라 <b>생각(Claude) → 시각화(Nano Banana) → 문서화(ChatGPT)</b>로 이어지는 하나의 파이프라인입니다.</span></div>
+    </div>
+
+    <div class="final-line" style="margin-top:30px;"><b>기억할 것 한 줄</b> — 방향을 정할 땐 Claude, 눈에 보이게 만들 땐 Nano Banana.</div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Nano Banana vs Claude Design · B03 AI Tool</span>
+    <a class="totop" href="#top">맨 위로 ↑</a>
+  </div>
+</footer>
+
+<script>
+
+  var progress = document.getElementById('progress');
+  var nav = document.getElementById('siteNav');
+  window.addEventListener('scroll', function(){
+    var h = document.documentElement;
+    var scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    progress.style.width = scrolled + '%';
+    if(h.scrollTop > 40){ nav.classList.add('scrolled'); } else { nav.classList.remove('scrolled'); }
+  });
+
+  var hamBtn = document.getElementById('hamBtn');
+  var mobileMenu = document.getElementById('mobileMenu');
+  var mobileClose = document.getElementById('mobileClose');
+  function openMenu(){ mobileMenu.classList.add('open'); mobileClose.style.display='block'; }
+  function closeMenu(){ mobileMenu.classList.remove('open'); mobileClose.style.display='none'; }
+  hamBtn.addEventListener('click', openMenu);
+  mobileClose.addEventListener('click', closeMenu);
+  mobileMenu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeMenu); });
+
+  var revealObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){ entry.target.classList.add('in-view'); }
+    });
+  }, {threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(function(el){ revealObserver.observe(el); });
+
+</script>
+
+</body>
+</html>
