@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code 101 — 에이전틱 루프·설치·워크플로우·컨텍스트·코드리뷰·커스터마이징</title>
+<meta name="description" content="Claude Code의 개념과 작동 원리, 설치 방법, 프롬프트 작성법, Explore-Plan-Code-Commit 워크플로우, 컨텍스트 관리, 코드 리뷰, CLAUDE.md·서브에이전트·MCP·훅을 통한 커스터마이징 정리">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#150F2E;
+    --ink-2:#1E1745;
+    --ink-deep:#0B0820;
+    --paper:#FFFFFF;
+    --paper-tint:#F6F3FF;
+    --line:#E7E1FA;
+    --text-dark:#1B1730;
+    --text-muted:#655F82;
+    --acc-a:#16A34A;
+    --acc-a-ink:#166534;
+    --acc-b:#57534E;
+    --acc-b-ink:#292524;
+    --acc-c:#8880B0;
+    --acc-c-ink:#3A3560;
+    --danger:#D6455B;
+    --radius:18px;
+    --shadow:0 16px 40px rgba(21,15,46,0.12);
+    --maxw:1140px;
+    --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',Consolas,monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Noto Sans KR','Apple SD Gothic Neo',sans-serif;
+    color:var(--text-dark);
+    background:var(--paper);
+    line-height:1.68;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Noto Serif KR','Noto Sans KR',serif;margin:0;}
+  a{color:inherit;text-decoration:none;}
+  img,svg{display:block;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px;}
+  code{font-family:var(--mono);}
+
+  #progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--acc-a),var(--acc-b),var(--acc-c));z-index:9999;width:0%;transition:width .1s linear;}
+
+  header.nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:18px 0;transition:background .3s ease, padding .3s ease, box-shadow .3s ease;}
+  header.nav .wrap{display:flex;align-items:center;justify-content:space-between;}
+  header.nav.scrolled{background:rgba(21,15,46,0.92);backdrop-filter:blur(10px);padding:12px 0;box-shadow:0 4px 20px rgba(0,0,0,0.18);}
+  .brand{font-weight:900;font-size:15.5px;color:var(--paper);letter-spacing:.3px;display:flex;align-items:center;gap:9px;}
+  .brand .dot2{display:inline-flex;gap:3px;}
+  .brand .dot2 span{width:7px;height:7px;border-radius:50%;display:block;}
+  .brand .dot2 span:nth-child(1){background:var(--acc-a);}
+  .brand .dot2 span:nth-child(2){background:var(--acc-b);}
+  nav.links{display:flex;gap:16px;flex-wrap:wrap;}
+  nav.links a{font-size:12.6px;font-weight:500;color:#CFC8F2;opacity:.85;transition:opacity .2s,color .2s;}
+  nav.links a:hover{opacity:1;color:var(--acc-b);}
+  .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:6px;}
+  .hamburger span{width:22px;height:2px;background:var(--paper);display:block;}
+  .mobile-menu{display:none;position:fixed;top:0;right:0;bottom:0;width:74%;max-width:300px;background:var(--ink-2);z-index:1100;padding:90px 32px;flex-direction:column;gap:22px;box-shadow:-10px 0 30px rgba(0,0,0,.3);overflow-y:auto;}
+  .mobile-menu.open{display:flex;}
+  .mobile-menu a{color:#DCD6F7;font-size:15px;font-weight:500;}
+  .mobile-close{position:fixed;top:22px;right:6%;z-index:1200;display:none;color:var(--paper);font-size:26px;background:none;border:none;cursor:pointer;}
+
+  section{position:relative;padding:100px 0;scroll-margin-top:84px;}
+  .kicker{font-size:12px;font-weight:700;letter-spacing:3px;color:var(--acc-a);text-transform:uppercase;margin-bottom:14px;}
+  .kicker.on-dark{color:var(--acc-b);}
+  h2.title{font-size:clamp(24px,3.1vw,34px);font-weight:700;color:var(--text-dark);line-height:1.32;}
+  h2.title.on-dark{color:var(--paper);}
+  .lede{font-size:15px;color:var(--text-muted);max-width:760px;margin-top:14px;}
+  .lede.on-dark{color:#CFC8F2;}
+  .lede b{color:var(--text-dark);}
+  .lede.on-dark b{color:var(--paper);}
+
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in-view{opacity:1;transform:translateY(0);}
+
+  .badge{width:auto;height:auto;border-radius:20px;padding:4px 12px;font-family:var(--mono);font-weight:700;font-size:10.5px;letter-spacing:.02em;background:var(--paper);color:var(--acc-a-ink);white-space:nowrap;display:inline-block;border:1px solid var(--line);}
+
+  .note-box{background:#FFF6DC;color:#6B4E00;border-radius:var(--radius);padding:18px 24px;font-size:13.8px;margin-top:26px;}
+  .note-box b{color:#8A6300;}
+  .safe-box{background:#E9F9F3;color:#065F49;border-radius:var(--radius);padding:18px 24px;font-size:13.8px;margin-top:26px;border-left:4px solid #0EA383;}
+  .safe-box b{color:#065F49;}
+
+  /* hero */
+  .hero-simple{
+    background:radial-gradient(circle at 18% 22%, rgba(22,163,74,0.22), transparent 45%),
+               radial-gradient(circle at 84% 18%, rgba(87,83,78,0.2), transparent 45%),
+               linear-gradient(180deg,var(--ink) 0%, var(--ink-deep) 100%);
+    color:var(--paper);min-height:92vh;display:flex;align-items:center;overflow:hidden;padding:120px 0 64px;
+  }
+  .hero-simple .wrap{position:relative;z-index:2;}
+  .hero-simple .eyebrow{font-size:12.5px;letter-spacing:4px;font-weight:700;color:var(--acc-b);text-transform:uppercase;margin-bottom:18px;}
+  .hero-simple h1{font-size:clamp(28px,4.4vw,46px);font-weight:900;line-height:1.24;margin-bottom:18px;}
+  .hero-simple h1 .accent-word{background:linear-gradient(90deg,var(--acc-a),var(--acc-c));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .hero-simple p.sub{font-size:clamp(14px,1.6vw,17px);color:#CFC8F2;max-width:740px;margin-bottom:0;}
+  .chip-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px;}
+  .chip{padding:10px 18px;border-radius:30px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);font-size:12.5px;font-weight:500;color:#DCD6F7;transition:background .2s, border-color .2s, transform .2s;}
+  .chip:hover{background:rgba(255,255,255,0.1);transform:translateY(-2px);color:var(--paper);}
+
+  /* deflist */
+  .deflist{margin-top:36px;display:flex;flex-direction:column;gap:0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+  .def{display:grid;grid-template-columns:270px 1fr;gap:0;background:var(--paper);border-bottom:1px solid var(--line);}
+  .def:last-child{border-bottom:none;}
+  .def .k{background:var(--paper-tint);padding:18px 22px;font-family:'Noto Serif KR',serif;font-weight:700;font-size:15px;color:var(--ink);display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .def .v{padding:18px 24px;font-size:13.2px;color:var(--text-muted);line-height:1.7;}
+  .def .v b{color:var(--text-dark);}
+
+  /* org-grid */
+  .org-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:36px;}
+  .org-card{border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);background:var(--paper-tint);}
+  .org-card h4{font-size:14.5px;font-weight:700;margin-bottom:12px;}
+  .org-card ul{list-style:none;margin:0;padding:0;}
+  .org-card li{font-size:12.6px;color:var(--text-dark);padding:5px 0 5px 16px;position:relative;line-height:1.6;}
+  .org-card li::before{content:'·';position:absolute;left:0;font-weight:900;color:var(--acc-a);}
+  .org-card li b{color:var(--ink);}
+
+  /* compare cards */
+  .compare-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:40px;}
+  .compare-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:40px;}
+  .compare-2{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:40px;}
+  .cc-card{border-radius:var(--radius);padding:26px;box-shadow:var(--shadow);border-top:4px solid var(--acc-a);background:var(--paper);}
+  .cc-card.b{border-top-color:var(--acc-b);}
+  .cc-card.c{border-top-color:var(--acc-c);}
+  .cc-card.d{border-top-color:var(--danger);}
+  .cc-card h4{font-size:12px;font-weight:700;margin:0 0 10px;text-transform:uppercase;letter-spacing:.6px;color:var(--text-muted);}
+  .cc-card .flow{font-family:'Noto Serif KR',serif;font-size:19px;font-weight:700;margin-bottom:10px;color:var(--ink);}
+  .cc-card p.small{font-size:12.8px;color:var(--text-muted);margin:0;line-height:1.7;}
+  .cc-card p.small b{color:var(--text-dark);}
+
+  /* comparison table */
+  .cmp-table-wrap{margin-top:36px;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+  .cmp-table{width:100%;border-collapse:collapse;background:var(--paper);}
+  .cmp-table th{padding:15px 18px;font-size:11.5px;font-weight:700;text-align:left;letter-spacing:.5px;text-transform:uppercase;}
+  .cmp-table th:first-child{background:var(--ink);color:var(--paper);width:150px;}
+  .cmp-table th.col-a{background:var(--acc-a);color:#fff;}
+  .cmp-table th.col-b{background:var(--acc-b);color:#fff;}
+  .cmp-table th.col-c{background:var(--acc-c);color:#fff;}
+  .cmp-table td{padding:14px 18px;font-size:12.8px;border-bottom:1px solid var(--line);vertical-align:top;}
+  .cmp-table tr:last-child td{border-bottom:none;}
+  .cmp-table td:first-child{font-weight:700;color:var(--ink);background:var(--paper-tint);}
+
+  /* feature list */
+  .feat-list{margin-top:32px;display:flex;flex-direction:column;gap:16px;}
+  .feat-item{display:flex;gap:16px;align-items:flex-start;}
+  .feat-item .fi{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex-shrink:0;margin-top:1px;font-family:'Noto Serif KR',serif;}
+  .feat-item b{display:block;font-size:14.5px;margin-bottom:3px;color:var(--ink);}
+  .feat-item span{font-size:12.8px;color:var(--text-muted);line-height:1.65;}
+
+  /* pipeline (workflow steps) */
+  .pipeline{display:flex;align-items:stretch;gap:0;margin-top:44px;flex-wrap:wrap;}
+  .pl-stage{flex:1;min-width:200px;border-radius:var(--radius);padding:22px 20px;box-shadow:var(--shadow);position:relative;}
+  .pl-stage .plnum{font-family:'Noto Serif KR',serif;font-weight:700;font-size:12px;color:var(--text-muted);margin-bottom:8px;}
+  .pl-stage .plname{font-size:14.5px;font-weight:700;color:var(--ink);margin-bottom:8px;}
+  .pl-stage .pldesc{font-size:11.8px;color:var(--text-muted);line-height:1.6;}
+  .pl-stage.s0{background:var(--paper-tint);}
+  .pl-stage.s1{background:rgba(22,163,74,0.08);border:1.5px solid rgba(22,163,74,0.25);}
+  .pl-stage.s2{background:rgba(136,128,176,0.12);border:1.5px solid rgba(136,128,176,0.3);}
+  .pl-stage.s3{background:var(--ink);color:var(--paper);}
+  .pl-stage.s3 .plname{color:var(--paper);}
+  .pl-stage.s3 .pldesc{color:#CFC8F2;}
+  .pl-stage.s3 .plnum{color:var(--acc-b);}
+  .pl-connector{display:flex;align-items:center;justify-content:center;width:36px;flex-shrink:0;color:#B8B0DE;font-size:18px;}
+
+  /* usewhen pills */
+  .usewhen{margin-top:26px;display:flex;flex-wrap:wrap;gap:9px;}
+  .usewhen span{font-size:12px;padding:8px 14px;border-radius:20px;background:var(--paper-tint);color:var(--text-dark);}
+  .usewhen span::before{content:'✓ ';font-weight:700;color:var(--acc-a);}
+
+  /* path chips */
+  .path-chip-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:26px;}
+  .path-chip{font-size:12.5px;font-weight:600;background:var(--paper);border:1.4px solid var(--line);color:var(--ink);padding:8px 14px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.04);}
+  .path-arrow{color:var(--text-muted);font-size:13px;}
+
+  /* ref grid */
+  .ref-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:32px;}
+  .ref-card{display:flex;align-items:center;justify-content:space-between;gap:12px;border-radius:14px;padding:18px 22px;background:var(--paper-tint);transition:background .2s, transform .2s;}
+  .ref-card:hover{background:#EFEAFF;transform:translateX(2px);}
+  .ref-card .rc-text{font-size:13px;color:var(--text-dark);}
+  .ref-card .rc-text b{display:block;font-size:14px;color:var(--ink);margin-bottom:3px;}
+  .ref-card .rc-arrow{color:var(--acc-c);font-size:18px;flex-shrink:0;}
+
+  /* code block */
+  .code-block{margin-top:20px;background:var(--ink-deep);border-radius:14px;padding:18px 22px;font-family:var(--mono);font-size:12.4px;color:#CFE8D8;line-height:1.8;overflow-x:auto;}
+  .code-block .cmt{color:#8880B0;}
+  .code-block .kw{color:#7FD99A;}
+
+  /* summary */
+  .summary{background:linear-gradient(180deg,var(--ink-2) 0%, var(--ink-deep) 100%);color:var(--paper);}
+  .recap-list{margin-top:34px;display:flex;flex-direction:column;gap:0;}
+  .recap-item{display:flex;align-items:flex-start;gap:18px;padding:18px 0;border-bottom:1px solid rgba(255,255,255,0.1);}
+  .recap-item:last-child{border-bottom:none;}
+  .recap-item .num{font-family:'Noto Serif KR',serif;font-size:14px;color:var(--acc-b);font-weight:700;width:28px;flex-shrink:0;}
+  .recap-item .rt{font-size:14px;line-height:1.65;color:#E4DEFF;}
+  .recap-item .rt b{color:var(--paper);}
+  .final-line{margin-top:30px;padding:20px 24px;border-radius:var(--radius);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);font-size:13.5px;color:#CFC8F2;}
+  .final-line b{color:var(--paper);}
+
+  footer{background:var(--ink-deep);color:#8880B0;padding:34px 0;font-size:12px;}
+  footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+  .totop{border:1px solid rgba(255,255,255,0.2);padding:8px 16px;border-radius:20px;font-size:11.5px;transition:border-color .2s, color .2s;}
+  .totop:hover{border-color:var(--acc-b);color:var(--acc-b);}
+
+  @media(max-width:900px){
+    nav.links{display:none;}
+    .hamburger{display:flex;}
+    .compare-2,.compare-3,.compare-4{grid-template-columns:1fr;}
+    .org-grid{grid-template-columns:1fr;}
+    .ref-grid{grid-template-columns:1fr;}
+    .def{grid-template-columns:1fr;}
+    .def .k{border-bottom:1px solid var(--line);}
+    .pipeline{flex-direction:column;}
+    .pl-connector{width:100%;height:30px;transform:rotate(90deg);}
+    section{padding:72px 0;}
+  }
+  @media(max-width:560px){
+    .cmp-table{font-size:11.5px;}
+    .cmp-table th,.cmp-table td{padding:11px 12px;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<header class="nav" id="siteNav">
+  <div class="wrap">
+    <div class="brand"><span class="dot2"><span></span><span></span></span> Claude Code · 101</div>
+    <nav class="links">
+      <a href="#overview">개요</a>
+      <a href="#howitworks">작동 원리</a>
+      <a href="#install">설치</a>
+      <a href="#prompting">프롬프팅</a>
+      <a href="#workflow">EPCC 워크플로우</a>
+      <a href="#context">컨텍스트 관리</a>
+      <a href="#review">코드 리뷰</a>
+      <a href="#customize">커스터마이징</a>
+    </nav>
+    <button class="hamburger" id="hamBtn" aria-label="메뉴 열기"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#overview">Claude Code란 무엇인가</a>
+  <a href="#howitworks">작동 원리: 에이전틱 루프</a>
+  <a href="#install">설치 및 환경 설정</a>
+  <a href="#prompting">효과적인 프롬프트 작성</a>
+  <a href="#workflow">Explore → Plan → Code → Commit</a>
+  <a href="#context">컨텍스트 관리</a>
+  <a href="#review">코드 리뷰</a>
+  <a href="#customize">나만의 Claude Code 만들기</a>
+</div>
+<button class="mobile-close" id="mobileClose">×</button>
+
+<main>
+
+<section class="hero-simple" id="top">
+  <div class="wrap">
+    <div class="eyebrow">Claude Code 101 · Onboarding</div>
+    <h1>터미널에 상주하는<br><span class="accent-word">AI 코딩 에이전트, Claude Code</span></h1>
+    <p class="sub">채팅창 밖으로 나와 코드베이스를 직접 읽고, 파일을 수정하고, 명령을 실행하는 에이전트. 개념(에이전틱 루프)부터 설치, 효과적인 프롬프트 작성법, Explore→Plan→Code→Commit 워크플로우, 컨텍스트 관리, 코드 리뷰, 그리고 CLAUDE.md·서브에이전트·MCP·훅을 통한 커스터마이징까지 12개 레슨을 8개 항목으로 정리했습니다.</p>
+    <div class="chip-row">
+      <a class="chip" href="#howitworks">에이전틱 루프</a>
+      <a class="chip" href="#workflow">Explore·Plan·Code·Commit</a>
+      <a class="chip" href="#customize">CLAUDE.md · MCP · Hooks</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- 1 -->
+<section id="overview">
+  <div class="wrap reveal">
+    <div class="kicker">01 · Overview</div>
+    <h2 class="title">Claude Code란 무엇인가</h2>
+    <p class="lede">Claude Code는 여러분의 코드베이스를 이해하고, 파일을 수정하고, 명령을 실행하며, 기존 개발 도구와 통합되는 <b>에이전틱 코딩 도구</b>입니다. Claude.ai와 달리 파일·터미널·코드베이스 전체에 <b>직접 접근</b>합니다.</p>
+    <div class="org-grid">
+      <div class="org-card">
+        <h4>🤖 채팅형 AI와 다른 점</h4>
+        <ul>
+          <li>코드를 복사·붙여넣기 하는 대신 <b>직접 들어가 작업</b></li>
+          <li>파일·터미널·전체 코드베이스에 <b>직접 접근</b></li>
+          <li>사람 손을 자유롭게, 원하는 만큼 개입 가능</li>
+        </ul>
+      </div>
+      <div class="org-card">
+        <h4>🚪 어디서 쓰나</h4>
+        <ul>
+          <li><b>터미널</b> (기본 인터페이스)</li>
+          <li><b>VS Code · JetBrains</b> IDE 확장</li>
+          <li><b>Claude Desktop</b> 앱, <b>웹</b></li>
+        </ul>
+      </div>
+      <div class="org-card">
+        <h4>🎯 대상</h4>
+        <ul>
+          <li>소프트웨어 개발이 처음인 사람</li>
+          <li>AI 코딩 에이전트를 아직 안 써본 <b>숙련 엔지니어</b></li>
+          <li>코드 편집기·커맨드라인 기본 사용법만 알면 충분</li>
+        </ul>
+      </div>
+    </div>
+    <div class="safe-box"><b>포인트 —</b> 버그를 코드베이스 전체에서 추적하거나, 새 서비스를 스캐폴딩하거나, PR을 한 무더기 리뷰하는 것처럼 예전엔 하루가 걸리던 일이, 코드를 읽고 명령을 실행하고 함께 파일을 편집하는 에이전트 덕분에 <b>한 번의 집중 세션</b>으로 끝날 수 있습니다.</div>
+  </div>
+</section>
+
+
+<!-- 2 -->
+<section id="howitworks" style="background:var(--paper-tint);">
+  <div class="wrap reveal">
+    <div class="kicker">02 · How It Works</div>
+    <h2 class="title">작동 원리 — 에이전틱 루프</h2>
+    <p class="lede">Claude Code는 <b>에이전틱 루프, 컨텍스트 윈도우, 도구, 권한</b> — 네 가지 개념의 조합으로 설명됩니다. 이 네 가지를 이해하면 이후 배우는 모든 기법이 암기가 아니라 이해로 다가옵니다.</p>
+    <div class="pipeline">
+      <div class="pl-stage s0"><div class="plnum">STEP 01</div><div class="plname">프롬프트 입력</div><div class="pldesc">사용자가 터미널에 요청을 입력</div></div>
+      <div class="pl-connector">→</div>
+      <div class="pl-stage s1"><div class="plnum">STEP 02</div><div class="plname">컨텍스트 수집</div><div class="pldesc">모델과 상호작용하며 필요한 정보를 모으고, 텍스트 또는 도구 호출을 반환</div></div>
+      <div class="pl-connector">→</div>
+      <div class="pl-stage s2"><div class="plnum">STEP 03</div><div class="plname">행동 &amp; 검증</div><div class="pldesc">파일 수정·명령 실행 등 행동을 취하고, 목표 달성 여부를 스스로 확인</div></div>
+      <div class="pl-connector">→</div>
+      <div class="pl-stage s3"><div class="plnum">STEP 04</div><div class="plname">종료 또는 반복</div><div class="pldesc">완료됐으면 다음 프롬프트 대기, 아니면 루프를 반복</div></div>
+    </div>
+    <div class="deflist">
+      <div class="def"><div class="k">컨텍스트 윈도우</div><div class="v">대화·파일 내용·명령 출력 등을 저장·참조할 수 있는 <b>한정된 용량</b>. 한도에 도달하면 대화를 <b>압축(compact)</b>해 다시 사용 가능한 크기로 줄입니다.</div></div>
+      <div class="def"><div class="k">도구 (Tools)</div><div class="v">Claude가 파일을 읽고 쓰고, 검색하고, 명령을 실행하기 위해 사용하는 <b>능력</b>들입니다.</div></div>
+      <div class="def"><div class="k">권한 (Permissions)</div><div class="v">내 컴퓨터에서 무슨 일이 벌어질지 <b>사용자가 계속 통제</b>할 수 있도록 하는 승인 체계입니다. Claude는 기본적으로 행동 전에 허락을 구합니다.</div></div>
+    </div>
+    <div class="note-box"><b>세 가지 기본 원칙 —</b> ① 컨텍스트 윈도우는 유한하다 ② Claude는 기본적으로 허락을 구한다 ③ Claude도 실수할 수 있으므로 <b>계속 관여하는 것</b>은 선택이 아니라 필수입니다.</div>
+  </div>
+</section>
+
+
+<!-- 3 -->
+<section id="install">
+  <div class="wrap reveal">
+    <div class="kicker">03 · Installation</div>
+    <h2 class="title">설치 및 환경 설정</h2>
+    <p class="lede">이미 작업하고 있는 환경 어디에서든 Claude Code를 그대로 사용할 수 있습니다 — 터미널, VS Code나 JetBrains 안, Claude Desktop, 또는 웹.</p>
+    <div class="compare-4">
+      <div class="cc-card">
+        <h4>Default</h4>
+        <div class="flow">터미널</div>
+        <p class="small">가장 기본적인 인터페이스. 어떤 프로젝트 폴더에서든 <code>claude</code> 명령으로 시작.</p>
+      </div>
+      <div class="cc-card b">
+        <h4>IDE 확장</h4>
+        <div class="flow">VS Code · JetBrains</div>
+        <p class="small">에디터 안에 <b>사이드 패널</b>로 통합되어, 파일을 오가며 바로 대화하고 diff를 확인.</p>
+      </div>
+      <div class="cc-card c">
+        <h4>GUI</h4>
+        <div class="flow">Claude Desktop</div>
+        <p class="small">데스크톱 앱의 <b>Code 탭</b>에서 GUI로 동일한 에이전트를 사용.</p>
+      </div>
+      <div class="cc-card d">
+        <h4>Remote</h4>
+        <div class="flow">웹</div>
+        <p class="small">브라우저에서 <b>원격 세션</b>으로 실행, 로컬 환경 없이도 접근 가능.</p>
+      </div>
+    </div>
+    <div class="usewhen">
+      <span>이미 쓰는 에디터·터미널 그대로 사용</span>
+      <span>환경을 바꾸지 않고 워크플로우에 편입</span>
+      <span>어디서 설치하든 핵심 기능은 동일</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- 4 -->
+<section id="prompting" style="background:var(--paper-tint);">
+  <div class="wrap reveal">
+    <div class="kicker">04 · Prompting</div>
+    <h2 class="title">효과적인 프롬프트 작성 — 3가지 모드</h2>
+    <p class="lede">같은 요청이라도 <b>어떤 모드</b>로 진행하느냐에 따라 Claude가 얼마나 자율적으로 움직이는지가 달라집니다. 확률적으로 동작하는 프롬프트와 달리, 상황에 맞는 모드 선택이 결과를 좌우합니다.</p>
+    <div class="compare-3">
+      <div class="cc-card">
+        <h4>Manual</h4>
+        <div class="flow">수동 승인</div>
+        <p class="small">파일 수정·명령 실행 등 <b>행동 하나하나마다</b> 사용자 승인을 요구. 처음 쓰거나 민감한 작업에 적합.</p>
+      </div>
+      <div class="cc-card b">
+        <h4>Auto-Accept</h4>
+        <div class="flow">자동 승인</div>
+        <p class="small">Claude가 계획한 편집을 <b>매번 묻지 않고</b> 바로 적용. 신뢰할 수 있는 반복 작업에서 속도를 높임.</p>
+      </div>
+      <div class="cc-card c">
+        <h4>Plan Mode</h4>
+        <div class="flow">계획 모드 (Shift+Tab)</div>
+        <p class="small">Claude가 <b>파일을 편집하지 못하고</b> 읽기만 하며 접근 방식을 조사·제안. 코드가 쓰이기 전에 <b>궤도를 수정</b>할 수 있는 최적의 지점.</p>
+      </div>
+    </div>
+    <div class="note-box"><b>선택 가이드 —</b> 새로운 기능이나 복잡한 변경은 <b>Plan Mode</b>로 시작해 방향을 먼저 검토 → 승인 후 <b>Manual</b>이나 <b>Auto-Accept</b>로 실제 구현을 진행하는 흐름이 가장 안전합니다.</div>
+  </div>
+</section>
+
+
+<!-- 5 -->
+<section id="workflow">
+  <div class="wrap reveal">
+    <div class="kicker">05 · Core Workflow</div>
+    <h2 class="title">Explore → Plan → Code → Commit</h2>
+    <p class="lede">이 강좌에서 <b>단 하나만 기억해야 한다면 바로 이 워크플로우</b>입니다. 이 흐름 없이 곧바로 "코드를 짜줘"라고 요청하면, 나중에 더 많은 궤도 수정이 필요해집니다.</p>
+    <div class="pipeline">
+      <div class="pl-stage s0"><div class="plnum">STAGE 01</div><div class="plname">Explore</div><div class="pldesc">Claude가 프로젝트의 관련 부분을 읽고 이해를 쌓도록 함</div></div>
+      <div class="pl-connector">→</div>
+      <div class="pl-stage s1"><div class="plnum">STAGE 02</div><div class="plname">Plan</div><div class="pldesc">구현 전에 논쟁하고 검토할 수 있는 문서화된 접근 방식을 확보 (Plan Mode 활용)</div></div>
+      <div class="pl-connector">→</div>
+      <div class="pl-stage s2"><div class="plnum">STAGE 03</div><div class="plname">Code</div><div class="pldesc">계획을 실행 — 최종 결과가 나올 때까지 Claude와 주고받는 반복</div></div>
+      <div class="pl-connector">→</div>
+      <div class="pl-stage s3"><div class="plnum">STAGE 04</div><div class="plname">Commit</div><div class="pldesc">코드를 검토하고 커밋 메시지를 생성해 깔끔하게 반영, 다음 작업으로</div></div>
+    </div>
+    <div class="code-block">
+<span class="cmt"># Plan Mode 진입: Shift + Tab (입력창 아래 "Plan Mode" 표시 확인)</span><br>
+<span class="kw">&gt;</span> 이미지 업로드 파이프라인에 WebP 변환을 추가해야 해.<br>
+&nbsp;&nbsp;파이프라인 어디에 넣어야 할지, 새 의존성이 필요한지,<br>
+&nbsp;&nbsp;어떻게 접근할지 파악해줘.
+    </div>
+    <div class="safe-box"><b>실무 팁 —</b> Plan Mode에서는 파일을 <b>읽기만</b> 하고 편집하지 않으므로, 코드가 쓰이기 전 가장 안전하게 궤도를 수정할 수 있는 지점입니다. 계획이 만족스러우면 "approve"로 승인해 목록을 실행시키고, 완료 후 Claude에게 내 스타일의 <b>커밋 메시지 생성</b>을 맡길 수 있습니다.</div>
+  </div>
+</section>
+
+
+<!-- 6 -->
+<section id="context" style="background:var(--paper-tint);">
+  <div class="wrap reveal">
+    <div class="kicker">06 · Context Management</div>
+    <h2 class="title">컨텍스트 관리 — /compact · /clear · /context</h2>
+    <p class="lede">긴 세션일수록 컨텍스트 윈도우가 채워지며 성능·정확도·생산성이 떨어질 수 있습니다. 세 가지 명령으로 세션을 계속 <b>생산적인 상태</b>로 유지합니다.</p>
+    <div class="deflist">
+      <div class="def"><div class="k">/compact</div><div class="v">현재 대화에서 <b>무엇을 줄이고 요약할지</b> Claude가 자동으로 판단해, 컨텍스트 윈도우를 다시 쓸 만한 크기로 되돌립니다. 한도에 다다르면 자동으로도 실행됩니다.</div></div>
+      <div class="def"><div class="k">/clear</div><div class="v">대화 히스토리를 <b>완전히 비우고</b> 새로 시작합니다. 이전 작업과 무관한 새 작업으로 넘어갈 때 유용합니다.</div></div>
+      <div class="def"><div class="k">/context</div><div class="v">현재 컨텍스트 윈도우에 <b>무엇이 얼마나</b> 차 있는지 확인해, 압축·정리 시점을 스스로 판단할 수 있게 합니다.</div></div>
+    </div>
+    <div class="note-box"><b>왜 중요한가 —</b> "왜 Claude가 20분 전에 얘기한 걸 잊어버렸지?"라는 혼란은 대부분 컨텍스트 윈도우가 꽉 찼거나 자동 압축된 결과입니다. 세 명령을 능숙하게 다루면 긴 세션에서도 정확도와 비용 효율을 함께 지킬 수 있습니다.</div>
+  </div>
+</section>
+
+
+<!-- 7 -->
+<section id="review">
+  <div class="wrap reveal">
+    <div class="kicker">07 · Code Review</div>
+    <h2 class="title">Claude Code로 코드 리뷰하기</h2>
+    <p class="lede">코드를 작성하는 것만큼이나, 변경 사항을 <b>검토하는 것</b>도 워크플로우의 핵심입니다. Claude Code는 자신의 변경분이든 다른 사람의 PR이든 리뷰를 도울 수 있습니다.</p>
+    <div class="compare-3">
+      <div class="cc-card">
+        <h4>Diff 확인</h4>
+        <div class="flow">변경분 검토</div>
+        <p class="small">현재 세션에서 만들어진 <b>변경 내역</b>을 살펴보고, 의도한 대로인지 단계별로 확인합니다.</p>
+      </div>
+      <div class="cc-card b">
+        <h4>읽기 전용 리뷰</h4>
+        <div class="flow">더 깊은 검토</div>
+        <p class="small">파일을 수정하지 않고 <b>정확성·정리 상태</b>를 점검하는 심층 리뷰를 요청할 수 있습니다.</p>
+      </div>
+      <div class="cc-card c">
+        <h4>보안 리뷰</h4>
+        <div class="flow">위험 요소 점검</div>
+        <p class="small">대기 중인 변경 사항에 <b>보안 위험</b>이 있는지 별도로 점검하도록 요청합니다.</p>
+      </div>
+    </div>
+    <div class="safe-box"><b>실무 예 —</b> PR을 올리기 전, Claude에게 "이 diff를 리뷰해줘, 엣지 케이스와 네이밍 컨벤션을 확인해줘"처럼 요청하면 사람이 보기 전에 명백한 문제를 먼저 걸러낼 수 있습니다.</div>
+  </div>
+</section>
+
+
+<!-- 8 -->
+<section id="customize" style="background:var(--paper-tint);">
+  <div class="wrap reveal">
+    <div class="kicker">08 · Make It Yours</div>
+    <h2 class="title">나만의 Claude Code 만들기</h2>
+    <p class="lede">강좌의 마지막 구간은 Claude Code를 <b>내 프로젝트·팀에 맞게 커스터마이징</b>하는 다섯 가지 방법을 다룹니다.</p>
+    <div class="org-grid">
+      <div class="org-card">
+        <h4>📄 CLAUDE.md</h4>
+        <ul>
+          <li>프로젝트의 <b>컨벤션·규칙</b>을 기록해두는 파일</li>
+          <li>세션이 바뀌어도 Claude가 계속 <b>기억</b>하게 함</li>
+        </ul>
+      </div>
+      <div class="org-card">
+        <h4>🧩 서브에이전트 (Subagents)</h4>
+        <ul>
+          <li>특정 작업을 <b>위임</b>할 별도 에이전트 구성</li>
+          <li>메인 컨텍스트를 <b>깨끗하게</b> 유지</li>
+        </ul>
+      </div>
+      <div class="org-card">
+        <h4>🛠️ Skills</h4>
+        <ul>
+          <li>자주 반복하는 작업을 <b>재사용 가능한 절차</b>로 저장</li>
+          <li>필요할 때 Claude가 스스로 불러 사용</li>
+        </ul>
+      </div>
+      <div class="org-card">
+        <h4>🔌 MCP 서버</h4>
+        <ul>
+          <li>외부 도구·데이터 소스에 <b>연결</b></li>
+          <li>생태계에서 가장 비중 있게 다뤄지는 주제 중 하나</li>
+        </ul>
+      </div>
+      <div class="org-card">
+        <h4>🪝 Hooks</h4>
+        <ul>
+          <li>매 편집 후 <b>자동 포맷팅</b>, 특정 명령 <b>차단</b>, 작업 완료 <b>알림</b></li>
+          <li>"부탁"이 아니라 <b>규칙</b> — 확률적 프롬프트와 달리 항상 보장됨</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note-box"><b>다섯 표면의 관계 —</b> CLAUDE.md는 <b>무엇을 기억할지</b>, Subagents·Skills는 <b>무엇을 어떻게 위임·재사용할지</b>, MCP는 <b>어디에 연결할지</b>, Hooks는 <b>무엇을 반드시 지키게 할지</b>를 각각 담당합니다. 다섯 가지를 조합하면 팀 전체가 동일한 방식으로 Claude Code를 쓰게 됩니다.</div>
+  </div>
+</section>
+
+
+<section class="summary" id="conclusion">
+  <div class="wrap reveal">
+    <div class="kicker on-dark">Conclusion</div>
+    <h2 class="title on-dark">마치며</h2>
+    <p class="lede on-dark">Claude Code는 <b>"코드베이스 안에서 직접 일하는 에이전트"</b>입니다. 도구를 설치하는 것과 잘 쓰는 것 사이에는, 에이전트가 어떻게 사고하고 어떤 컨텍스트에 접근하며 궤도를 어떻게 수정하는지에 대한 이해가 필요합니다.</p>
+    <div class="recap-list">
+      <div class="recap-item"><span class="num">01</span><span class="rt"><b>에이전틱 루프·컨텍스트 윈도우·도구·권한</b> 네 가지 개념으로 작동 원리를 이해하세요.</span></div>
+      <div class="recap-item"><span class="num">02</span><span class="rt">새 기능은 항상 <b>Plan Mode</b>로 먼저 조사·검토한 뒤, <b>Explore → Plan → Code → Commit</b> 흐름을 따르세요.</span></div>
+      <div class="recap-item"><span class="num">03</span><span class="rt">긴 세션은 <b>/compact·/clear·/context</b>로 관리하고, 반복 작업은 <b>CLAUDE.md·Subagents·Skills·MCP·Hooks</b>로 내 것으로 만드세요.</span></div>
+    </div>
+    <div class="final-line"><b>다음 단계</b> — 실제 프로젝트에서 작은 기능 하나를 골라 Plan Mode로 시작해 Explore→Plan→Code→Commit을 한 바퀴 직접 돌려보세요. 워크플로우가 몸에 붙는 가장 빠른 길입니다.</div>
+  </div>
+</section>
+
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Claude Code 101 · academy.claude.com/ko/courses/claude-code-101 기반 정리 — 제품 사양은 수시로 업데이트됩니다</span>
+    <a class="totop" href="#top">맨 위로 ↑</a>
+  </div>
+</footer>
+
+<script>
+  var progress = document.getElementById('progress');
+  var nav = document.getElementById('siteNav');
+  window.addEventListener('scroll', function(){
+    var h = document.documentElement;
+    var scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    progress.style.width = scrolled + '%';
+    if(h.scrollTop > 40){ nav.classList.add('scrolled'); } else { nav.classList.remove('scrolled'); }
+  });
+  var hamBtn = document.getElementById('hamBtn');
+  var mobileMenu = document.getElementById('mobileMenu');
+  var mobileClose = document.getElementById('mobileClose');
+  function openMenu(){ mobileMenu.classList.add('open'); mobileClose.style.display='block'; }
+  function closeMenu(){ mobileMenu.classList.remove('open'); mobileClose.style.display='none'; }
+  hamBtn.addEventListener('click', openMenu);
+  mobileClose.addEventListener('click', closeMenu);
+  mobileMenu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeMenu); });
+  var revealObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){ if(entry.isIntersecting){ entry.target.classList.add('in-view'); } });
+  }, {threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(function(el){ revealObserver.observe(el); });
+</script>
+
+</body>
+</html>
