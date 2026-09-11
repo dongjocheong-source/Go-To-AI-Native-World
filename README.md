@@ -191,6 +191,7 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
 - P17_[IT_Tips] 동기비동기 & 직렬병렬 완벽 가이드
 - P18_[IT_TIPS] 사용자 인터페이스(UI)의 모든 것
 - P19_[IT_Tips] 채팅으로 맞춤형 Notion Template 자동 제작 AI Agent 소개
+---
 
 ## [Q] HTTP 외
 - Q01_[FEBE] API란 무엇일까
@@ -203,6 +204,7 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
 - Q08_[FEBE] Prometheus(프로메테우스)에 대해 자세히 알아보자!
 - Q09_[FEBE] Vite(비트)에 대해 자세히 알아보자!
 - Q10_NodeJS Role
+---
 
 ## [R] Python 
 - R01_[Python] uv 실전 가이드
@@ -213,7 +215,7 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
 - R06_[AIPython] python Poetry에 대해 자세히 알아보자!
 - R07_[AIPython] 뮤텍스(Mutex) vs 세마포어(Semaphore) 완벽 정리
 - R08_[AIPython] 온디바이스 AI(On-Device AI)에 대해 자세히 알아보자!
-
+---
 
 ## [S] Linux
 - S01_[Linux] 리눅스 관리자의 기본
@@ -223,6 +225,7 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
 - S05_[Linux] 리눅스 활용 꿀팁
 - S06_[Linux] screen 사용법 A to Z 정의
 - S07_[Linux] 우분투(Ubuntu)에서 구글 드라이브 연동 및 사용 완벽 가이드
+---
 
 ## [T] Git_and_Github
 - T01_[Git] CICD(지속적 통합지속적 배포) 완벽 정복 가이드
@@ -235,15 +238,4 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
 - T08_[Github] 원격 저장소 연결 및 관리 (git remote)
 - T09_[GitHub] Git 브랜치(Branch) 핵심 가이드
 - T10_[AIGit] GitHub Copilot SDK 완전 정복 가이드
-
-## [V] 북마크/즐겨찾기
-- V01_디자인 레퍼런스 모음
-- V02_개발자 블로그 모음
-- V03_뉴스레터 아카이브
-- V04_툴비교 아티클
-- V05_자주 쓰는 템플렛
-- V06_핵심 대시보드 링크
-- V07_즐겨 찾는 문서
-- V08_자주 쓰는 도구
-
 ---
