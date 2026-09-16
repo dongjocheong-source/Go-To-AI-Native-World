@@ -58,8 +58,8 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
 ## [C]  AI Advanced#2
 - C01_영상관련기술
 - C02_온톨로지(Ontology)
-  - B02a_온톨로지(Ontology)란 무엇인가
-  - B02b_온톨로지(Ontology) 프로젝트 분석
+  - C02a_온톨로지(Ontology)란 무엇인가
+  - C02b_온톨로지(Ontology) 프로젝트 분석
 - C03_On-Premise LLM 
   - C03a_[AILLM] 온프레미스AI(On-premise AI) 완벽가이드
   - C03b_[AILLM] Docker + vLLM으로 Gemma4 31B 모델 서빙하기
