@@ -104,19 +104,20 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
 
 ## [D2] Google AI
 - *D11_Google's 7 Essential Free AI Tools
-  - 1)Text(Gemini), 2)연구(NotebookLM), 3)시각미디어(Google Flow), 4)오디오(Flow Music), 5)웹디자인(Stitch), 6)노코드개발(Anti-Gravity), 7)전문실험실(AI Studio)
-- *D12_Google Flow(시각미디어) - 이미지 생성모델인 Imagen(나도 바나나)와 영상제작 모델인 Veo3.1 탑재
-- *D13_Flow Music(오디오) - Suno와 비슷
-- *D14_Stitch (웹디자인) - Figma와 비교되나 Figma는 완성본(1~100), Stitch는(0~1)
-- *D15_Anti-Gravity (AI 코딩 도구)
-- *D16_AI Studio (앱만들기)
-- *Google Vids (AI 이미지로 비디오 만드는 Tool)
+  - Text(Gemini), 연구(NotebookLM), 시각미디어(Google Flow), 오디오(Flow Music), 웹디자인(Stitch), 노코드개발(Anti-Gravity), 전문실험실(AI Studio)
+- *D12_Google Gemini
+- *D13_NotebookLM
+- *D14_Google Flow(시각미디어) - 이미지 생성모델인 Imagen(나도 바나나)와 영상제작 모델인 Veo3.1 탑재
+- *D15_Flow Music(오디오) - Suno와 비슷
+- *D16_Stitch (웹디자인) - Figma와 비교되나 Figma는 완성본(1~100), Stitch는(0~1)
+- *D17_Anti-Gravity (AI 코딩 도구)
+- *D18_AI Studio (앱만들기)
+- *D19_Google Vids (AI 이미지로 비디오 만드는 Tool)
 ---
 
 ## [D3] ChatGPT AI
-- *GPT6 아스트라 소개 
+- *D21_GPT6 아스트라 소개 
 ---
-
 
 ## [E2] Claude 강좌
 - E01_ClaudeProduct_Claude-101
