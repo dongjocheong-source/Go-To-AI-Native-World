@@ -80,19 +80,19 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
  
 ## [D]  AI_Tools
 - D01_대화채팅(ChatGPT,Claude,Gemini)
-  - D01a - Full comparison - Chat AI Tools 
-  - D01b - Comparison - ChatGPT vs Gemini vs Claude
-  - D01c - Claude Intro
-  - D01d - Claude 아티팩트
-  - *D01e - ㅊ
+  - D01a_Full comparison - Chat AI Tools 
+  - D01b_Comparison - ChatGPT vs Gemini vs Claude
+  - D01c_Claude Intro
+  - D01d_Claude 아티팩트
+  - *D01e_ㅊ
 - D02_리서치(NotebookLM,Perplexity)
-  - D02a - NotebookLM 2.0 달라진 7가지
-  - D02b - Perplexity AI 특장점 상세 정리
-  - D02c - NotebookLM vs Perplexity 비교 분석
+  - D02a_NotebookLM 2.0 달라진 7가지
+  - D02b_Perplexity AI 특장점 상세 정리
+  - D02c_NotebookLM vs Perplexity 비교 분석
 - D03_이미지_디자인(Claude Design, Nano Banana)
-  - D03a - Claude Design 특장점 상세 분석
-  - D03b - Nano Banana AI 특장점 상세 정리
-  - D03c - Nano Banana vs Claude Design 비교 분석
+  - D03a_Claude Design 특장점 상세 분석
+  - D03b_Nano Banana AI 특장점 상세 정리
+  - D03c_Nano Banana vs Claude Design 비교 분석
 - D04_코드_빌드(Claude Code, Replit, Cursor)
 - D05_영상(Higgsfield, CapCut)
 - D06_오디오_보이스(Suno, ElevenLabs)
@@ -122,14 +122,14 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
 
 ## [G] AI 활용
 - G01_LLM-WiKi
-    - G01a - LLM-Wiki-Architecture
-    - G01b - LLM-Wiki-Approach
-    - G01c - LLM-Wiki-Introduction
-    - G01d - LLM-Wiki-with-Obsidian
+    - G01a_LLM-Wiki-Architecture
+    - G01b_LLM-Wiki-Approach
+    - G01c_LLM-Wiki-Introduction
+    - G01d_LLM-Wiki-with-Obsidian
 - G02_Graphify-Intro  
 - G03_LLM Wiki + Graphify
-    - G03a - Graphify-blueprint
-    - G03b - LLM-Wiki -with-Graphify
+    - G03a_Graphify-blueprint
+    - G03b_LLM-Wiki -with-Graphify
 - G04_2nd_Brain
 - G05_LLM-Wiki + NotebookLM
 - G06_바이브코딩
@@ -140,10 +140,10 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
 
 ## [H] 데이터베이스
 - H01_데이터베이스
-    - H01a - DB-Types-Guide
-    - H01b - Elastic-Search-Guide
-    - H01c - Metadata-Guide
-    - H01d - Qdrant-Guide
+    - H01a_DB-Types-Guide
+    - H01b_Elastic-Search-Guide
+    - H01c_Metadata-Guide
+    - H01d_Qdrant-Guide
 - H02_Supabase-Guide  
 ---
 
