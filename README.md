@@ -106,7 +106,7 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
   - *오디오(Flow Music) - Suno와 비슷..
   - *웹디자인(Stitch) - Figma와 비교되나 Figma는 완성본(1~100), Stitch는(0~1_
   - *노코드개발(Anti-Gravity) - AI 코딩 도구
-  - *전문실험실(AI Studio)
+  - *전문실험실(AI Studio) - 앱만들기...
 - *Google Vids - AI 이미지로 비디오 만드는 Tool
 - *GPT6 아스트라 소개 
 ---
