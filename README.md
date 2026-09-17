@@ -13,18 +13,18 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
 - A06_프롬프트엔지니어링
 - A07_지식베이스(Knowledge Base)
 - A08_RAG
-  - A08a - RAG(Retrieval-Augmented Generation)란 — 개념, Fine-tuning 차이, 검색 기법
-  - A08b - RAG의 시작, 데이터 파이프라인 — LlamaParse, Semantic Chunkin
-  - A08c - RAG를 위한 Embedding Model 선정, Vector DB 구축
-  - A08d - RAG 고급 검색 기술 총정리 — RRF, KG-RAG, ColBERT 등
-  - A08e - RAG_에이전틱 RAG (Agentic RAG) 완벽 가이드 — 정의, 구성요소, 특징 및 장단점, 활용분야, 실습
+  - A08a_RAG(Retrieval-Augmented Generation)란 — 개념, Fine-tuning 차이, 검색 기법
+  - A08b_RAG의 시작, 데이터 파이프라인 — LlamaParse, Semantic Chunkin
+  - A08c_RAG를 위한 Embedding Model 선정, Vector DB 구축
+  - A08d_RAG 고급 검색 기술 총정리 — RRF, KG-RAG, ColBERT 등
+  - A08e_RAG_에이전틱 RAG (Agentic RAG) 완벽 가이드 — 정의, 구성요소, 특징 및 장단점, 활용분야, 실습
 - A09_MCP_연동레시피
 - A10_AI에이전트 
-  - A10a - Agentic AI summary
-  - A10b - AI Agent(에이전트)란 무엇인가 — 정의, 구성요소, 유형, 장단점, 주요 활용 분야, 실습
-  - A10c - AI Agent와 Agentic AI의 차이 완벽 정리 — 정의, 특징 및 장단점, 활용 분야, 실습
-  - A10d - AI Agent의 핵심 무기 Tool Calling(도구 호출) 완벽 가이드 — 정의, 구성요소, 장단점, 실습
-  - A10e - 에이전틱 AI 구축 기초 — 강의별 실습 프롬프트 모음
+  - A10a_Agentic AI summary
+  - A10b_AI Agent(에이전트)란 무엇인가 — 정의, 구성요소, 유형, 장단점, 주요 활용 분야, 실습
+  - A10c_AI Agent와 Agentic AI의 차이 완벽 정리 — 정의, 특징 및 장단점, 활용 분야, 실습
+  - A10d_AI Agent의 핵심 무기 Tool Calling(도구 호출) 완벽 가이드 — 정의, 구성요소, 장단점, 실습
+  - A10e_에이전틱 AI 구축 기초 — 강의별 실습 프롬프트 모음
 - A11_워크프로우자동화 
 - A12_하네스엔지니어링  
 - A13_AGI_ASI
@@ -33,26 +33,26 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
 ## [B]  AI Advanced#1
 - B01_AI발전역사       
 - B02_프롬프트엔지니어링 
-  - B02a - 프롬프트 엔지니어링이란 무엇인가 — 개념, 배경, LLM 핵심 파라미터
-  - B02b - 프롬프트 엔지니어링 실전 설계 꿀팁 1 — 4가지 국룰과 5대 기본 작업
-  - B02c - 프롬프트 엔지니어링 실전 설계 꿀팁 2 — Few-Shot, CoT, Self-Consistency
-  - B02d - 프롬프트 엔지니어링 실전 설계 꿀팁 3 — RAG, ReAct, ToT, PAL, Reflexion
-  - B02e - 프롬프트 엔지니어링 실전 설계 꿀팁 4 — Data Generation, Function Calling, Agent
-  - B02f - 프롬프트 - Prompt Injection이란 무엇인가?
-  - B02g - 프롬프트 마스터: ReAct (추론과 행동) vs CoT (생각의 사슬) 기법 비교
+  - B02a_프롬프트 엔지니어링이란 무엇인가 — 개념, 배경, LLM 핵심 파라미터
+  - B02b_프롬프트 엔지니어링 실전 설계 꿀팁 1 — 4가지 국룰과 5대 기본 작업
+  - B02c_프롬프트 엔지니어링 실전 설계 꿀팁 2 — Few-Shot, CoT, Self-Consistency
+  - B02d_프롬프트 엔지니어링 실전 설계 꿀팁 3 — RAG, ReAct, ToT, PAL, Reflexion
+  - B02e_프롬프트 엔지니어링 실전 설계 꿀팁 4 — Data Generation, Function Calling, Agent
+  - B02f_프롬프트 - Prompt Injection이란 무엇인가?
+  - B02g_프롬프트 마스터: ReAct (추론과 행동) vs CoT (생각의 사슬) 기법 비교
 - B03_컨텍스트엔지지어링 
 - B04_Loop엔지니어링 
 - B05_Graph엔지니어링 
 - B06_오케스트레이션 
 - B07_LangChain_LangGraph 
 - B08_Comparison  
-  - B08a - Claude Skills vs Subagent
-  - B08b - CLAUDE.md vs Skill
-  - B08c - CLAUDE.md vs .claude/rules/ vs Skill
-  - B08d - Subagent vs Agent team
-  - B08e - MCP vs Skill
-  - B08f - Hook vs Skill
-  - B08g - Prompt_vs_skill_vs_agent
+  - B08a_Claude Skills vs Subagent
+  - B08b_CLAUDE.md vs Skill
+  - B08c_CLAUDE.md vs .claude/rules/ vs Skill
+  - B08d_Subagent vs Agent team
+  - B08e_MCP vs Skill
+  - B08f_Hook vs Skill
+  - B08g_Prompt_vs_skill_vs_agent
 ---
 
 ## [C]  AI Advanced#2
@@ -84,6 +84,7 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
   - D01b - Comparison - ChatGPT vs Gemini vs Claude
   - D01c - Claude Intro
   - D01d - Claude 아티팩트
+  - *D01e - ㅊ
 - D02_리서치(NotebookLM,Perplexity)
   - D02a - NotebookLM 2.0 달라진 7가지
   - D02b - Perplexity AI 특장점 상세 정리
