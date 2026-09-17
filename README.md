@@ -101,6 +101,12 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
 - D08_문서_생산성(Notion AI, Obsidian)
 - D09_AI_Tool_Reference
 - *D10_Google's 7 Essential Free AI Tools
+  - 개요 : Text(Gemini), 연구(NotebookLM), 시각미디어(Google Flow), 오디오(Flow Music), 웹디자인(Stitch), 노코드개발(Anti-Gravity), 전문실험실(AI Studio)
+  - 시각미디어(Google Flow) - 이미지 생성모델인 Imagen(나도 바나나)와 영상제작 모델인 Veo3.1 탑재
+  - 오디오(Flow Music)
+  - 웹디자인(Stitch)
+  - 노코드개발(Anti-Gravity)
+  - 전문실험실(AI Studio)
 ---
 
 ## [E] Claude강좌
