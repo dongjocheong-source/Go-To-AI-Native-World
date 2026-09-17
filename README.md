@@ -1,7 +1,6 @@
 # [목차] Go to AI Native World
 Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 자료들을 정리하는 공간입니다. <br>
 아래는 웹페이지를 구성하는 목차 정보입니다.
-
 ---
 
 ## [A]  AI Basic
@@ -60,6 +59,7 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
 - C02_온톨로지(Ontology)
   - C02a_온톨로지(Ontology)란 무엇인가
   - C02b_온톨로지(Ontology) 프로젝트 분석
+  - *C02c_온톨로지 프로젝트 FAQ (Building Intelligent Enterprise Knowledge via Ontology and AI Ready Data)
 - C03_On-Premise LLM 
   - C03a_[AILLM] 온프레미스AI(On-premise AI) 완벽가이드
   - C03b_[AILLM] Docker + vLLM으로 Gemma4 31B 모델 서빙하기
@@ -76,7 +76,6 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
   - C07b_[AINLP] 최신 임베딩 모델과 원리
   - C07c_[AINLP] Embedding 실습 및 Vector DB 맛보기
  ---
-
  
 ## [D]  AI_Tools
 - D01_대화채팅(ChatGPT,Claude,Gemini)
@@ -100,7 +99,8 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
 - D06_오디오_보이스(Suno, ElevenLabs)
 - D07_자동화에이전트(n8n, Zapier, Make)
 - D08_문서_생산성(Notion AI, Obsidian)
-- D09_AI_Tool_Reference 
+- D09_AI_Tool_Reference
+- *D10_Google's 7 Essential Free AI Tools
 ---
 
 ## [E] Claude강좌
