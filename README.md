@@ -107,6 +107,7 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
   - 웹디자인(Stitch)
   - 노코드개발(Anti-Gravity)
   - 전문실험실(AI Studio)
+- Google Vids - AI 이미지로 비디오 만드는 Tool 
 ---
 
 ## [E] Claude강좌
