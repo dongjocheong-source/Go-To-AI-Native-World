@@ -77,7 +77,7 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
   - C07c_[AINLP] Embedding 실습 및 Vector DB 맛보기
  ---
  
-## [D]  AI_Tools
+## [D1]  AI_Tools
 - D01_대화채팅(ChatGPT,Claude,Gemini)
   - D01a_Full comparison - Chat AI Tools 
   - D01b_Comparison - ChatGPT vs Gemini vs Claude
@@ -100,18 +100,25 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
 - D07_자동화에이전트(n8n, Zapier, Make)
 - D08_문서_생산성(Notion AI, Obsidian)
 - D09_AI_Tool_Reference
-- *D10_Google's 7 Essential Free AI Tools
-  - *개요 : 1)Text(Gemini), 2)연구(NotebookLM), 3)시각미디어(Google Flow), 4)오디오(Flow Music), 5)웹디자인(Stitch), 6)노코드개발(Anti-Gravity), 7)전문실험실(AI Studio)
-  - *시각미디어(Google Flow) - 이미지 생성모델인 Imagen(나도 바나나)와 영상제작 모델인 Veo3.1 탑재
-  - *오디오(Flow Music) - Suno와 비슷..
-  - *웹디자인(Stitch) - Figma와 비교되나 Figma는 완성본(1~100), Stitch는(0~1_
-  - *노코드개발(Anti-Gravity) - AI 코딩 도구
-  - *전문실험실(AI Studio) - 앱만들기...
-- *Google Vids - AI 이미지로 비디오 만드는 Tool
+---
+
+## [D2] Google AI
+- *D11_Google's 7 Essential Free AI Tools
+  - 1)Text(Gemini), 2)연구(NotebookLM), 3)시각미디어(Google Flow), 4)오디오(Flow Music), 5)웹디자인(Stitch), 6)노코드개발(Anti-Gravity), 7)전문실험실(AI Studio)
+- *D12_Google Flow(시각미디어) - 이미지 생성모델인 Imagen(나도 바나나)와 영상제작 모델인 Veo3.1 탑재
+- *D13_Flow Music(오디오) - Suno와 비슷
+- *D14_Stitch (웹디자인) - Figma와 비교되나 Figma는 완성본(1~100), Stitch는(0~1)
+- *D15_Anti-Gravity (AI 코딩 도구)
+- *D16_AI Studio (앱만들기)
+- *Google Vids (AI 이미지로 비디오 만드는 Tool)
+---
+
+## [D3] ChatGPT AI
 - *GPT6 아스트라 소개 
 ---
 
-## [E] Claude강좌
+
+## [E2] Claude 강좌
 - E01_ClaudeProduct_Claude-101
 - E02_ClaudeProduct_Claude-code-101
 - E03_ClaudeProduct_Claude-work
