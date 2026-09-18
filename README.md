@@ -112,6 +112,9 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
 - *D15_Flow Music(오디오) - Suno와 비슷
 - *D16_Stitch (웹디자인) - Figma와 비교되나 Figma는 완성본(1~100), Stitch는(0~1)
 - *D17_Anti-Gravity (AI 코딩 도구)
+    - /grill-me : 인터뷰
+    - /goal : 야근모드
+    - /schedule : 스케줄러 셋
 - *D18_AI Studio (앱만들기)
 - *D19_Google Vids (AI 이미지로 비디오 만드는 Tool)
 ---
