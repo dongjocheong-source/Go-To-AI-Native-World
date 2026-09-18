@@ -129,8 +129,8 @@ const LATEST_POSTS = [
     summary: "screen, git, Postman으로 AI 서버를 운영하며 쓰는 관리 꿀팁을 정리했습니다." },
   { cat: "h00", item: "h02", date: "2026년 8월 18일",
     summary: "Supabase로 데이터베이스를 처음 붙여보는 초보 개발자용 시작 가이드." },
-  { cat: "d00", item: "d06b", date: "2026년 8월 11일",
-    summary: "2026년 바이브코딩 트렌드를 정리합니다." },
+  { cat: "d02", item: "d24", date: "2026년 9월 18일",
+    summary: "클로드 코드를 실전에서 200% 활용하는 28가지 완벽 가이드를 정리했습니다." },
 ];
 
 
@@ -276,7 +276,7 @@ const CATEGORIES = [
   },
   {
     id: "d00",
-    folder: "D_AI_Tools",
+    folder: "D1_AI_Tools-Introduction",
     label: "AI Tools",
     icon: "star",
     description: "대화형 AI, 리서치, 이미지·디자인, 코드 빌드, 영상·오디오, 자동화, 문서 생산성까지 — 지금 쓰는 AI 툴 총정리.",
@@ -285,10 +285,6 @@ const CATEGORIES = [
         body: "Chat AI Tools Full Comparison." },
       { id: "d01b", title: "ChatGPT Gemini Claude Comparison", meta: "D01B", hue: 30, skipGenerate: true,
         body: "ChatGPT Gemini Claude Comparison." },
-      { id: "d01c", title: "Claude Intro — 기능·접근·데스크톱 앱·프로젝트·아티팩트·스킬·커넥터·Research", meta: "D01C", hue: 30, skipGenerate: true,
-        body: "Claude Intro — 기능·접근·데스크톱 앱·프로젝트·아티팩트·스킬·커넥터·Research." },
-      { id: "d01d", title: "Claude 아티팩트(Artifacts) 완전 매뉴얼", meta: "D01D", hue: 30, skipGenerate: true,
-        body: "Claude 아티팩트(Artifacts) 완전 매뉴얼." },
       { id: "d02a", title: "직장인이라면 꼭 알아야 할 무료 AI, NotebookLM 2.0 달라진 7가지", meta: "D02A", hue: 30, skipGenerate: true,
         body: "직장인이라면 꼭 알아야 할 무료 AI, NotebookLM 2.0 달라진 7가지." },
       { id: "d02b", title: "Perplexity AI 특장점 상세 정리", meta: "D02B", hue: 30, skipGenerate: true,
@@ -313,6 +309,45 @@ const CATEGORIES = [
         body: "문서 생산성 (Notion AI, Obsidian) · 정보 허브." },
       { id: "d09", title: "AI Tool Reference Sites", meta: "D09", hue: 30, skipGenerate: true,
         body: "AI Tool Reference Sites." },
+    ],
+  },
+  {
+    id: "d01",
+    folder: "D2_AI_Tools-Google",
+    label: "AI Tools · Google",
+    icon: "star",
+    description: "구글의 무료 AI 도구 모음.",
+    items: [
+      { id: "d11", title: "최대 생산성을 위한 구글 필수 무료 AI 도구 7가지", meta: "D11", hue: 30, skipGenerate: true,
+        body: "최대 생산성을 위한 구글 필수 무료 AI 도구 7가지." },
+    ],
+  },
+  {
+    id: "d02",
+    folder: "D3_AI_Tools-Claude",
+    label: "AI Tools · Claude",
+    icon: "star",
+    description: "Claude 활용법, 아티팩트, 클로드 코드 마스터 가이드 모음.",
+    items: [
+      { id: "d21", title: "Claude Intro — 기능·접근·데스크톱 앱·프로젝트·아티팩트·스킬·커넥터·Research", meta: "D21", hue: 30, skipGenerate: true,
+        body: "Claude Intro — 기능·접근·데스크톱 앱·프로젝트·아티팩트·스킬·커넥터·Research." },
+      { id: "d22", title: "Claude 아티팩트(Artifacts) 완전 매뉴얼", meta: "D22", hue: 30, skipGenerate: true,
+        body: "Claude 아티팩트(Artifacts) 완전 매뉴얼." },
+      { id: "d23", title: "클로드(Claude) 200% 활용법 기초 세팅 가이드", meta: "D23", hue: 30, skipGenerate: true,
+        body: "클로드(Claude) 200% 활용법 기초 세팅 가이드." },
+      { id: "d24", title: "클로드 코드 마스터하기 — 28가지 완벽 가이드", meta: "D24", hue: 30, skipGenerate: true,
+        body: "클로드 코드 마스터하기 — 28가지 완벽 가이드." },
+      { id: "d25", title: "클로드 코드 효율성 극대화 — 토큰 최적화와 비용 절감 가이드", meta: "D25", hue: 30, skipGenerate: true,
+        body: "클로드 코드 효율성 극대화 — 토큰 최적화와 비용 절감 가이드." },
+    ],
+  },
+  {
+    id: "d03",
+    folder: "D4_AI_Tools-ChatGPT",
+    label: "AI Tools · ChatGPT",
+    icon: "star",
+    description: "ChatGPT 활용법 모음 (준비 중).",
+    items: [
     ],
   },
   {
