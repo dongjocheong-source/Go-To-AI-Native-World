@@ -78,7 +78,7 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
   - C07c_[AINLP] Embedding 실습 및 Vector DB 맛보기
  ---
  
-## [D0]  AI_Tools
+## [D1]  AI_Tools-Introduction
 - D01_대화채팅(ChatGPT,Claude,Gemini)
   - D01a_Full comparison - Chat AI Tools 
   - D01b_Comparison - ChatGPT vs Gemini vs Claude
@@ -91,9 +91,6 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
   - D03b_Nano Banana AI 특장점 상세 정리
   - D03c_Nano Banana vs Claude Design 비교 분석
 - D04_코드_빌드(Claude Code, Replit, Cursor)
-
-  - *D04b_Claude Code 활용 극대화(28가지 핵심 전략)
-  - *D04c_Claude Code 효율 최적화 및 비용 관리 전략  - 
 - D05_영상(Higgsfield, CapCut)
 - D06_오디오_보이스(Suno, ElevenLabs)
 - D07_자동화에이전트(n8n, Zapier, Make)
@@ -101,7 +98,7 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
 - D09_AI_Tool_Reference
 ---
 
-## [D1] Google AI
+## [D2] AI_Tools - Google AI
 - *D11_Google's 7 Essential Free AI Tools
   - Text(Gemini), 연구(NotebookLM), 시각미디어(Google Flow), 오디오(Flow Music), 웹디자인(Stitch), 노코드개발(Anti-Gravity), 전문실험실(AI Studio)
 - *D12_Google Gemini
@@ -123,14 +120,15 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
 - *D19_Google Vids (AI 이미지로 비디오 만드는 Tool)
 ---
 
-
-## [D2] Claude AI
+## [D3] AI_Tools - Claude AI
   - D21_Claude Intro
   - D22_Claude 아티팩트
   - *D23_Claude 200% 활용법
+  - *D24_Claude Code 활용 극대화(28가지 핵심 전략)
+  - *D25_Claude Code 효율 최적화 및 비용 관리 전략  
 ---
 
-## [D3] ChatGPT AI
+## [D4] AI_Tools - ChatGPT AI
 - *D31_GPT6 아스트라 소개 
 ---
 
