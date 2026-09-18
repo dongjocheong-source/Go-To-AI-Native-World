@@ -78,7 +78,7 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
   - C07c_[AINLP] Embedding 실습 및 Vector DB 맛보기
  ---
  
-## [D1]  AI_Tools-Introduction
+## [D1]  AI_Tools - Introduction
 - D01_대화채팅(ChatGPT,Claude,Gemini)
   - D01a_Full comparison - Chat AI Tools 
   - D01b_Comparison - ChatGPT vs Gemini vs Claude
