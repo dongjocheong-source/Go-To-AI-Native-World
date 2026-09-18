@@ -107,9 +107,10 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
 - *D11_Google's 7 Essential Free AI Tools
   - Text(Gemini), 연구(NotebookLM), 시각미디어(Google Flow), 오디오(Flow Music), 웹디자인(Stitch), 노코드개발(Anti-Gravity), 전문실험실(AI Studio)
 - *D12_Google Gemini
-  - Gemini canvas
+  - Gemini Canvas : 
   - Deep think : 추론 강화
-  - Deep Research : 
+  - Deep Research :
+  - 무료배포sites: codepen 
 - *D13_NotebookLM
 - *D14_Google Flow(시각미디어) - 이미지 생성모델인 Imagen(나도 바나나)와 영상제작 모델인 Veo3.1 탑재
 - *D15_Flow Music(오디오) - Suno와 비슷
