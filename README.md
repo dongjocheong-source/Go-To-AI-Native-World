@@ -99,7 +99,7 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
 ---
 
 ## [D2] AI_Tools - Google AI
-- *D11_Google's 7 Essential Free AI Tools
+- D11_Google's 7 Essential Free AI Tools
   - Text(Gemini), 연구(NotebookLM), 시각미디어(Google Flow), 오디오(Flow Music), 웹디자인(Stitch), 노코드개발(Anti-Gravity), 전문실험실(AI Studio)
 - *D12_Google Gemini
   - Gemini Canvas : 
@@ -123,9 +123,9 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
 ## [D3] AI_Tools - Claude AI
   - D21_Claude Intro
   - D22_Claude 아티팩트
-  - *D23_Claude 200% 활용법
-  - *D24_Claude Code 활용 극대화(28가지 핵심 전략)
-  - *D25_Claude Code 효율 최적화 및 비용 관리 전략  
+  - D23_Claude 200% 활용법
+  - D24_Claude Code 활용 극대화(28가지 핵심 전략)
+  - D25_Claude Code 효율 최적화 및 비용 관리 전략  
 ---
 
 ## [D4] AI_Tools - ChatGPT AI
