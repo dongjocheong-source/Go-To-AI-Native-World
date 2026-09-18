@@ -120,6 +120,8 @@ Go to AI native라는 모토로 AI World로 가기 위해 공부하는 각종 �
     - /goal : 야근모드
     - /schedule : 스케줄러 셋
 - *D18_AI Studio (앱만들기)
+    - Playground : Chatbot 형태
+    - Build : Coding 도구
 - *D19_Google Vids (AI 이미지로 비디오 만드는 Tool)
 ---
 
